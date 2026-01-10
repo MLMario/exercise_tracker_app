@@ -5,13 +5,28 @@
 
 /**
  * Create a new workout log with exercises
- * @param {string} templateId - UUID of the template (nullable)
- * @param {string} startedAt - ISO timestamp when workout started
- * @param {Array} exercises - Array of exercise objects
+ * @param {Object|string} workoutDataOrTemplateId - Either a workout data object or template UUID
+ * @param {string} [startedAt] - ISO timestamp when workout started (if using separate params)
+ * @param {Array} [exercises] - Array of exercise objects (if using separate params)
  * @returns {Promise<{data, error}>}
  */
-async function createWorkoutLog(templateId, startedAt, exercises) {
+async function createWorkoutLog(workoutDataOrTemplateId, startedAt, exercises) {
   try {
+    // Support both object parameter and separate parameters
+    let templateId, workoutStartedAt, workoutExercises;
+
+    if (typeof workoutDataOrTemplateId === 'object' && workoutDataOrTemplateId !== null) {
+      // Called with object: createWorkoutLog({ template_id, started_at, exercises })
+      templateId = workoutDataOrTemplateId.template_id;
+      workoutStartedAt = workoutDataOrTemplateId.started_at;
+      workoutExercises = workoutDataOrTemplateId.exercises;
+    } else {
+      // Called with separate params: createWorkoutLog(templateId, startedAt, exercises)
+      templateId = workoutDataOrTemplateId;
+      workoutStartedAt = startedAt;
+      workoutExercises = exercises;
+    }
+
     // Get current user
     const { data: { user }, error: authError } = await window.supabaseClient.auth.getUser();
 
@@ -28,7 +43,7 @@ async function createWorkoutLog(templateId, startedAt, exercises) {
       .insert({
         user_id: user.id,
         template_id: templateId || null,
-        started_at: startedAt,
+        started_at: workoutStartedAt,
         created_at: new Date().toISOString()
       })
       .select()
@@ -39,16 +54,16 @@ async function createWorkoutLog(templateId, startedAt, exercises) {
     }
 
     // Insert all workout log exercises
-    if (exercises && exercises.length > 0) {
-      const exercisesToInsert = exercises.map(ex => ({
+    if (workoutExercises && workoutExercises.length > 0) {
+      const exercisesToInsert = workoutExercises.map((ex, index) => ({
         workout_log_id: workoutLog.id,
         exercise_id: ex.exercise_id,
-        sets_completed: ex.sets_completed || 0,
+        sets_completed: ex.sets || ex.sets_completed || 0,
         reps: ex.reps || 0,
         weight: ex.weight || 0,
         rest_seconds: ex.rest_seconds || 0,
-        is_done: ex.is_done || false,
-        order: ex.order || 0
+        is_done: ex.done || ex.is_done || false,
+        order: ex.order !== undefined ? ex.order : index
       }));
 
       const { error: exercisesError } = await window.supabaseClient

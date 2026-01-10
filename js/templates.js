@@ -19,7 +19,7 @@ async function getTemplates() {
       return { data: null, error: new Error('User not authenticated') };
     }
 
-    // Get templates with exercise count
+    // Get templates with their exercises (needed for startWorkoutFromTemplate)
     const { data, error } = await window.supabaseClient
       .from('templates')
       .select(`
@@ -27,7 +27,20 @@ async function getTemplates() {
         name,
         created_at,
         updated_at,
-        template_exercises(count)
+        template_exercises(
+          id,
+          exercise_id,
+          default_sets,
+          default_reps,
+          default_weight,
+          default_rest_seconds,
+          order,
+          exercises(
+            id,
+            name,
+            category
+          )
+        )
       `)
       .eq('user_id', user.id)
       .order('name', { ascending: true });
@@ -36,16 +49,33 @@ async function getTemplates() {
       return { data: null, error };
     }
 
-    // Transform data to include exercise count
-    const templatesWithCount = data.map(template => ({
-      id: template.id,
-      name: template.name,
-      created_at: template.created_at,
-      updated_at: template.updated_at,
-      exercise_count: template.template_exercises?.[0]?.count || 0
-    }));
+    // Transform data to include exercises array in the format expected by the app
+    const templatesWithExercises = data.map(template => {
+      // Sort exercises by order
+      const sortedTemplateExercises = (template.template_exercises || [])
+        .sort((a, b) => a.order - b.order);
 
-    return { data: templatesWithCount, error: null };
+      // Transform to the format expected by startWorkoutFromTemplate
+      const exercises = sortedTemplateExercises.map(te => ({
+        exercise_id: te.exercise_id,
+        name: te.exercises?.name || 'Unknown Exercise',
+        category: te.exercises?.category || 'Other',
+        default_sets: te.default_sets,
+        default_reps: te.default_reps,
+        default_weight: te.default_weight,
+        default_rest_seconds: te.default_rest_seconds
+      }));
+
+      return {
+        id: template.id,
+        name: template.name,
+        created_at: template.created_at,
+        updated_at: template.updated_at,
+        exercises: exercises
+      };
+    });
+
+    return { data: templatesWithExercises, error: null };
   } catch (error) {
     return { data: null, error };
   }

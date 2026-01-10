@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Bash(python:*)",
+      "Bash(ls:*)",
+      "Bash(powershell -Command \"Get-Content ''c:/Users/MarioPC/Apps/exercise_tracker_app/js/app.js'' | Select-Object -First 5\")",
+      "Bash(powershell -Command:*)",
+      "Skill(webapp-testing)",
+      "Skill(webapp-testing:*)",
+      "Bash(if not exist screenshots mkdir screenshots)",
+      "Bash(pip install:*)",
+      "Bash(playwright install:*)"
     ],
     "deny": [],
     "ask": []

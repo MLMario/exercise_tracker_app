@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitTrack - Personal Fitness Tracker</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div x-data="fitnessApp" x-init="init()" class="app">
+
+    <!-- Loading Screen -->
+    <div x-show="isLoading" class="loading-screen">
+      <div class="loading-content">
+        <h2>Loading...</h2>
+      </div>
+    </div>
+
+    <!-- Auth Surface -->
+    <div x-show="!isLoading && currentSurface === 'auth'" class="auth-surface">
+      <div class="auth-container">
+        <div class="auth-header">
+          <h1 class="app-title">FitTrack</h1>
+          <p class="app-subtitle">Your Personal Fitness Tracker</p>
+        </div>
+
+        <div class="auth-tabs">
+          <button
+            @click="authMode = 'login'"
+            :class="{'tab-active': authMode === 'login'}"
+            class="tab-button">
+            Login
+          </button>
+          <button
+            @click="authMode = 'register'"
+            :class="{'tab-active': authMode === 'register'}"
+            class="tab-button">
+            Register
+          </button>
+        </div>
+
+        <form @submit.prevent="handleAuth" class="auth-form">
+          <div class="form-group">
+            <label for="auth-email">Email</label>
+            <input
+              id="auth-email"
+              type="email"
+              x-model="authEmail"
+              class="input"
+              placeholder="Enter your email"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="auth-password">Password</label>
+            <input
+              id="auth-password"
+              type="password"
+              x-model="authPassword"
+              class="input"
+              placeholder="Enter your password"
+              required
+              minlength="6">
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-block"
+            :disabled="authLoading">
+            <span x-text="authLoading ? 'Please wait...' : (authMode === 'login' ? 'Login' : 'Register')"></span>
+          </button>
+
+          <div x-show="error" class="error-message" x-text="error"></div>
+
+          <div class="auth-toggle">
+            <template x-if="authMode === 'login'">
+              <p>Don't have an account?
+                <a href="#" @click.prevent="authMode = 'register'" class="link">Register</a>
+              </p>
+            </template>
+            <template x-if="authMode === 'register'">
+              <p>Already have an account?
+                <a href="#" @click.prevent="authMode = 'login'" class="link">Login</a>
+              </p>
+            </template>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Dashboard Surface -->
+    <div x-show="!isLoading && currentSurface === 'dashboard'" class="dashboard-surface">
+
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-title">FitTrack</h1>
+        <button @click="handleLogout" class="btn btn-secondary">Logout</button>
+      </header>
+
+      <div class="dashboard-content">
+
+        <!-- Templates Section -->
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title">My Templates</h2>
+            <button @click="createNewTemplate" class="btn btn-primary">Create Template</button>
+          </div>
+
+          <div class="templates-grid">
+            <template x-for="template in templates" :key="template.id">
+              <div class="card template-card">
+                <div class="template-header">
+                  <h3 class="template-name" x-text="template.name"></h3>
+                  <span class="badge" x-text="template.exercises.length + ' exercises'"></span>
+                </div>
+                <div class="template-actions">
+                  <button @click="startWorkoutFromTemplate(template)" class="btn btn-primary">
+                    Start Workout
+                  </button>
+                  <button @click="editTemplate(template)" class="btn btn-icon" title="Edit">
+                    <span>✏️</span>
+                  </button>
+                  <button @click="deleteTemplate(template.id)" class="btn btn-icon btn-danger" title="Delete">
+                    <span>🗑️</span>
+                  </button>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <div x-show="templates.length === 0" class="empty-state">
+            <p>No templates yet. Create your first workout template to get started!</p>
+          </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="section">
+          <div class="section-header">
+            <h2 class="section-title">Progress Charts</h2>
+            <button @click="openAddChartModal" class="btn btn-primary">Add Chart</button>
+          </div>
+
+          <div class="charts-grid">
+            <template x-for="chart in userCharts" :key="chart.id">
+              <div class="card chart-card">
+                <div class="chart-header">
+                  <div class="chart-info">
+                    <h3 class="chart-title" x-text="chart.exercise_name"></h3>
+                    <div class="chart-meta">
+                      <span class="badge" x-text="chart.metric_type"></span>
+                      <span class="badge" x-text="chart.x_axis_mode"></span>
+                    </div>
+                  </div>
+                  <button @click="removeChart(chart.id)" class="btn btn-icon btn-danger" title="Remove">
+                    <span>✕</span>
+                  </button>
+                </div>
+                <div class="chart-canvas-container">
+                  <canvas :id="'chart-' + chart.id"></canvas>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <div x-show="userCharts.length === 0" class="empty-state">
+            <p>No charts yet. Add a chart to track your progress!</p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Template Editor Surface -->
+    <div x-show="!isLoading && currentSurface === 'templateEditor'" class="template-editor-surface">
+
+      <header class="app-header">
+        <button @click="cancelTemplateEdit" class="btn btn-secondary">Cancel</button>
+        <h1 class="app-title" x-text="editingTemplate.id ? 'Edit Template' : 'New Template'"></h1>
+        <button @click="saveTemplate" class="btn btn-primary" :disabled="!editingTemplate.name.trim()">
+          Save
+        </button>
+      </header>
+
+      <div class="editor-content">
+        <form @submit.prevent="saveTemplate" class="editor-form">
+
+          <div class="form-group">
+            <label for="template-name">Template Name</label>
+            <input
+              id="template-name"
+              type="text"
+              x-model="editingTemplate.name"
+              class="input"
+              placeholder="e.g., Upper Body Day"
+              required>
+          </div>
+
+          <div class="form-section">
+            <div class="section-header">
+              <h3>Exercises</h3>
+              <button type="button" @click="openExercisePickerForTemplate" class="btn btn-primary">
+                Add Exercise
+              </button>
+            </div>
+
+            <div class="exercises-list">
+              <template x-for="(ex, index) in editingTemplate.exercises" :key="index">
+                <div class="card exercise-editor-card">
+                  <div class="exercise-info">
+                    <h4 x-text="ex.name"></h4>
+                    <span class="badge" x-text="ex.category"></span>
+                  </div>
+
+                  <div class="exercise-inputs">
+                    <div class="input-group">
+                      <label :for="'sets-' + index">Sets</label>
+                      <input
+                        :id="'sets-' + index"
+                        type="number"
+                        x-model.number="ex.default_sets"
+                        class="input input-small"
+                        min="1"
+                        placeholder="3">
+                    </div>
+
+                    <div class="input-group">
+                      <label :for="'reps-' + index">Reps</label>
+                      <input
+                        :id="'reps-' + index"
+                        type="number"
+                        x-model.number="ex.default_reps"
+                        class="input input-small"
+                        min="1"
+                        placeholder="10">
+                    </div>
+
+                    <div class="input-group">
+                      <label :for="'weight-' + index">Weight (lbs)</label>
+                      <input
+                        :id="'weight-' + index"
+                        type="number"
+                        x-model.number="ex.default_weight"
+                        class="input input-small"
+                        min="0"
+                        step="0.5"
+                        placeholder="0">
+                    </div>
+
+                    <div class="input-group">
+                      <label :for="'rest-' + index">Rest (s)</label>
+                      <input
+                        :id="'rest-' + index"
+                        type="number"
+                        x-model.number="ex.default_rest_seconds"
+                        class="input input-small"
+                        min="0"
+                        placeholder="90">
+                    </div>
+                  </div>
+
+                  <div class="exercise-actions">
+                    <button
+                      type="button"
+                      @click="moveExerciseUp(index)"
+                      class="btn btn-icon"
+                      :disabled="index === 0"
+                      title="Move up">
+                      <span>↑</span>
+                    </button>
+                    <button
+                      type="button"
+                      @click="moveExerciseDown(index)"
+                      class="btn btn-icon"
+                      :disabled="index === editingTemplate.exercises.length - 1"
+                      title="Move down">
+                      <span>↓</span>
+                    </button>
+                    <button
+                      type="button"
+                      @click="removeExerciseFromTemplate(index)"
+                      class="btn btn-icon btn-danger"
+                      title="Remove">
+                      <span>✕</span>
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <div x-show="editingTemplate.exercises.length === 0" class="empty-state">
+              <p>No exercises added yet. Click "Add Exercise" to start building your template.</p>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- Workout Surface -->
+    <div x-show="!isLoading && currentSurface === 'workout'" class="workout-surface">
+
+      <header class="app-header">
+        <div class="workout-info">
+          <h1 class="app-title" x-text="activeWorkout.template_name"></h1>
+          <p class="workout-time" x-text="'Started: ' + activeWorkout.started_at"></p>
+        </div>
+        <button @click="finishWorkout" class="btn btn-primary">Finish Workout</button>
+      </header>
+
+      <div class="workout-content">
+
+        <!-- Timer Section -->
+        <div x-show="timerActive" class="timer-section card">
+          <div class="timer-display" x-text="formatTime(timerSeconds)"></div>
+          <div class="timer-controls">
+            <button @click="toggleTimerPause" class="btn btn-primary">
+              <span x-text="timerPaused ? 'Resume' : 'Pause'"></span>
+            </button>
+            <button @click="adjustTimer(-15)" class="btn btn-secondary">-15s</button>
+            <button @click="adjustTimer(15)" class="btn btn-secondary">+15s</button>
+            <button @click="stopTimer" class="btn btn-danger">Stop</button>
+          </div>
+        </div>
+
+        <!-- Exercises List -->
+        <div class="exercises-list">
+          <template x-for="(ex, index) in activeWorkout.exercises" :key="index">
+            <div class="card exercise-workout-card">
+              <div class="exercise-header">
+                <div class="exercise-title-row">
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      x-model="ex.done"
+                      class="checkbox-large">
+                    <span class="exercise-name" x-text="ex.name"></span>
+                  </label>
+                  <span class="badge" x-text="ex.category"></span>
+                </div>
+              </div>
+
+              <div class="exercise-inputs">
+                <div class="input-group">
+                  <label :for="'workout-sets-' + index">Sets</label>
+                  <input
+                    :id="'workout-sets-' + index"
+                    type="number"
+                    x-model.number="ex.sets"
+                    class="input input-small"
+                    min="1">
+                </div>
+
+                <div class="input-group">
+                  <label :for="'workout-reps-' + index">Reps</label>
+                  <input
+                    :id="'workout-reps-' + index"
+                    type="number"
+                    x-model.number="ex.reps"
+                    class="input input-small"
+                    min="1">
+                </div>
+
+                <div class="input-group">
+                  <label :for="'workout-weight-' + index">Weight (lbs)</label>
+                  <input
+                    :id="'workout-weight-' + index"
+                    type="number"
+                    x-model.number="ex.weight"
+                    class="input input-small"
+                    min="0"
+                    step="0.5">
+                </div>
+
+                <div class="input-group">
+                  <label :for="'workout-rest-' + index">Rest (s)</label>
+                  <input
+                    :id="'workout-rest-' + index"
+                    type="number"
+                    x-model.number="ex.rest_seconds"
+                    class="input input-small"
+                    min="0">
+                </div>
+              </div>
+
+              <div class="exercise-actions">
+                <button
+                  type="button"
+                  @click="startRestTimer(ex.rest_seconds)"
+                  class="btn btn-primary"
+                  :disabled="!ex.rest_seconds || ex.rest_seconds <= 0">
+                  Start Rest Timer
+                </button>
+                <button
+                  type="button"
+                  @click="removeExerciseFromWorkout(index)"
+                  class="btn btn-icon btn-danger"
+                  title="Remove">
+                  <span>✕</span>
+                </button>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <div x-show="activeWorkout.exercises.length === 0" class="empty-state">
+          <p>No exercises in this workout. Add some below!</p>
+        </div>
+
+        <!-- Add Exercise Button -->
+        <div class="workout-footer">
+          <button @click="openExercisePickerForWorkout" class="btn btn-primary btn-block">
+            Add Exercise
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Exercise Picker Modal -->
+    <div x-show="showExercisePicker" class="modal-overlay" @click.self="closeExercisePicker">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Add Exercise</h2>
+          <button @click="closeExercisePicker" class="btn btn-icon" title="Close">
+            <span>✕</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+
+          <div class="form-group">
+            <input
+              type="text"
+              x-model="exerciseSearchQuery"
+              class="input"
+              placeholder="Search exercises...">
+          </div>
+
+          <button
+            type="button"
+            @click="showNewExerciseForm = !showNewExerciseForm"
+            class="btn btn-secondary btn-block">
+            <span x-text="showNewExerciseForm ? 'Cancel New Exercise' : 'Create New Exercise'"></span>
+          </button>
+
+          <!-- New Exercise Form -->
+          <div x-show="showNewExerciseForm" class="new-exercise-form">
+            <form @submit.prevent="createNewExercise">
+              <div class="form-group">
+                <label for="new-exercise-name">Exercise Name</label>
+                <input
+                  id="new-exercise-name"
+                  type="text"
+                  x-model="newExerciseName"
+                  class="input"
+                  placeholder="e.g., Barbell Squat"
+                  required>
+              </div>
+
+              <div class="form-group">
+                <label for="new-exercise-category">Category</label>
+                <select
+                  id="new-exercise-category"
+                  x-model="newExerciseCategory"
+                  class="input"
+                  required>
+                  <option value="">Select category...</option>
+                  <option value="Legs">Legs</option>
+                  <option value="Chest">Chest</option>
+                  <option value="Back">Back</option>
+                  <option value="Shoulders">Shoulders</option>
+                  <option value="Arms">Arms</option>
+                  <option value="Core">Core</option>
+                  <option value="Cardio">Cardio</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" @click="showNewExerciseForm = false" class="btn btn-secondary">
+                  Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">Create</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Exercise List -->
+          <div class="exercise-list">
+            <template x-for="exercise in filteredExercises" :key="exercise.id">
+              <div
+                @click="selectExercise(exercise)"
+                class="exercise-list-item">
+                <div class="exercise-item-info">
+                  <span class="exercise-item-name" x-text="exercise.name"></span>
+                  <span class="badge badge-small" x-text="exercise.category"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <div x-show="filteredExercises.length === 0 && !showNewExerciseForm" class="empty-state">
+            <p>No exercises found. Try a different search or create a new exercise.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Chart Modal -->
+    <div x-show="showAddChartModal" class="modal-overlay" @click.self="closeAddChartModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Add Progress Chart</h2>
+          <button @click="closeAddChartModal" class="btn btn-icon" title="Close">
+            <span>✕</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <form @submit.prevent="createChart">
+
+            <div class="form-group">
+              <label for="chart-exercise">Exercise</label>
+              <select
+                id="chart-exercise"
+                x-model="newChart.exercise_id"
+                class="input"
+                required>
+                <option value="">Select exercise...</option>
+                <template x-for="exercise in availableExercises" :key="exercise.id">
+                  <option :value="exercise.id" x-text="exercise.name"></option>
+                </template>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="chart-metric">Metric Type</label>
+              <select
+                id="chart-metric"
+                x-model="newChart.metric_type"
+                class="input"
+                required>
+                <option value="">Select metric...</option>
+                <option value="Total Sets">Total Sets</option>
+                <option value="Max Volume">Max Volume</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="chart-xaxis">X-Axis Mode</label>
+              <select
+                id="chart-xaxis"
+                x-model="newChart.x_axis_mode"
+                class="input"
+                required>
+                <option value="">Select mode...</option>
+                <option value="By Date">By Date</option>
+                <option value="By Session">By Session</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" @click="closeAddChartModal" class="btn btn-secondary">
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                :disabled="!newChart.exercise_id || !newChart.metric_type || !newChart.x_axis_mode">
+                Add Chart
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Messages -->
+    <div class="toast-container">
+      <div x-show="error" class="toast toast-error">
+        <span x-text="error"></span>
+        <button @click="error = ''" class="btn btn-icon btn-small">
+          <span>✕</span>
+        </button>
+      </div>
+
+      <div x-show="successMessage" class="toast toast-success">
+        <span x-text="successMessage"></span>
+        <button @click="successMessage = ''" class="btn btn-icon btn-small">
+          <span>✕</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Local config (gitignored) - create this file with your Supabase credentials -->
+  <script src="js/config.local.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/exercises.js"></script>
+  <script src="js/templates.js"></script>
+  <script src="js/logging.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

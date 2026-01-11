@@ -1007,3 +1007,196 @@ input[type="checkbox"]:focus {
     display: none;
   }
 }
+
+/* ==========================================================================
+   13. Per-Set Tracking UI
+   ========================================================================== */
+
+/* Set Table Layout */
+.set-table {
+  margin: var(--spacing-md) 0;
+}
+
+.set-header {
+  display: grid;
+  grid-template-columns: 50px 1fr 1fr 50px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.set-row-wrapper {
+  position: relative;
+}
+
+.set-row {
+  display: grid;
+  grid-template-columns: 50px 1fr 1fr 50px;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.set-row.set-done {
+  opacity: 0.6;
+}
+
+.set-row.set-done .set-number {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.set-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.set-input {
+  width: 100%;
+  padding: var(--spacing-sm);
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  text-align: center;
+  font-size: 1rem;
+  min-height: 40px;
+}
+
+.set-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.set-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Checkbox Button for Sets */
+.checkbox-btn {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  font-size: 1.25rem;
+}
+
+.checkbox-btn:hover {
+  border-color: var(--color-success);
+}
+
+.checkbox-btn.checked {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+/* Remove Set Button */
+.btn-remove-set {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-danger);
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  z-index: 10;
+}
+
+.set-row-wrapper:hover .btn-remove-set {
+  display: flex;
+}
+
+/* Add Set Button */
+.btn-add-set {
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-top: var(--spacing-sm);
+  background-color: var(--color-success);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.btn-add-set:hover {
+  opacity: 0.9;
+}
+
+/* Exercise Header for Workout */
+.exercise-workout-card .exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.exercise-workout-card .exercise-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.exercise-workout-card .exercise-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Mobile optimizations for set table */
+@media (max-width: 400px) {
+  .set-header,
+  .set-row {
+    grid-template-columns: 40px 1fr 1fr 40px;
+    gap: 4px;
+  }
+
+  .set-input {
+    padding: var(--spacing-xs);
+    font-size: 0.875rem;
+  }
+
+  .set-number {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+
+  .checkbox-btn {
+    width: 32px;
+    height: 32px;
+  }
+}

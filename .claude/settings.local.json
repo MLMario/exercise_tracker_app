@@ -10,7 +10,9 @@
       "Skill(webapp-testing:*)",
       "Bash(if not exist screenshots mkdir screenshots)",
       "Bash(pip install:*)",
-      "Bash(playwright install:*)"
+      "Bash(playwright install:*)",
+      "Bash(ipconfig:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

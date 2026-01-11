@@ -53,31 +53,79 @@ async function createWorkoutLog(workoutDataOrTemplateId, startedAt, exercises) {
       return { data: null, error: logError };
     }
 
-    // Insert all workout log exercises
+    // Insert all workout log exercises and their sets
     if (workoutExercises && workoutExercises.length > 0) {
-      const exercisesToInsert = workoutExercises.map((ex, index) => ({
-        workout_log_id: workoutLog.id,
-        exercise_id: ex.exercise_id,
-        sets_completed: ex.sets || ex.sets_completed || 0,
-        reps: ex.reps || 0,
-        weight: ex.weight || 0,
-        rest_seconds: ex.rest_seconds || 0,
-        is_done: ex.done || ex.is_done || false,
-        order: ex.order !== undefined ? ex.order : index
-      }));
+      for (let index = 0; index < workoutExercises.length; index++) {
+        const ex = workoutExercises[index];
 
-      const { error: exercisesError } = await window.supabaseClient
-        .from('workout_log_exercises')
-        .insert(exercisesToInsert);
+        // Check if this exercise has per-set data (new format) or aggregate data (old format)
+        const hasPerSetData = Array.isArray(ex.sets) && ex.sets.length > 0 && typeof ex.sets[0] === 'object';
 
-      if (exercisesError) {
-        // Rollback: delete the workout log if exercises fail
-        await window.supabaseClient
-          .from('workout_logs')
-          .delete()
-          .eq('id', workoutLog.id);
+        // Calculate aggregate values for backwards compatibility
+        let setsCompleted, avgReps, avgWeight, avgRest, isDone;
 
-        return { data: null, error: exercisesError };
+        if (hasPerSetData) {
+          const completedSets = ex.sets.filter(s => s.is_done);
+          setsCompleted = completedSets.length;
+          avgReps = ex.sets[0]?.reps || 0;
+          avgWeight = ex.sets[0]?.weight || 0;
+          avgRest = ex.sets[0]?.rest_seconds || 0;
+          isDone = ex.sets.every(s => s.is_done);
+        } else {
+          // Old format - use aggregate values directly
+          setsCompleted = ex.sets || ex.sets_completed || 0;
+          avgReps = ex.reps || 0;
+          avgWeight = ex.weight || 0;
+          avgRest = ex.rest_seconds || 0;
+          isDone = ex.done || ex.is_done || false;
+        }
+
+        // Insert workout_log_exercise (parent record)
+        const { data: logExercise, error: exError } = await window.supabaseClient
+          .from('workout_log_exercises')
+          .insert({
+            workout_log_id: workoutLog.id,
+            exercise_id: ex.exercise_id,
+            sets_completed: setsCompleted,
+            reps: avgReps,
+            weight: avgWeight,
+            rest_seconds: avgRest,
+            is_done: isDone,
+            order: ex.order !== undefined ? ex.order : index
+          })
+          .select()
+          .single();
+
+        if (exError) {
+          // Rollback: delete the workout log if exercises fail
+          await window.supabaseClient
+            .from('workout_logs')
+            .delete()
+            .eq('id', workoutLog.id);
+
+          return { data: null, error: exError };
+        }
+
+        // Insert individual sets if per-set data is available
+        if (hasPerSetData) {
+          const setsToInsert = ex.sets.map(set => ({
+            workout_log_exercise_id: logExercise.id,
+            set_number: set.set_number,
+            weight: set.weight || 0,
+            reps: set.reps || 0,
+            rest_seconds: set.rest_seconds || 0,
+            is_done: set.is_done || false
+          }));
+
+          const { error: setsError } = await window.supabaseClient
+            .from('workout_log_sets')
+            .insert(setsToInsert);
+
+          if (setsError) {
+            console.error('Failed to insert sets:', setsError);
+            // Continue anyway - the parent exercise was saved
+          }
+        }
       }
     }
 

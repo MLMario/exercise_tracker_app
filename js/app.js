@@ -39,7 +39,7 @@ document.addEventListener('alpine:init', () => {
       template_id: null,
       template_name: '',
       started_at: null,
-      exercises: [] // { exercise_id, name, category, sets, reps, weight, rest_seconds, done }
+      exercises: [] // { exercise_id, name, category, order, sets: [{ set_number, weight, reps, rest_seconds, is_done }] }
     },
 
     // Timer state (NOT timerState object)
@@ -384,11 +384,8 @@ document.addEventListener('alpine:init', () => {
           exercise_id: exercise.id,
           name: exercise.name,
           category: exercise.category,
-          sets: 3,
-          reps: 10,
-          weight: 0,
-          rest_seconds: 90,
-          done: false
+          order: this.activeWorkout.exercises.length,
+          sets: this.generateSetsArray(3, 0, 10, 90)
         });
       }
 
@@ -463,21 +460,57 @@ document.addEventListener('alpine:init', () => {
       this.activeWorkout = {
         template_id: template.id,
         template_name: template.name,
-        started_at: new Date().toLocaleString(),
-        exercises: template.exercises.map(ex => ({
+        started_at: new Date().toISOString(),
+        exercises: template.exercises.map((ex, exIndex) => ({
           exercise_id: ex.exercise_id,
           name: ex.name,
           category: ex.category,
-          sets: ex.default_sets || 3,
-          reps: ex.default_reps || 10,
-          weight: ex.default_weight || 0,
-          rest_seconds: ex.default_rest_seconds || 90,
-          done: false
+          order: exIndex,
+          sets: this.generateSetsArray(
+            ex.default_sets || 3,
+            ex.default_weight || 0,
+            ex.default_reps || 10,
+            ex.default_rest_seconds || 90
+          )
         }))
       };
       this.currentSurface = 'workout';
       this.error = '';
       this.successMessage = '';
+    },
+
+    // Generate an array of set objects
+    generateSetsArray(count, weight, reps, rest_seconds) {
+      return Array.from({ length: count }, (_, i) => ({
+        set_number: i + 1,
+        weight: weight,
+        reps: reps,
+        rest_seconds: rest_seconds,
+        is_done: false
+      }));
+    },
+
+    // Add a new set to an exercise
+    addSetToExercise(exerciseIndex) {
+      const exercise = this.activeWorkout.exercises[exerciseIndex];
+      const lastSet = exercise.sets[exercise.sets.length - 1];
+      exercise.sets.push({
+        set_number: exercise.sets.length + 1,
+        weight: lastSet?.weight || 0,
+        reps: lastSet?.reps || 10,
+        rest_seconds: lastSet?.rest_seconds || 90,
+        is_done: false
+      });
+    },
+
+    // Remove a set from an exercise
+    removeSetFromExercise(exerciseIndex, setIndex) {
+      const exercise = this.activeWorkout.exercises[exerciseIndex];
+      if (exercise.sets.length > 1) {
+        exercise.sets.splice(setIndex, 1);
+        // Renumber remaining sets
+        exercise.sets.forEach((set, i) => set.set_number = i + 1);
+      }
     },
 
     removeExerciseFromWorkout(index) {

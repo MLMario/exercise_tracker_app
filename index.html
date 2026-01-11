@@ -324,80 +324,78 @@
 
         <!-- Exercises List -->
         <div class="exercises-list">
-          <template x-for="(ex, index) in activeWorkout.exercises" :key="index">
+          <template x-for="(ex, exIndex) in activeWorkout.exercises" :key="exIndex">
             <div class="card exercise-workout-card">
+              <!-- Exercise Header -->
               <div class="exercise-header">
                 <div class="exercise-title-row">
-                  <label class="checkbox-label">
-                    <input
-                      type="checkbox"
-                      x-model="ex.done"
-                      class="checkbox-large">
-                    <span class="exercise-name" x-text="ex.name"></span>
-                  </label>
+                  <span class="exercise-name" x-text="ex.name"></span>
                   <span class="badge" x-text="ex.category"></span>
                 </div>
-              </div>
-
-              <div class="exercise-inputs">
-                <div class="input-group">
-                  <label :for="'workout-sets-' + index">Sets</label>
-                  <input
-                    :id="'workout-sets-' + index"
-                    type="number"
-                    x-model.number="ex.sets"
-                    class="input input-small"
-                    min="1">
-                </div>
-
-                <div class="input-group">
-                  <label :for="'workout-reps-' + index">Reps</label>
-                  <input
-                    :id="'workout-reps-' + index"
-                    type="number"
-                    x-model.number="ex.reps"
-                    class="input input-small"
-                    min="1">
-                </div>
-
-                <div class="input-group">
-                  <label :for="'workout-weight-' + index">Weight (lbs)</label>
-                  <input
-                    :id="'workout-weight-' + index"
-                    type="number"
-                    x-model.number="ex.weight"
-                    class="input input-small"
-                    min="0"
-                    step="0.5">
-                </div>
-
-                <div class="input-group">
-                  <label :for="'workout-rest-' + index">Rest (s)</label>
-                  <input
-                    :id="'workout-rest-' + index"
-                    type="number"
-                    x-model.number="ex.rest_seconds"
-                    class="input input-small"
-                    min="0">
-                </div>
-              </div>
-
-              <div class="exercise-actions">
                 <button
                   type="button"
-                  @click="startRestTimer(ex.rest_seconds)"
-                  class="btn btn-primary"
-                  :disabled="!ex.rest_seconds || ex.rest_seconds <= 0">
-                  Start Rest Timer
-                </button>
-                <button
-                  type="button"
-                  @click="removeExerciseFromWorkout(index)"
+                  @click="removeExerciseFromWorkout(exIndex)"
                   class="btn btn-icon btn-danger"
-                  title="Remove">
-                  <span>✕</span>
+                  title="Remove Exercise">
+                  <span>&times;</span>
                 </button>
               </div>
+
+              <!-- Set Table -->
+              <div class="set-table">
+                <div class="set-header">
+                  <span>Set</span>
+                  <span>lbs</span>
+                  <span>Reps</span>
+                  <span></span>
+                </div>
+
+                <template x-for="(set, setIndex) in ex.sets" :key="setIndex">
+                  <div class="set-row-wrapper">
+                    <div class="set-row" :class="{ 'set-done': set.is_done }">
+                      <div class="set-number" x-text="set.set_number"></div>
+                      <input
+                        type="number"
+                        class="set-input"
+                        x-model.number="set.weight"
+                        min="0"
+                        step="0.5"
+                        placeholder="0">
+                      <input
+                        type="number"
+                        class="set-input"
+                        x-model.number="set.reps"
+                        min="0"
+                        placeholder="0">
+                      <div class="set-checkbox">
+                        <button
+                          type="button"
+                          class="checkbox-btn"
+                          :class="{ 'checked': set.is_done }"
+                          @click="set.is_done = !set.is_done; if(set.is_done) startRestTimer(set.rest_seconds)">
+                          <span x-show="set.is_done">&#10003;</span>
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn-remove-set"
+                      @click="removeSetFromExercise(exIndex, setIndex)"
+                      x-show="ex.sets.length > 1"
+                      title="Remove Set">
+                      &times;
+                    </button>
+                  </div>
+                </template>
+              </div>
+
+              <!-- Add Set Button -->
+              <button
+                type="button"
+                class="btn btn-add-set"
+                @click="addSetToExercise(exIndex)">
+                + Add Set
+              </button>
             </div>
           </template>
         </div>

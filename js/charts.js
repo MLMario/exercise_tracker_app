@@ -48,13 +48,28 @@ async function getUserCharts() {
 
 /**
  * Create a new chart
- * @param {string} exerciseId - UUID of the exercise
- * @param {string} metricType - 'total_sets' or 'max_volume'
- * @param {string} xAxisMode - 'date' or 'session'
+ * @param {Object|string} chartDataOrExerciseId - Either chart data object or exercise UUID
+ * @param {string} [metricType] - 'total_sets' or 'max_volume' (if using separate params)
+ * @param {string} [xAxisMode] - 'date' or 'session' (if using separate params)
  * @returns {Promise<{data: Object|null, error: Error|null}>}
  */
-async function createChart(exerciseId, metricType, xAxisMode) {
+async function createChart(chartDataOrExerciseId, metricType, xAxisMode) {
   try {
+    // Support both object parameter and separate parameters
+    let exerciseId, chartMetricType, chartXAxisMode;
+
+    if (typeof chartDataOrExerciseId === 'object' && chartDataOrExerciseId !== null) {
+      // Called with object: createChart({ exercise_id, metric_type, x_axis_mode })
+      exerciseId = chartDataOrExerciseId.exercise_id;
+      chartMetricType = chartDataOrExerciseId.metric_type;
+      chartXAxisMode = chartDataOrExerciseId.x_axis_mode;
+    } else {
+      // Called with separate params: createChart(exerciseId, metricType, xAxisMode)
+      exerciseId = chartDataOrExerciseId;
+      chartMetricType = metricType;
+      chartXAxisMode = xAxisMode;
+    }
+
     const { data: { user }, error: authError } = await window.supabaseClient.auth.getUser();
 
     if (authError || !user) {
@@ -84,8 +99,8 @@ async function createChart(exerciseId, metricType, xAxisMode) {
       .insert([{
         user_id: user.id,
         exercise_id: exerciseId,
-        metric_type: metricType,
-        x_axis_mode: xAxisMode,
+        metric_type: chartMetricType,
+        x_axis_mode: chartXAxisMode,
         order: nextOrder
       }])
       .select()
@@ -172,6 +187,12 @@ function renderChart(canvasId, chartData, options) {
     if (!canvas) {
       console.error(`Canvas element with id '${canvasId}' not found`);
       return null;
+    }
+
+    // Check if there's an existing chart on this canvas and destroy it
+    const existingChart = Chart.getChart(canvas);
+    if (existingChart) {
+      existingChart.destroy();
     }
 
     const ctx = canvas.getContext('2d');

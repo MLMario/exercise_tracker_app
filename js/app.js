@@ -194,8 +194,7 @@ document.addEventListener('alpine:init', () => {
 
           const { data: chartData, error } = await window.logging.getExerciseMetrics(
             chart.exercise_id,
-            chart.metric_type,
-            chart.x_axis_mode
+            { metric: chart.metric_type, mode: chart.x_axis_mode }
           );
 
           if (error) {
@@ -206,8 +205,10 @@ document.addEventListener('alpine:init', () => {
           const chartInstance = window.charts.renderChart(
             canvasId,
             chartData,
-            chart.metric_type,
-            chart.x_axis_mode
+            {
+              metricType: chart.metric_type,
+              exerciseName: chart.exercises?.name || 'Exercise'
+            }
           );
 
           this.chartInstances[chart.id] = chartInstance;

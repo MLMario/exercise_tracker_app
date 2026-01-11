@@ -221,19 +221,23 @@ async function getExerciseHistory(exerciseId, options = {}) {
         )
       `)
       .eq('exercise_id', exerciseId)
-      .eq('workout_logs.user_id', user.id)
-      .order('workout_logs.started_at', { ascending: false })
-      .limit(mode === 'session' ? limit : 365);
+      .eq('workout_logs.user_id', user.id);
 
     if (error) {
       return { data: null, error };
     }
 
+    // Sort by workout started_at in memory (Supabase doesn't support ordering by nested columns)
+    data.sort((a, b) => new Date(b.workout_logs.started_at) - new Date(a.workout_logs.started_at));
+
+    // Apply limit
+    const limitedData = data.slice(0, mode === 'session' ? limit : 365);
+
     if (mode === 'date') {
       // Group by date
       const dateMap = new Map();
 
-      data.forEach(item => {
+      limitedData.forEach(item => {
         const date = new Date(item.workout_logs.started_at).toISOString().split('T')[0];
 
         if (!dateMap.has(date)) {
@@ -259,7 +263,7 @@ async function getExerciseHistory(exerciseId, options = {}) {
       // Session mode - group by workout
       const sessionMap = new Map();
 
-      data.forEach(item => {
+      limitedData.forEach(item => {
         const workoutId = item.workout_logs.id;
 
         if (!sessionMap.has(workoutId)) {
@@ -276,7 +280,7 @@ async function getExerciseHistory(exerciseId, options = {}) {
       const sessionData = Array.from(sessionMap.values())
         .map((session, index) => ({
           ...session,
-          session_number: data.length - index, // Reverse numbering
+          session_number: limitedData.length - index, // Reverse numbering
           total_sets: session.exercises.reduce((sum, ex) => sum + ex.sets_completed, 0),
           max_weight: Math.max(...session.exercises.map(ex => ex.weight)),
           max_volume: Math.max(...session.exercises.map(ex => ex.weight * ex.reps))
@@ -366,7 +370,7 @@ async function getRecentExerciseData(exerciseId) {
       return null;
     }
 
-    // Fetch most recent workout log exercise
+    // Fetch workout log exercises for this exercise
     const { data, error } = await window.supabaseClient
       .from('workout_log_exercises')
       .select(`
@@ -380,20 +384,21 @@ async function getRecentExerciseData(exerciseId) {
         )
       `)
       .eq('exercise_id', exerciseId)
-      .eq('workout_logs.user_id', user.id)
-      .order('workout_logs.started_at', { ascending: false })
-      .limit(1)
-      .single();
+      .eq('workout_logs.user_id', user.id);
 
-    if (error || !data) {
+    if (error || !data || data.length === 0) {
       return null;
     }
 
+    // Sort by started_at to get most recent and take first one
+    data.sort((a, b) => new Date(b.workout_logs.started_at) - new Date(a.workout_logs.started_at));
+    const mostRecent = data[0];
+
     return {
-      sets: data.sets_completed,
-      reps: data.reps,
-      weight: data.weight,
-      rest_seconds: data.rest_seconds
+      sets: mostRecent.sets_completed,
+      reps: mostRecent.reps,
+      weight: mostRecent.weight,
+      rest_seconds: mostRecent.rest_seconds
     };
   } catch (err) {
     return null;

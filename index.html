@@ -297,7 +297,7 @@
     </div>
 
     <!-- Workout Surface -->
-    <div x-show="!isLoading && currentSurface === 'workout'" class="workout-surface">
+    <div x-show="!isLoading && currentSurface === 'workout'" class="workout-surface" @click="handleSwipeCancel()">
 
       <header class="app-header">
         <div class="workout-info">
@@ -351,7 +351,16 @@
                 </div>
 
                 <template x-for="(set, setIndex) in ex.sets" :key="setIndex">
-                  <div class="set-row-wrapper">
+                  <div
+                    class="set-row-wrapper"
+                    @pointerdown="handleSwipeStart($event)"
+                    @pointermove="handleSwipeMove($event)"
+                    @pointerup="handleSwipeEnd($event)"
+                    @pointercancel="handleSwipeEnd($event)"
+                    @touchstart="handleSwipeStart($event)"
+                    @touchmove.prevent="handleSwipeMove($event)"
+                    @touchend="handleSwipeEnd($event)"
+                    @click.stop>
                     <div class="set-row" :class="{ 'set-done': set.is_done }">
                       <div class="set-number" x-text="set.set_number"></div>
                       <input
@@ -380,7 +389,7 @@
                     <button
                       type="button"
                       class="btn-remove-set"
-                      @click="removeSetFromExercise(exIndex, setIndex)"
+                      @click="removeSetFromExercise(exIndex, setIndex); handleSwipeCancel()"
                       x-show="ex.sets.length > 1"
                       title="Remove Set">
                       &times;

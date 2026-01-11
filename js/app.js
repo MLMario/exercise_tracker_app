@@ -513,6 +513,124 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    // Swipe-to-delete handlers for set rows using Pointer Events
+    // Pointer Events work better than Touch Events for real-time drag tracking
+    handleSwipeStart(event) {
+      // Close any previously revealed rows first
+      this.handleSwipeCancel();
+
+      const wrapper = event.currentTarget;
+
+      // Get clientX/Y from either touch or pointer event
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+      const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+      wrapper._swipeData = {
+        startX: clientX,
+        startY: clientY,
+        currentX: clientX,
+        isDragging: false,
+        pointerId: event.pointerId || null
+      };
+
+      // Capture pointer for smoother tracking (Pointer Events only)
+      if (event.pointerId && wrapper.setPointerCapture) {
+        wrapper.setPointerCapture(event.pointerId);
+      }
+    },
+
+    handleSwipeMove(event) {
+      const wrapper = event.currentTarget;
+      if (!wrapper._swipeData) return;
+
+      // Get clientX/Y from either touch or pointer event
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+      const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+      const deltaX = clientX - wrapper._swipeData.startX;
+      const deltaY = clientY - wrapper._swipeData.startY;
+
+      // Only handle horizontal swipes (more horizontal than vertical movement)
+      if (!wrapper._swipeData.isDragging && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 5) {
+        wrapper._swipeData.isDragging = true;
+        wrapper.classList.add('swiping');
+      }
+
+      if (wrapper._swipeData.isDragging) {
+        // Prevent default to stop scrolling when swiping horizontally
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+
+        wrapper._swipeData.currentX = clientX;
+
+        // Only allow swiping left (negative deltaX), constrain to max swipe distance
+        const swipeDistance = Math.min(0, deltaX);
+        const maxSwipe = -80; // Maximum swipe distance (enough to reveal delete button)
+        const constrainedDistance = Math.max(maxSwipe, swipeDistance);
+
+        // Apply transform directly for smooth real-time tracking
+        const setRow = wrapper.querySelector('.set-row');
+        if (setRow) {
+          setRow.style.transform = `translateX(${constrainedDistance}px)`;
+        }
+
+        // Show delete background proportionally
+        const progress = Math.abs(constrainedDistance) / Math.abs(maxSwipe);
+        wrapper.style.setProperty('--swipe-progress', progress);
+      }
+    },
+
+    handleSwipeEnd(event) {
+      const wrapper = event.currentTarget;
+      if (!wrapper._swipeData) return;
+
+      const deltaX = wrapper._swipeData.currentX - wrapper._swipeData.startX;
+      const threshold = -40; // Swipe threshold to reveal delete button
+
+      wrapper.classList.remove('swiping');
+
+      const setRow = wrapper.querySelector('.set-row');
+
+      if (wrapper._swipeData.isDragging && deltaX < threshold) {
+        // Swipe was far enough - snap to revealed position
+        wrapper.classList.add('swipe-revealed');
+        if (setRow) {
+          setRow.style.transform = 'translateX(-70px)'; // Snap to reveal position
+        }
+      } else {
+        // Swipe wasn't far enough - snap back to original position
+        wrapper.classList.remove('swipe-revealed');
+        if (setRow) {
+          setRow.style.transform = '';
+        }
+      }
+
+      // Release pointer capture
+      if (wrapper._swipeData.pointerId && wrapper.releasePointerCapture) {
+        try {
+          wrapper.releasePointerCapture(wrapper._swipeData.pointerId);
+        } catch (e) {
+          // Ignore if already released
+        }
+      }
+
+      wrapper._swipeData = null;
+    },
+
+    // Close any open swipe-revealed rows when user taps elsewhere
+    handleSwipeCancel() {
+      // Close all revealed swipe rows
+      const revealedWrappers = document.querySelectorAll('.set-row-wrapper.swipe-revealed');
+      revealedWrappers.forEach(wrapper => {
+        wrapper.classList.remove('swipe-revealed');
+        const setRow = wrapper.querySelector('.set-row');
+        if (setRow) {
+          setRow.style.transform = '';
+        }
+      });
+    },
+
     removeExerciseFromWorkout(index) {
       // Stop timer if it's active
       if (this.timerActive) {

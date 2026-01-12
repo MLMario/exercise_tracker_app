@@ -1262,7 +1262,6 @@ document.addEventListener('alpine:init', () => {
       this.pendingDeleteChartId = null;
 
       this.error = '';
-      this.successMessage = '';
       try {
         // Destroy chart instance
         if (this.chartInstances[id]) {
@@ -1273,8 +1272,6 @@ document.addEventListener('alpine:init', () => {
         const { error } = await window.charts.deleteChart(id);
         if (error) throw new Error(error.message);
 
-        this.successMessage = 'Chart removed successfully';
-        this.clearMessages();
         await this.loadUserCharts();
       } catch (err) {
         this.error = 'Failed to remove chart: ' + err.message;

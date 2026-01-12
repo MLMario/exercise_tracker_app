@@ -680,6 +680,26 @@
               placeholder="Search exercises...">
           </div>
 
+          <!-- Scrollable Exercise List Container -->
+          <div class="exercise-list-container">
+            <div class="exercise-list">
+              <template x-for="exercise in filteredExercises" :key="exercise.id">
+                <div
+                  @click="selectExercise(exercise)"
+                  class="exercise-list-item">
+                  <div class="exercise-item-info">
+                    <span class="exercise-item-name" x-text="exercise.name"></span>
+                    <span class="badge badge-small" x-text="exercise.category"></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <div x-show="filteredExercises.length === 0 && !showNewExerciseForm" class="empty-state">
+              <p>No exercises found. Try a different search or create a new exercise.</p>
+            </div>
+          </div>
+
           <button
             type="button"
             @click="showNewExerciseForm = !showNewExerciseForm"
@@ -727,24 +747,6 @@
                 <button type="submit" class="btn btn-primary">Create</button>
               </div>
             </form>
-          </div>
-
-          <!-- Exercise List -->
-          <div class="exercise-list">
-            <template x-for="exercise in filteredExercises" :key="exercise.id">
-              <div
-                @click="selectExercise(exercise)"
-                class="exercise-list-item">
-                <div class="exercise-item-info">
-                  <span class="exercise-item-name" x-text="exercise.name"></span>
-                  <span class="badge badge-small" x-text="exercise.category"></span>
-                </div>
-              </div>
-            </template>
-          </div>
-
-          <div x-show="filteredExercises.length === 0 && !showNewExerciseForm" class="empty-state">
-            <p>No exercises found. Try a different search or create a new exercise.</p>
           </div>
 
         </div>

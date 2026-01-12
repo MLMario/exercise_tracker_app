@@ -590,6 +590,17 @@ input[type="checkbox"]:focus {
   gap: var(--spacing-sm);
 }
 
+/* Exercise List Container (scrollable) */
+.exercise-list-container {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
 /* Exercise List Items */
 .exercise-list {
   list-style: none;

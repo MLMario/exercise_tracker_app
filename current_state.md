@@ -4,6 +4,11 @@
 
 The Exercise Tracker App is a personal fitness tracking web application built with Alpine.js, CSS, and JavaScript (no build tools). It uses Supabase for backend services (PostgreSQL database + authentication). The app is designed for mobile-first use with a dark theme.
 
+##Test User Info
+
+username: mariogj1987@gmail.com
+password:Mg123456789
+
 ---
 
 ## What the User Wanted to Build (from plans)
@@ -57,7 +62,10 @@ exercise_tracker_app/
 ├── docs/
 │   ├── agent_prompt.md                 # Original requirements
 │   ├── set_tracking_plan.md            # Plan for per-set workout logging
-│   └── template_set_ui_plan.md         # Plan for template editor redesign
+│   ├── template_set_ui_plan.md         # Plan for template editor redesign
+│   └── password-reset-implementation.md # Password reset technical docs
+├── mockups/
+│   └── dashboard-mockup-3-bold-sporty.html # Dashboard UI design reference
 └── .claude/
     ├── CLAUDE.md                       # Development lead instructions
     └── settings.local.json             # Local settings
@@ -68,7 +76,7 @@ exercise_tracker_app/
 ## What Has Been Implemented
 
 ### 1. Core Features (Complete)
-- Authentication system with login/register
+- Authentication system with login/register/password reset
 - Dashboard with templates and charts sections
 - Template management (create, edit, delete, list)
 - Workout logging with per-set tracking
@@ -104,6 +112,17 @@ The app uses a normalized schema with:
 - **Responsive Design**: Mobile-first layout with proper spacing
 - **Toast Messages**: Error and success notifications
 - **Dark Theme**: CSS with CSS variables for dark mode
+- **Dashboard UI Redesign**: Updated to match mockup with:
+  - SVG icons replacing emojis for edit/delete/remove buttons
+  - Card hover effects (border turns accent blue)
+  - Responsive grid layouts (single column mobile, grid on tablet+)
+  - Badge pill styling with accent colors
+  - Chart canvas containers with dark background
+  - 1200px max-width on desktop screens
+- **Add Exercise Modal Redesign**:
+  - Exercise list in scrollable bounded container (max-height 300px)
+  - "Create New Exercise" button moved to bottom of modal
+- **Chart Conditional Refresh**: Charts only reload when data changes, not on every dashboard navigation
 
 ### 5. localStorage Workout Backup (Implemented)
 - **Auto-save**: Workout progress saved to localStorage on every change
@@ -158,6 +177,8 @@ The app uses a normalized schema with:
 - `register()` - Sign up new user
 - `login()` - Sign in existing user
 - `logout()` - Sign out
+- `resetPassword()` - Send password reset email (with explicit `redirectTo` URL)
+- `updateUser()` - Update user's password after recovery
 - `getSession()` - Get current auth state
 - `onAuthStateChange()` - Listen for auth changes
 
@@ -216,11 +237,30 @@ The app uses a normalized schema with:
 - On page load, checks for backup after templates load (needed for template validation)
 - Multi-tab sync via `window.addEventListener('storage', ...)` event listener
 
+### 8. Password Reset Recovery Detection
+- Three-layer approach to reliably detect password recovery flow
+- **URL Hash Detection**: Parses `#type=recovery` before auth listeners are set up
+- **Auth State Event**: Listens for `PASSWORD_RECOVERY` event as backup
+- **Race Condition Protection**: Initial session check respects `isPasswordRecoveryMode` flag
+- Explicit `redirectTo` URL in reset email ensures correct deployment redirect
+
+### 9. Chart Conditional Refresh
+- Uses `chartsNeedRefresh` flag to control when charts reload
+- Flag starts as `true` (first visit loads charts)
+- Set to `false` after charts render successfully
+- Set to `true` after finishing a workout (new data available)
+- `createChart()` and `deleteChart()` call `loadUserCharts()` directly, bypassing the flag
+- Prevents unnecessary Chart.js re-renders and animations on dashboard navigation
+
 ---
 
 ## Recent Development History (from git)
 
 Recent commits show:
+- Chart conditional refresh: only reload charts when workout data changes
+- Add Exercise modal redesign: scrollable exercise list, button moved to bottom
+- Dashboard UI redesign: SVG icons, card hover effects, responsive grids, badge styling
+- Password reset fix: URL hash detection, redirectTo parameter, race condition protection
 - localStorage backup for workout recovery (auto-save, auto-restore, multi-tab sync)
 - Modal-based user confirmations (replacing browser confirm)
 - Cancel workout button and template update flow

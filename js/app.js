@@ -26,6 +26,7 @@ document.addEventListener('alpine:init', () => {
     templates: [],
     userCharts: [],
     chartInstances: {}, // Store Chart.js instances for cleanup
+    chartsNeedRefresh: true, // Flag to control when charts reload
     availableExercises: [],
 
     // Template editor state (always an object, never null)
@@ -346,8 +347,12 @@ document.addEventListener('alpine:init', () => {
         await Promise.all([
           this.loadTemplates(),
           this.loadExercises(),
-          this.loadUserCharts()
         ]);
+        // Only reload charts if data has changed
+        if (this.chartsNeedRefresh) {
+          await this.loadUserCharts();
+          this.chartsNeedRefresh = false;
+        }
       } catch (err) {
         this.error = 'Failed to load dashboard: ' + err.message;
       }
@@ -940,7 +945,8 @@ document.addEventListener('alpine:init', () => {
         this.pendingWorkoutData = null;
         this.stopTimer();
 
-        // Return to dashboard and reload
+        // Return to dashboard and reload charts (new workout data)
+        this.chartsNeedRefresh = true;
         this.currentSurface = 'dashboard';
         await this.loadDashboard();
       } catch (err) {

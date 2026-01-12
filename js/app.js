@@ -6,12 +6,17 @@ document.addEventListener('alpine:init', () => {
     user: null,
     isLoading: true,
     currentSurface: 'auth', // 'auth', 'dashboard', 'workout', 'templateEditor'
-    authMode: 'login', // 'login' or 'register'
+    authSurface: 'login', // 'login', 'register', or 'reset'
 
-    // Auth form fields (NOT authForm object)
+    // Auth form fields
     authEmail: '',
     authPassword: '',
     authLoading: false,
+    authConfirmPassword: '',
+    showLoginPassword: false,
+    showRegisterPassword: false,
+    showConfirmPassword: false,
+    resetEmailSent: false,
 
     // Dashboard data
     templates: [],
@@ -125,9 +130,15 @@ document.addEventListener('alpine:init', () => {
 
       try {
         let result;
-        if (this.authMode === 'login') {
+        if (this.authSurface === 'login') {
           result = await window.auth.login(this.authEmail, this.authPassword);
         } else {
+          // Validate password confirmation for register mode
+          if (!this.validatePasswords()) {
+            this.error = 'Passwords do not match';
+            this.authLoading = false;
+            return;
+          }
           result = await window.auth.register(this.authEmail, this.authPassword);
         }
 
@@ -136,7 +147,8 @@ document.addEventListener('alpine:init', () => {
         } else {
           this.authEmail = '';
           this.authPassword = '';
-          this.successMessage = this.authMode === 'login' ? 'Logged in successfully' : 'Account created successfully';
+          this.authConfirmPassword = '';
+          this.successMessage = this.authSurface === 'login' ? 'Logged in successfully' : 'Account created successfully';
           this.clearMessages();
         }
       } catch (err) {
@@ -146,12 +158,74 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    switchAuthSurface(surface) {
+      this.authSurface = surface;
+      this.error = '';
+      this.successMessage = '';
+
+      // Reset resetEmailSent when leaving reset surface
+      if (surface !== 'reset') {
+        this.resetEmailSent = false;
+      }
+
+      // Clear password fields when switching surfaces
+      this.authPassword = '';
+      this.authConfirmPassword = '';
+    },
+
+    togglePasswordVisibility(field) {
+      if (field === 'login') {
+        this.showLoginPassword = !this.showLoginPassword;
+      } else if (field === 'register') {
+        this.showRegisterPassword = !this.showRegisterPassword;
+      } else if (field === 'confirm') {
+        this.showConfirmPassword = !this.showConfirmPassword;
+      }
+    },
+
+    async handlePasswordReset() {
+      this.error = '';
+      this.successMessage = '';
+
+      if (!this.authEmail) {
+        this.error = 'Email is required';
+        return;
+      }
+
+      this.authLoading = true;
+
+      try {
+        const result = await window.auth.resetPassword(this.authEmail);
+
+        if (result.error) {
+          this.error = result.error.message;
+        } else {
+          this.resetEmailSent = true;
+          this.successMessage = 'Password reset email sent. Check your inbox.';
+        }
+      } catch (err) {
+        this.error = err.message;
+      } finally {
+        this.authLoading = false;
+      }
+    },
+
+    validatePasswords() {
+      return this.authPassword === this.authConfirmPassword;
+    },
+
     async handleLogout() {
       // Clear workout backup before logout (while user.id is still available)
       this.clearWorkoutFromStorage();
       await window.auth.logout();
       this.authEmail = '';
       this.authPassword = '';
+      this.authConfirmPassword = '';
+      this.authSurface = 'login';
+      this.showLoginPassword = false;
+      this.showRegisterPassword = false;
+      this.showConfirmPassword = false;
+      this.resetEmailSent = false;
       this.destroyAllCharts();
       this.successMessage = 'Logged out successfully';
       this.clearMessages();

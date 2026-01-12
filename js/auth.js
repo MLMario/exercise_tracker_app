@@ -111,6 +111,39 @@ async function logout() {
 }
 
 /**
+ * Reset password for a user via email
+ *
+ * @param {string} email - User's email address
+ * @returns {Promise<{success: boolean, error: Error|null}>} Reset password result
+ */
+async function resetPassword(email) {
+  try {
+    // Validate input
+    if (!email) {
+      return {
+        success: false,
+        error: new Error('Email is required')
+      };
+    }
+
+    // Attempt to send password reset email
+    const { data, error } = await window.supabaseClient.auth.resetPasswordForEmail(email);
+
+    if (error) {
+      return { success: false, error };
+    }
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Reset password error:', err);
+    return {
+      success: false,
+      error: err
+    };
+  }
+}
+
+/**
  * Get the current authenticated user
  *
  * @returns {Promise<Object|null>} Current user object or null if not authenticated
@@ -188,6 +221,7 @@ window.auth = {
   register,
   login,
   logout,
+  resetPassword,
   getCurrentUser,
   getSession,
   onAuthStateChange

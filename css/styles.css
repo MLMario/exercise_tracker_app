@@ -1138,7 +1138,7 @@ input[type="checkbox"]:focus {
   color: var(--color-text-primary);
   text-align: center;
   font-size: 1rem;
-  min-height: 40px;
+  min-height: var(--min-tap-target); /* 44px for mobile touch targets */
 }
 
 .set-input:focus {
@@ -1154,8 +1154,8 @@ input[type="checkbox"]:focus {
 
 /* Checkbox Button for Sets */
 .checkbox-btn {
-  width: 36px;
-  height: 36px;
+  width: var(--min-tap-target); /* 44px for mobile touch targets */
+  height: var(--min-tap-target); /* 44px for mobile touch targets */
   border: 2px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: transparent;
@@ -1289,13 +1289,14 @@ input[type="checkbox"]:focus {
 @media (max-width: 400px) {
   .set-header,
   .set-row {
-    grid-template-columns: 40px 1fr 1fr 40px;
+    grid-template-columns: 36px 1fr 1fr 44px; /* Keep checkbox column at 44px for touch */
     gap: 4px;
   }
 
   .set-input {
     padding: var(--spacing-xs);
     font-size: 0.875rem;
+    min-height: var(--min-tap-target); /* Keep 44px height on small screens */
   }
 
   .set-number {
@@ -1304,9 +1305,10 @@ input[type="checkbox"]:focus {
     font-size: 0.75rem;
   }
 
+  /* Keep checkbox at minimum touch target size even on small screens */
   .checkbox-btn {
-    width: 32px;
-    height: 32px;
+    width: var(--min-tap-target);
+    height: var(--min-tap-target);
   }
 }
 
@@ -1456,12 +1458,13 @@ input[type="checkbox"]:focus {
 }
 
 .btn-timer-adjust {
-  padding: 4px 12px;
+  padding: 8px 16px;
+  min-height: 36px; /* Ensure reasonable tap target */
   background-color: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   color: var(--color-text-secondary);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -1483,8 +1486,9 @@ input[type="checkbox"]:focus {
   }
 
   .btn-timer-adjust {
-    padding: 3px 8px;
-    font-size: 0.7rem;
+    padding: 6px 12px;
+    min-height: 32px; /* Maintain reasonable tap target on small screens */
+    font-size: 0.75rem;
   }
 }
 
@@ -1597,14 +1601,16 @@ input[type="checkbox"]:focus {
 
 .password-toggle {
   position: absolute;
-  right: var(--spacing-md);
+  right: 0;
   top: 50%;
   transform: translateY(-50%);
   background: transparent;
   border: none;
   color: var(--color-text-muted);
   cursor: pointer;
-  padding: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  min-width: var(--min-tap-target); /* 44px for mobile touch targets */
+  min-height: var(--min-tap-target); /* 44px for mobile touch targets */
   display: flex;
   align-items: center;
   justify-content: center;

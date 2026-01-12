@@ -389,7 +389,7 @@
                     <button
                       type="button"
                       class="btn-remove-set"
-                      @click="removeSetFromExercise(exIndex, setIndex); handleSwipeCancel()"
+                      @click="deleteSetWithSwipeReset(exIndex, setIndex)"
                       x-show="ex.sets.length > 1"
                       title="Remove Set">
                       &times;

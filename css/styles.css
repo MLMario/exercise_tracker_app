@@ -1154,10 +1154,12 @@ input[type="checkbox"]:focus {
   transition: opacity 0.2s ease-out;
 }
 
-/* Show delete button on desktop hover */
-.set-row-wrapper:hover .btn-remove-set {
-  opacity: 1;
-  pointer-events: auto;
+/* Show delete button on desktop hover - only on non-touch devices */
+@media (hover: hover) and (pointer: fine) {
+  .set-row-wrapper:hover .btn-remove-set {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 /* Show delete button when swiped on mobile */
@@ -1165,6 +1167,17 @@ input[type="checkbox"]:focus {
 .set-row-wrapper.swipe-revealed .btn-remove-set {
   opacity: 1;
   pointer-events: auto;
+  z-index: 10; /* Well above everything when revealed */
+}
+
+/* When swiped, reduce the row's z-index so delete button can be clicked */
+.set-row-wrapper.swipe-revealed .set-row {
+  z-index: 1;
+}
+
+/* Ensure checkbox doesn't capture clicks meant for delete button */
+.set-row-wrapper.swipe-revealed .set-checkbox {
+  pointer-events: none;
 }
 
 /* Add Set Button */

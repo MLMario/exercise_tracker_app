@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cache Test</title>
+</head>
+<body>
+    <h1>Cache Busting Test</h1>
+    <p>If you see this page, try these URLs to bypass cache:</p>
+
+    <h2>Option 1: Add version parameter</h2>
+    <p><a href="index.html?v=2">index.html?v=2</a></p>
+
+    <h2>Option 2: Check file timestamps</h2>
+    <pre id="timestamps"></pre>
+
+    <h2>Option 3: View raw JS file</h2>
+    <p><a href="js/app.js" target="_blank">View app.js directly</a> - search for "Clear transform on ALL" (should be around line 629)</p>
+
+    <h2>Option 4: View raw CSS file</h2>
+    <p><a href="css/styles.css" target="_blank">View styles.css directly</a> - search for "hover: hover" (should be around line 1158)</p>
+
+    <script>
+        // Show what the browser thinks the files contain
+        fetch('js/app.js?nocache=' + Date.now())
+            .then(r => r.text())
+            .then(text => {
+                const hasNewCode = text.includes('Clear transform on ALL');
+                document.getElementById('timestamps').innerHTML +=
+                    'app.js has new code: ' + (hasNewCode ? 'YES ✓' : 'NO ✗ (cached!)') + '\n';
+            });
+
+        fetch('css/styles.css?nocache=' + Date.now())
+            .then(r => r.text())
+            .then(text => {
+                const hasNewCSS = text.includes('hover: hover');
+                document.getElementById('timestamps').innerHTML +=
+                    'styles.css has new code: ' + (hasNewCSS ? 'YES ✓' : 'NO ✗ (cached!)') + '\n';
+            });
+    </script>
+</body>
+</html>

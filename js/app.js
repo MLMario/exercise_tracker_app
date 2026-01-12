@@ -513,9 +513,23 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    // Combined function to handle delete button click
+    // This ensures both operations happen atomically
+    deleteSetWithSwipeReset(exerciseIndex, setIndex) {
+      // First, remove the set (this modifies the data)
+      this.removeSetFromExercise(exerciseIndex, setIndex);
+      // Then clear the swipe UI state
+      this.handleSwipeCancel();
+    },
+
     // Swipe-to-delete handlers for set rows using Pointer Events
     // Pointer Events work better than Touch Events for real-time drag tracking
     handleSwipeStart(event) {
+      // Don't interfere if clicking the delete button
+      if (event.target.closest('.btn-remove-set')) {
+        return;
+      }
+
       // Close any previously revealed rows first
       this.handleSwipeCancel();
 
@@ -624,10 +638,12 @@ document.addEventListener('alpine:init', () => {
       const revealedWrappers = document.querySelectorAll('.set-row-wrapper.swipe-revealed');
       revealedWrappers.forEach(wrapper => {
         wrapper.classList.remove('swipe-revealed');
-        const setRow = wrapper.querySelector('.set-row');
-        if (setRow) {
-          setRow.style.transform = '';
-        }
+      });
+
+      // Clear transform on ALL set rows to handle edge cases with Alpine's DOM reuse
+      const allSetRows = document.querySelectorAll('.set-row');
+      allSetRows.forEach(setRow => {
+        setRow.style.transform = '';
       });
     },
 

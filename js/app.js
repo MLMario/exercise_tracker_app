@@ -62,6 +62,10 @@ document.addEventListener('alpine:init', () => {
     showFinishWorkoutModal: false,
     showCancelWorkoutModal: false,
 
+    // Delete chart modal
+    showDeleteChartModal: false,
+    pendingDeleteChartId: null,
+
     // Timer state (NOT timerState object)
     timerActive: false,
     timerPaused: false,
@@ -1242,10 +1246,20 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    async removeChart(id) {
-      if (!confirm('Remove this chart from your dashboard?')) {
-        return;
-      }
+    removeChart(id) {
+      this.pendingDeleteChartId = id;
+      this.showDeleteChartModal = true;
+    },
+
+    dismissDeleteChartModal() {
+      this.showDeleteChartModal = false;
+      this.pendingDeleteChartId = null;
+    },
+
+    async confirmDeleteChart() {
+      const id = this.pendingDeleteChartId;
+      this.showDeleteChartModal = false;
+      this.pendingDeleteChartId = null;
 
       this.error = '';
       this.successMessage = '';

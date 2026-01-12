@@ -864,6 +864,23 @@
       </div>
     </div>
 
+    <!-- Delete Chart Modal -->
+    <div x-show="showDeleteChartModal" class="modal-overlay" @click.self="dismissDeleteChartModal">
+      <div class="modal modal-sm">
+        <div class="modal-header">
+          <h2>Remove Chart?</h2>
+        </div>
+        <div class="modal-body">
+          <p>Remove this chart from your dashboard?</p>
+          <p class="text-muted">This cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button @click="dismissDeleteChartModal" class="btn btn-secondary">Keep Chart</button>
+          <button @click="confirmDeleteChart" class="btn btn-danger">Remove</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast Messages -->
     <div class="toast-container">
       <div x-show="error" class="toast toast-error">

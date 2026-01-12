@@ -13,3 +13,10 @@ Thumbs.db
 
 # Local config (if you create one)
 config.local.js
+js/config.local.js
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/

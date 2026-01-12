@@ -285,25 +285,12 @@
       <header class="app-header">
         <div class="workout-info">
           <h1 class="app-title" x-text="activeWorkout.template_name"></h1>
-          <p class="workout-time" x-text="'Started: ' + activeWorkout.started_at"></p>
+          <p class="workout-time" x-text="formatWorkoutDate(activeWorkout.started_at)"></p>
         </div>
         <button @click="finishWorkout" class="btn btn-primary">Finish Workout</button>
       </header>
 
       <div class="workout-content">
-
-        <!-- Timer Section -->
-        <div x-show="timerActive" class="timer-section card">
-          <div class="timer-display" x-text="formatTime(timerSeconds)"></div>
-          <div class="timer-controls">
-            <button @click="toggleTimerPause" class="btn btn-primary">
-              <span x-text="timerPaused ? 'Resume' : 'Pause'"></span>
-            </button>
-            <button @click="adjustTimer(-15)" class="btn btn-secondary">-15s</button>
-            <button @click="adjustTimer(15)" class="btn btn-secondary">+15s</button>
-            <button @click="stopTimer" class="btn btn-danger">Stop</button>
-          </div>
-        </div>
 
         <!-- Exercises List -->
         <div class="exercises-list">
@@ -364,7 +351,7 @@
                           type="button"
                           class="checkbox-btn"
                           :class="{ 'checked': set.is_done }"
-                          @click="set.is_done = !set.is_done; if(set.is_done) startRestTimer(ex.rest_seconds)">
+                          @click="set.is_done = !set.is_done; if(set.is_done) startRestTimer(ex.rest_seconds, exIndex)">
                           <span x-show="set.is_done">&#10003;</span>
                         </button>
                       </div>
@@ -379,6 +366,25 @@
                     </button>
                   </div>
                 </template>
+              </div>
+
+              <!-- Rest Timer Bar -->
+              <div class="rest-timer-bar-container">
+                <div class="rest-timer-bar-wrapper">
+                  <div class="rest-timer-bar-fill"
+                       :class="{
+                         'idle': !isTimerActiveForExercise(exIndex),
+                         'running': isTimerActiveForExercise(exIndex) && timerSeconds > 0,
+                         'complete': isTimerActiveForExercise(exIndex) && timerSeconds === 0
+                       }"
+                       :style="'width: ' + getTimerProgress(exIndex) + '%'">
+                  </div>
+                  <span class="rest-timer-bar-time" x-text="formatTime(isTimerActiveForExercise(exIndex) ? timerSeconds : ex.rest_seconds)"></span>
+                </div>
+                <div class="rest-timer-controls">
+                  <button class="btn-timer-adjust" @click="adjustTimer(-10, exIndex)">-10s</button>
+                  <button class="btn-timer-adjust" @click="adjustTimer(10, exIndex)">+10s</button>
+                </div>
               </div>
 
               <!-- Add Set Button -->

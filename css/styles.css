@@ -1201,16 +1201,17 @@ input[type="checkbox"]:focus {
 
 /* Exercise Header for Workout */
 .exercise-workout-card .exercise-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
   margin-bottom: var(--spacing-sm);
 }
 
 .exercise-workout-card .exercise-title-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-xs);
 }
 
 .exercise-workout-card .exercise-name {
@@ -1325,4 +1326,99 @@ input[type="checkbox"]:focus {
 /* Template editor set row without swipe wrapper */
 .exercise-editor-card .set-row {
   background-color: var(--color-bg-surface);
+}
+
+/* ==========================================================================
+   15. Rest Timer Bar (Per-Exercise)
+   ========================================================================== */
+
+.rest-timer-bar-container {
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.rest-timer-bar-wrapper {
+  position: relative;
+  height: 28px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+/* The colored fill - starts full (blue), empties as time passes */
+.rest-timer-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: var(--color-accent);
+  border-radius: var(--radius-sm);
+  transition: width 1s linear;
+}
+
+/* State: Timer not started - bar is full blue */
+.rest-timer-bar-fill.idle {
+  width: 100%;
+  background-color: var(--color-accent);
+}
+
+/* State: Timer complete - bar is empty */
+.rest-timer-bar-fill.complete {
+  width: 0%;
+}
+
+/* Time text overlay */
+.rest-timer-bar-time {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* Timer adjustment controls */
+.rest-timer-controls {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.btn-timer-adjust {
+  padding: 4px 12px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-timer-adjust:hover {
+  background-color: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+}
+
+/* Mobile optimizations for timer bar */
+@media (max-width: 400px) {
+  .rest-timer-bar-wrapper {
+    height: 24px;
+  }
+
+  .rest-timer-bar-time {
+    font-size: 0.75rem;
+  }
+
+  .btn-timer-adjust {
+    padding: 3px 8px;
+    font-size: 0.7rem;
+  }
 }

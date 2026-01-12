@@ -46,6 +46,8 @@ document.addEventListener('alpine:init', () => {
     timerActive: false,
     timerPaused: false,
     timerSeconds: 0,
+    timerTotalSeconds: 0,           // Total seconds for progress calculation
+    activeTimerExerciseIndex: null, // Which exercise has the active timer
 
     // Add chart modal
     showAddChartModal: false,
@@ -725,19 +727,30 @@ document.addEventListener('alpine:init', () => {
 
     // ==================== TIMER METHODS ====================
 
-    startRestTimer(seconds) {
+    startRestTimer(seconds, exIndex) {
       if (!seconds || seconds <= 0) return;
+
+      // Stop any existing timer first
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
 
       this.timerActive = true;
       this.timerPaused = false;
       this.timerSeconds = seconds;
+      this.timerTotalSeconds = seconds;
+      this.activeTimerExerciseIndex = exIndex;
 
       // Start countdown
       this.timerInterval = setInterval(() => {
         if (!this.timerPaused) {
           this.timerSeconds--;
           if (this.timerSeconds <= 0) {
-            this.stopTimer();
+            this.timerSeconds = 0;
+            this.timerActive = false;
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
             // Play notification
             if ('Notification' in window && Notification.permission === 'granted') {
               new Notification('Rest Timer Complete!', {
@@ -757,23 +770,66 @@ document.addEventListener('alpine:init', () => {
       this.timerActive = false;
       this.timerPaused = false;
       this.timerSeconds = 0;
+      this.timerTotalSeconds = 0;
+      this.activeTimerExerciseIndex = null;
     },
 
     toggleTimerPause() {
       this.timerPaused = !this.timerPaused;
     },
 
-    adjustTimer(seconds) {
-      this.timerSeconds += seconds;
-      if (this.timerSeconds < 0) {
-        this.timerSeconds = 0;
+    adjustTimer(seconds, exIndex) {
+      if (this.isTimerActiveForExercise(exIndex)) {
+        // Timer is running for this exercise - adjust running timer
+        this.timerSeconds += seconds;
+        this.timerTotalSeconds += seconds;
+        if (this.timerSeconds < 0) this.timerSeconds = 0;
+        if (this.timerTotalSeconds < 0) this.timerTotalSeconds = 0;
+      } else {
+        // Timer is idle - adjust the exercise's default rest_seconds
+        const exercise = this.activeWorkout.exercises[exIndex];
+        if (exercise) {
+          exercise.rest_seconds += seconds;
+          if (exercise.rest_seconds < 0) exercise.rest_seconds = 0;
+        }
       }
     },
 
+    // Check if timer is active for a specific exercise
+    isTimerActiveForExercise(exIndex) {
+      return this.timerActive && this.activeTimerExerciseIndex === exIndex;
+    },
+
+    // Get timer progress percentage (100 = full, 0 = empty)
+    getTimerProgress(exIndex) {
+      if (!this.isTimerActiveForExercise(exIndex)) {
+        return 100; // Full bar when idle
+      }
+      if (this.timerTotalSeconds <= 0) {
+        return 0;
+      }
+      return Math.round((this.timerSeconds / this.timerTotalSeconds) * 100);
+    },
+
     formatTime(seconds) {
+      if (seconds === undefined || seconds === null || isNaN(seconds)) {
+        seconds = 0;
+      }
       const mins = Math.floor(seconds / 60);
       const secs = seconds % 60;
       return `${mins}:${secs.toString().padStart(2, '0')}`;
+    },
+
+    // Format workout date as calendar date
+    formatWorkoutDate(isoString) {
+      if (!isoString) return '';
+      const date = new Date(isoString);
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
     },
 
     // ==================== CHART METHODS ====================

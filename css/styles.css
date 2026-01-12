@@ -1041,6 +1041,10 @@ input[type="checkbox"]:focus {
     padding: var(--spacing-lg);
   }
 
+  .workout-content {
+    padding: var(--spacing-lg);
+  }
+
   .workout-inputs {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -1076,6 +1080,34 @@ input[type="checkbox"]:focus {
 /* ==========================================================================
    13. Per-Set Tracking UI
    ========================================================================== */
+
+/* Workout Content Wrapper */
+.workout-content {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+/* Exercises List */
+.exercises-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Exercise Workout Card with hover effect */
+.exercise-workout-card {
+  transition: border-color var(--transition-fast);
+}
+
+.exercise-workout-card:hover {
+  border-color: var(--color-accent);
+}
+
+/* Workout Footer */
+.workout-footer {
+  margin-top: var(--spacing-lg);
+}
 
 /* Set Table Layout */
 .set-table {
@@ -1219,6 +1251,12 @@ input[type="checkbox"]:focus {
   transition: opacity 0.2s ease-out;
 }
 
+.btn-remove-set svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.5;
+}
+
 /* Show delete button on desktop hover - only on non-touch devices */
 @media (hover: hover) and (pointer: fine) {
   .set-row-wrapper:hover .btn-remove-set {
@@ -1283,6 +1321,18 @@ input[type="checkbox"]:focus {
   font-size: 1.125rem;
   font-weight: 600;
   color: var(--color-accent);
+}
+
+/* Badge styling for workout cards */
+.exercise-workout-card .badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(79, 158, 255, 0.1);
+  color: var(--color-accent);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 /* Mobile optimizations for set table */

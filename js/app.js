@@ -1237,8 +1237,6 @@ document.addEventListener('alpine:init', () => {
 
         if (error) throw new Error(error.message);
 
-        this.successMessage = 'Chart added successfully';
-        this.clearMessages();
         this.closeAddChartModal();
         await this.loadUserCharts();
       } catch (err) {

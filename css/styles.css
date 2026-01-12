@@ -203,6 +203,33 @@ a:hover {
   gap: var(--spacing-sm);
 }
 
+/* Workout Header */
+.workout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.workout-header .workout-info {
+  flex: 1;
+  text-align: center;
+}
+
+.workout-header .workout-info .app-title {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.workout-header .workout-info .workout-time {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
 /* ==========================================================================
    5. Forms
    ========================================================================== */
@@ -705,6 +732,16 @@ input[type="checkbox"]:focus {
   display: flex;
   gap: var(--spacing-sm);
   justify-content: flex-end;
+}
+
+.modal-sm {
+  max-width: 400px;
+}
+
+.text-muted {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin-top: var(--spacing-sm);
 }
 
 /* Timer Display */

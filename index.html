@@ -282,12 +282,13 @@
     <!-- Workout Surface -->
     <div x-show="!isLoading && currentSurface === 'workout'" class="workout-surface" @click="handleSwipeCancel()">
 
-      <header class="app-header">
+      <header class="app-header workout-header">
+        <button @click="cancelWorkout" class="btn btn-secondary btn-sm">Cancel</button>
         <div class="workout-info">
           <h1 class="app-title" x-text="activeWorkout.template_name"></h1>
           <p class="workout-time" x-text="formatWorkoutDate(activeWorkout.started_at)"></p>
         </div>
-        <button @click="finishWorkout" class="btn btn-primary">Finish Workout</button>
+        <button @click="finishWorkout" class="btn btn-primary btn-sm">Finish</button>
       </header>
 
       <div class="workout-content">
@@ -569,6 +570,23 @@
             </div>
 
           </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Template Update Modal -->
+    <div x-show="showTemplateUpdateModal" class="modal-overlay" @click.self="declineTemplateUpdate">
+      <div class="modal modal-sm">
+        <div class="modal-header">
+          <h2>Update Template?</h2>
+        </div>
+        <div class="modal-body">
+          <p>You made changes during this workout. Update the template with these changes?</p>
+          <p class="text-muted">This will update exercises, sets, weights, and reps.</p>
+        </div>
+        <div class="modal-footer">
+          <button @click="declineTemplateUpdate" class="btn btn-secondary">No, Keep Original</button>
+          <button @click="confirmTemplateUpdate" class="btn btn-primary">Yes, Update</button>
         </div>
       </div>
     </div>

@@ -42,6 +42,13 @@ document.addEventListener('alpine:init', () => {
       exercises: [] // { exercise_id, name, category, order, rest_seconds, sets: [{ set_number, weight, reps, is_done }] }
     },
 
+    // Template change detection
+    originalTemplateSnapshot: null,
+
+    // Template update modal
+    showTemplateUpdateModal: false,
+    pendingWorkoutData: null,
+
     // Timer state (NOT timerState object)
     timerActive: false,
     timerPaused: false,
@@ -501,6 +508,19 @@ document.addEventListener('alpine:init', () => {
           }))
         }))
       };
+
+      // Store deep copy for change detection
+      this.originalTemplateSnapshot = JSON.parse(JSON.stringify({
+        exercises: template.exercises.map(te => ({
+          exercise_id: te.exercise_id,
+          sets: te.sets.map(set => ({
+            set_number: set.set_number,
+            weight: set.weight,
+            reps: set.reps
+          }))
+        }))
+      }));
+
       this.currentSurface = 'workout';
       this.error = '';
       this.successMessage = '';
@@ -694,8 +714,24 @@ document.addEventListener('alpine:init', () => {
         return;
       }
 
+      // Check for template changes
+      if (this.activeWorkout.template_id && this.hasTemplateChanges()) {
+        this.pendingWorkoutData = {
+          template_id: this.activeWorkout.template_id,
+          started_at: this.activeWorkout.started_at,
+          finished_at: new Date().toISOString(),
+          exercises: this.activeWorkout.exercises
+        };
+        this.showTemplateUpdateModal = true;
+        return;
+      }
+
+      await this.saveWorkoutAndCleanup();
+    },
+
+    async saveWorkoutAndCleanup() {
       try {
-        const workoutData = {
+        const workoutData = this.pendingWorkoutData || {
           template_id: this.activeWorkout.template_id,
           started_at: this.activeWorkout.started_at,
           finished_at: new Date().toISOString(),
@@ -715,6 +751,8 @@ document.addEventListener('alpine:init', () => {
           started_at: null,
           exercises: []
         };
+        this.originalTemplateSnapshot = null;
+        this.pendingWorkoutData = null;
         this.stopTimer();
 
         // Return to dashboard and reload
@@ -723,6 +761,106 @@ document.addEventListener('alpine:init', () => {
       } catch (err) {
         this.error = 'Failed to save workout: ' + err.message;
       }
+    },
+
+    async confirmTemplateUpdate() {
+      try {
+        const templateExercises = this.activeWorkout.exercises.map(ex => ({
+          exercise_id: ex.exercise_id,
+          name: ex.name,
+          category: ex.category,
+          default_rest_seconds: ex.rest_seconds,
+          sets: ex.sets.map(set => ({
+            set_number: set.set_number,
+            weight: set.weight,
+            reps: set.reps
+          }))
+        }));
+
+        const template = this.templates.find(t => t.id === this.activeWorkout.template_id);
+        const templateName = template?.name || this.activeWorkout.template_name;
+
+        const { error } = await window.templates.updateTemplate(
+          this.activeWorkout.template_id,
+          templateName,
+          templateExercises
+        );
+
+        if (error) {
+          this.error = 'Failed to update template: ' + error.message;
+        }
+      } catch (err) {
+        this.error = 'Failed to update template: ' + err.message;
+      }
+
+      this.showTemplateUpdateModal = false;
+      await this.saveWorkoutAndCleanup();
+    },
+
+    declineTemplateUpdate() {
+      this.showTemplateUpdateModal = false;
+      this.saveWorkoutAndCleanup();
+    },
+
+    cancelWorkout() {
+      if (!confirm('Cancel this workout? All progress will be lost.')) {
+        return;
+      }
+
+      this.stopTimer();
+      this.activeWorkout = {
+        template_id: null,
+        template_name: '',
+        started_at: null,
+        exercises: []
+      };
+      this.originalTemplateSnapshot = null;
+      this.currentSurface = 'dashboard';
+      this.successMessage = 'Workout cancelled';
+      this.clearMessages();
+    },
+
+    hasTemplateChanges() {
+      if (!this.originalTemplateSnapshot || !this.activeWorkout.template_id) {
+        return false;
+      }
+
+      const original = this.originalTemplateSnapshot.exercises;
+      const current = this.activeWorkout.exercises;
+
+      // Check exercise count
+      if (original.length !== current.length) return true;
+
+      // Check each exercise
+      for (const currEx of current) {
+        const origEx = original.find(e => e.exercise_id === currEx.exercise_id);
+
+        // New exercise added
+        if (!origEx) return true;
+
+        // Set count changed
+        if (origEx.sets.length !== currEx.sets.length) return true;
+
+        // Check set values
+        for (let j = 0; j < currEx.sets.length; j++) {
+          const origSet = origEx.sets[j];
+          const currSet = currEx.sets[j];
+
+          if (!origSet) return true;
+          if (origSet.weight !== currSet.weight || origSet.reps !== currSet.reps) {
+            return true;
+          }
+        }
+      }
+
+      // Check if any original exercises removed
+      for (const origEx of original) {
+        if (!current.find(e => e.exercise_id === origEx.exercise_id)) {
+          return true;
+        }
+      }
+
+      return false;
     },
 
     // ==================== TIMER METHODS ====================

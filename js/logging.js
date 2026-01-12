@@ -58,39 +58,16 @@ async function createWorkoutLog(workoutDataOrTemplateId, startedAt, exercises) {
       for (let index = 0; index < workoutExercises.length; index++) {
         const ex = workoutExercises[index];
 
-        // Check if this exercise has per-set data (new format) or aggregate data (old format)
-        const hasPerSetData = Array.isArray(ex.sets) && ex.sets.length > 0 && typeof ex.sets[0] === 'object';
+        // Get rest_seconds from exercise level (normalized schema)
+        const restSeconds = ex.rest_seconds || ex.sets?.[0]?.rest_seconds || 60;
 
-        // Calculate aggregate values for backwards compatibility
-        let setsCompleted, avgReps, avgWeight, avgRest, isDone;
-
-        if (hasPerSetData) {
-          const completedSets = ex.sets.filter(s => s.is_done);
-          setsCompleted = completedSets.length;
-          avgReps = ex.sets[0]?.reps || 0;
-          avgWeight = ex.sets[0]?.weight || 0;
-          avgRest = ex.sets[0]?.rest_seconds || 0;
-          isDone = ex.sets.every(s => s.is_done);
-        } else {
-          // Old format - use aggregate values directly
-          setsCompleted = ex.sets || ex.sets_completed || 0;
-          avgReps = ex.reps || 0;
-          avgWeight = ex.weight || 0;
-          avgRest = ex.rest_seconds || 0;
-          isDone = ex.done || ex.is_done || false;
-        }
-
-        // Insert workout_log_exercise (parent record)
+        // Insert workout_log_exercise (parent record - normalized, no aggregates)
         const { data: logExercise, error: exError } = await window.supabaseClient
           .from('workout_log_exercises')
           .insert({
             workout_log_id: workoutLog.id,
             exercise_id: ex.exercise_id,
-            sets_completed: setsCompleted,
-            reps: avgReps,
-            weight: avgWeight,
-            rest_seconds: avgRest,
-            is_done: isDone,
+            rest_seconds: restSeconds,
             order: ex.order !== undefined ? ex.order : index
           })
           .select()
@@ -106,14 +83,13 @@ async function createWorkoutLog(workoutDataOrTemplateId, startedAt, exercises) {
           return { data: null, error: exError };
         }
 
-        // Insert individual sets if per-set data is available
-        if (hasPerSetData) {
+        // Insert individual sets (required for normalized schema)
+        if (Array.isArray(ex.sets) && ex.sets.length > 0) {
           const setsToInsert = ex.sets.map(set => ({
             workout_log_exercise_id: logExercise.id,
             set_number: set.set_number,
             weight: set.weight || 0,
             reps: set.reps || 0,
-            rest_seconds: set.rest_seconds || 0,
             is_done: set.is_done || false
           }));
 
@@ -190,7 +166,7 @@ async function getWorkoutLogs(limit = 52) {
  */
 async function getWorkoutLog(id) {
   try {
-    // Fetch workout log with exercises and exercise details
+    // Fetch workout log with exercises, sets, and exercise details (normalized schema)
     const { data, error } = await window.supabaseClient
       .from('workout_logs')
       .select(`
@@ -201,16 +177,19 @@ async function getWorkoutLog(id) {
         workout_log_exercises (
           id,
           exercise_id,
-          sets_completed,
-          reps,
-          weight,
           rest_seconds,
-          is_done,
           order,
           exercises (
             id,
             name,
             category
+          ),
+          workout_log_sets (
+            id,
+            set_number,
+            weight,
+            reps,
+            is_done
           )
         )
       `)
@@ -221,9 +200,14 @@ async function getWorkoutLog(id) {
       return { data: null, error };
     }
 
-    // Sort exercises by order
+    // Sort exercises by order and sets by set_number
     if (data.workout_log_exercises) {
       data.workout_log_exercises.sort((a, b) => a.order - b.order);
+      data.workout_log_exercises.forEach(ex => {
+        if (ex.workout_log_sets) {
+          ex.workout_log_sets.sort((a, b) => a.set_number - b.set_number);
+        }
+      });
     }
 
     return { data, error: null };
@@ -252,20 +236,23 @@ async function getExerciseHistory(exerciseId, options = {}) {
       };
     }
 
-    // Fetch workout log exercises for this exercise
+    // Fetch workout log exercises with their sets (normalized schema)
     const { data, error } = await window.supabaseClient
       .from('workout_log_exercises')
       .select(`
         id,
-        sets_completed,
-        reps,
-        weight,
         rest_seconds,
-        is_done,
         workout_logs!inner (
           id,
           user_id,
           started_at
+        ),
+        workout_log_sets (
+          id,
+          set_number,
+          weight,
+          reps,
+          is_done
         )
       `)
       .eq('exercise_id', exerciseId)
@@ -280,6 +267,27 @@ async function getExerciseHistory(exerciseId, options = {}) {
 
     // Apply limit
     const limitedData = data.slice(0, mode === 'session' ? limit : 365);
+
+    // Helper function to calculate metrics from sets
+    const calculateMetrics = (exercises) => {
+      let totalSets = 0;
+      let maxWeight = 0;
+      let maxVolumeSet = 0;
+
+      exercises.forEach(ex => {
+        const sets = ex.workout_log_sets || [];
+        const completedSets = sets.filter(s => s.is_done);
+        totalSets += completedSets.length;
+
+        sets.forEach(set => {
+          if (set.weight > maxWeight) maxWeight = set.weight;
+          const volume = (set.weight || 0) * (set.reps || 0);
+          if (volume > maxVolumeSet) maxVolumeSet = volume;
+        });
+      });
+
+      return { totalSets, maxWeight, maxVolumeSet };
+    };
 
     if (mode === 'date') {
       // Group by date
@@ -296,13 +304,16 @@ async function getExerciseHistory(exerciseId, options = {}) {
 
       // Convert to array and sort by date
       const groupedData = Array.from(dateMap.entries())
-        .map(([date, exercises]) => ({
-          date,
-          exercises,
-          total_sets: exercises.reduce((sum, ex) => sum + ex.sets_completed, 0),
-          max_weight: Math.max(...exercises.map(ex => ex.weight)),
-          max_volume: Math.max(...exercises.map(ex => ex.weight * ex.reps))
-        }))
+        .map(([date, exercises]) => {
+          const metrics = calculateMetrics(exercises);
+          return {
+            date,
+            exercises,
+            total_sets: metrics.totalSets,
+            max_weight: metrics.maxWeight,
+            max_volume_set: metrics.maxVolumeSet
+          };
+        })
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, limit);
 
@@ -326,13 +337,16 @@ async function getExerciseHistory(exerciseId, options = {}) {
 
       // Convert to array and calculate metrics
       const sessionData = Array.from(sessionMap.values())
-        .map((session, index) => ({
-          ...session,
-          session_number: limitedData.length - index, // Reverse numbering
-          total_sets: session.exercises.reduce((sum, ex) => sum + ex.sets_completed, 0),
-          max_weight: Math.max(...session.exercises.map(ex => ex.weight)),
-          max_volume: Math.max(...session.exercises.map(ex => ex.weight * ex.reps))
-        }))
+        .map((session, index) => {
+          const metrics = calculateMetrics(session.exercises);
+          return {
+            ...session,
+            session_number: limitedData.length - index, // Reverse numbering
+            total_sets: metrics.totalSets,
+            max_weight: metrics.maxWeight,
+            max_volume_set: metrics.maxVolumeSet
+          };
+        })
         .sort((a, b) => new Date(b.started_at) - new Date(a.started_at));
 
       return { data: sessionData, error: null };
@@ -345,7 +359,7 @@ async function getExerciseHistory(exerciseId, options = {}) {
 /**
  * Calculate exercise metrics for charting
  * @param {string} exerciseId - Exercise UUID
- * @param {Object} options - { metric: 'total_sets' | 'max_volume', mode: 'date' | 'session', limit: number }
+ * @param {Object} options - { metric: 'total_sets' | 'max_volume_set', mode: 'date' | 'session', limit: number }
  * @returns {Promise<{data, error}>}
  */
 async function getExerciseMetrics(exerciseId, options = {}) {
@@ -376,8 +390,8 @@ async function getExerciseMetrics(exerciseId, options = {}) {
 
         if (metric === 'total_sets') {
           values.push(item.total_sets);
-        } else if (metric === 'max_volume') {
-          values.push(item.max_volume);
+        } else if (metric === 'max_volume_set') {
+          values.push(item.max_volume_set);
         }
       });
     } else {
@@ -389,8 +403,8 @@ async function getExerciseMetrics(exerciseId, options = {}) {
 
         if (metric === 'total_sets') {
           values.push(item.total_sets);
-        } else if (metric === 'max_volume') {
-          values.push(item.max_volume);
+        } else if (metric === 'max_volume_set') {
+          values.push(item.max_volume_set);
         }
       });
     }
@@ -418,17 +432,20 @@ async function getRecentExerciseData(exerciseId) {
       return null;
     }
 
-    // Fetch workout log exercises for this exercise
+    // Fetch workout log exercises with their sets (normalized schema)
     const { data, error } = await window.supabaseClient
       .from('workout_log_exercises')
       .select(`
-        sets_completed,
-        reps,
-        weight,
         rest_seconds,
         workout_logs!inner (
           user_id,
           started_at
+        ),
+        workout_log_sets (
+          set_number,
+          weight,
+          reps,
+          is_done
         )
       `)
       .eq('exercise_id', exerciseId)
@@ -442,11 +459,16 @@ async function getRecentExerciseData(exerciseId) {
     data.sort((a, b) => new Date(b.workout_logs.started_at) - new Date(a.workout_logs.started_at));
     const mostRecent = data[0];
 
+    // Calculate aggregates from sets
+    const sets = mostRecent.workout_log_sets || [];
+    const completedSets = sets.filter(s => s.is_done);
+    const firstSet = sets.find(s => s.set_number === 1) || sets[0];
+
     return {
-      sets: mostRecent.sets_completed,
-      reps: mostRecent.reps,
-      weight: mostRecent.weight,
-      rest_seconds: mostRecent.rest_seconds
+      sets: completedSets.length || sets.length,
+      reps: firstSet?.reps || 10,
+      weight: firstSet?.weight || 0,
+      rest_seconds: mostRecent.rest_seconds || 60
     };
   } catch (err) {
     return null;

@@ -39,7 +39,7 @@ document.addEventListener('alpine:init', () => {
       template_id: null,
       template_name: '',
       started_at: null,
-      exercises: [] // { exercise_id, name, category, order, sets: [{ set_number, weight, reps, rest_seconds, is_done }] }
+      exercises: [] // { exercise_id, name, category, order, rest_seconds, sets: [{ set_number, weight, reps, is_done }] }
     },
 
     // Timer state (NOT timerState object)
@@ -244,7 +244,10 @@ document.addEventListener('alpine:init', () => {
       this.editingTemplate = {
         id: template.id,
         name: template.name,
-        exercises: template.exercises.map(ex => ({ ...ex }))
+        exercises: template.exercises.map(ex => ({
+          ...ex,
+          sets: ex.sets ? ex.sets.map(set => ({ ...set })) : []
+        }))
       };
       this.currentSurface = 'templateEditor';
       this.error = '';
@@ -366,10 +369,12 @@ document.addEventListener('alpine:init', () => {
           exercise_id: exercise.id,
           name: exercise.name,
           category: exercise.category,
-          default_sets: 3,
-          default_reps: 10,
-          default_weight: 0,
-          default_rest_seconds: 90
+          default_rest_seconds: 90,
+          sets: [
+            { set_number: 1, weight: 0, reps: 10 },
+            { set_number: 2, weight: 0, reps: 10 },
+            { set_number: 3, weight: 0, reps: 10 }
+          ]
         });
       } else if (this.exercisePickerContext === 'workout') {
         // Check if already added
@@ -385,7 +390,8 @@ document.addEventListener('alpine:init', () => {
           name: exercise.name,
           category: exercise.category,
           order: this.activeWorkout.exercises.length,
-          sets: this.generateSetsArray(3, 0, 10, 90)
+          rest_seconds: 90,
+          sets: this.generateSetsArray(3, 0, 10)
         });
       }
 
@@ -409,6 +415,24 @@ document.addEventListener('alpine:init', () => {
         const temp = this.editingTemplate.exercises[index];
         this.editingTemplate.exercises[index] = this.editingTemplate.exercises[index + 1];
         this.editingTemplate.exercises[index + 1] = temp;
+      }
+    },
+
+    addSetToTemplateExercise(exIndex) {
+      const exercise = this.editingTemplate.exercises[exIndex];
+      const lastSet = exercise.sets[exercise.sets.length - 1];
+      exercise.sets.push({
+        set_number: exercise.sets.length + 1,
+        weight: lastSet?.weight || 0,
+        reps: lastSet?.reps || 10
+      });
+    },
+
+    removeSetFromTemplateExercise(exIndex, setIndex) {
+      const exercise = this.editingTemplate.exercises[exIndex];
+      if (exercise.sets.length > 1) {
+        exercise.sets.splice(setIndex, 1);
+        exercise.sets.forEach((set, i) => set.set_number = i + 1);
       }
     },
 
@@ -461,17 +485,18 @@ document.addEventListener('alpine:init', () => {
         template_id: template.id,
         template_name: template.name,
         started_at: new Date().toISOString(),
-        exercises: template.exercises.map((ex, exIndex) => ({
-          exercise_id: ex.exercise_id,
-          name: ex.name,
-          category: ex.category,
+        exercises: template.exercises.map((te, exIndex) => ({
+          exercise_id: te.exercise_id,
+          name: te.name,
+          category: te.category,
           order: exIndex,
-          sets: this.generateSetsArray(
-            ex.default_sets || 3,
-            ex.default_weight || 0,
-            ex.default_reps || 10,
-            ex.default_rest_seconds || 90
-          )
+          rest_seconds: te.default_rest_seconds || 90,
+          sets: te.sets.map(set => ({
+            set_number: set.set_number,
+            weight: set.weight,
+            reps: set.reps,
+            is_done: false
+          }))
         }))
       };
       this.currentSurface = 'workout';
@@ -479,13 +504,12 @@ document.addEventListener('alpine:init', () => {
       this.successMessage = '';
     },
 
-    // Generate an array of set objects
-    generateSetsArray(count, weight, reps, rest_seconds) {
+    // Generate an array of set objects (rest_seconds now at exercise level)
+    generateSetsArray(count, weight, reps) {
       return Array.from({ length: count }, (_, i) => ({
         set_number: i + 1,
         weight: weight,
         reps: reps,
-        rest_seconds: rest_seconds,
         is_done: false
       }));
     },
@@ -498,7 +522,6 @@ document.addEventListener('alpine:init', () => {
         set_number: exercise.sets.length + 1,
         weight: lastSet?.weight || 0,
         reps: lastSet?.reps || 10,
-        rest_seconds: lastSet?.rest_seconds || 90,
         is_done: false
       });
     },

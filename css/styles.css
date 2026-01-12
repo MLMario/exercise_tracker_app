@@ -1243,3 +1243,86 @@ input[type="checkbox"]:focus {
     height: 32px;
   }
 }
+
+/* ==========================================================================
+   14. Template Editor Per-Set UI
+   ========================================================================== */
+
+/* Exercise Editor Card */
+.exercise-editor-card {
+  margin-bottom: var(--spacing-md);
+}
+
+.exercise-editor-card .exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.exercise-editor-card .exercise-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.exercise-editor-card .exercise-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Exercise Header Actions */
+.exercise-header-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.exercise-header-actions .btn-icon {
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+}
+
+/* Rest Time Row */
+.rest-time-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) 0;
+  margin-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.rest-time-row label {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.rest-time-row .input-small {
+  width: 80px;
+  padding: var(--spacing-sm);
+  text-align: center;
+}
+
+.rest-time-row .input-suffix {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+/* Small button variant for set delete */
+.btn-small {
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+}
+
+/* Template editor set row without swipe wrapper */
+.exercise-editor-card .set-row {
+  background-color: var(--color-bg-surface);
+}

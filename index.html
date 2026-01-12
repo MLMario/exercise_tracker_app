@@ -204,84 +204,67 @@
             </div>
 
             <div class="exercises-list">
-              <template x-for="(ex, index) in editingTemplate.exercises" :key="index">
+              <template x-for="(ex, exIndex) in editingTemplate.exercises" :key="exIndex">
                 <div class="card exercise-editor-card">
-                  <div class="exercise-info">
-                    <h4 x-text="ex.name"></h4>
-                    <span class="badge" x-text="ex.category"></span>
-                  </div>
-
-                  <div class="exercise-inputs">
-                    <div class="input-group">
-                      <label :for="'sets-' + index">Sets</label>
-                      <input
-                        :id="'sets-' + index"
-                        type="number"
-                        x-model.number="ex.default_sets"
-                        class="input input-small"
-                        min="1"
-                        placeholder="3">
+                  <!-- Exercise Header -->
+                  <div class="exercise-header">
+                    <div class="exercise-title-row">
+                      <span class="exercise-name" x-text="ex.name"></span>
+                      <span class="badge" x-text="ex.category"></span>
                     </div>
-
-                    <div class="input-group">
-                      <label :for="'reps-' + index">Reps</label>
-                      <input
-                        :id="'reps-' + index"
-                        type="number"
-                        x-model.number="ex.default_reps"
-                        class="input input-small"
-                        min="1"
-                        placeholder="10">
-                    </div>
-
-                    <div class="input-group">
-                      <label :for="'weight-' + index">Weight (lbs)</label>
-                      <input
-                        :id="'weight-' + index"
-                        type="number"
-                        x-model.number="ex.default_weight"
-                        class="input input-small"
-                        min="0"
-                        step="0.5"
-                        placeholder="0">
-                    </div>
-
-                    <div class="input-group">
-                      <label :for="'rest-' + index">Rest (s)</label>
-                      <input
-                        :id="'rest-' + index"
-                        type="number"
-                        x-model.number="ex.default_rest_seconds"
-                        class="input input-small"
-                        min="0"
-                        placeholder="90">
+                    <div class="exercise-header-actions">
+                      <button type="button" @click="moveExerciseUp(exIndex)"
+                              class="btn btn-icon" :disabled="exIndex === 0" title="Move up">
+                        <span>↑</span>
+                      </button>
+                      <button type="button" @click="moveExerciseDown(exIndex)"
+                              class="btn btn-icon" :disabled="exIndex === editingTemplate.exercises.length - 1" title="Move down">
+                        <span>↓</span>
+                      </button>
+                      <button type="button" @click="removeExerciseFromTemplate(exIndex)"
+                              class="btn btn-icon btn-danger" title="Remove">
+                        <span>✕</span>
+                      </button>
                     </div>
                   </div>
 
-                  <div class="exercise-actions">
-                    <button
-                      type="button"
-                      @click="moveExerciseUp(index)"
-                      class="btn btn-icon"
-                      :disabled="index === 0"
-                      title="Move up">
-                      <span>↑</span>
-                    </button>
-                    <button
-                      type="button"
-                      @click="moveExerciseDown(index)"
-                      class="btn btn-icon"
-                      :disabled="index === editingTemplate.exercises.length - 1"
-                      title="Move down">
-                      <span>↓</span>
-                    </button>
-                    <button
-                      type="button"
-                      @click="removeExerciseFromTemplate(index)"
-                      class="btn btn-icon btn-danger"
-                      title="Remove">
-                      <span>✕</span>
-                    </button>
+                  <!-- Set Table -->
+                  <div class="set-table">
+                    <div class="set-header">
+                      <span>Set</span>
+                      <span>lbs</span>
+                      <span>Reps</span>
+                      <span></span>
+                    </div>
+
+                    <template x-for="(set, setIndex) in ex.sets" :key="setIndex">
+                      <div class="set-row">
+                        <div class="set-number" x-text="set.set_number"></div>
+                        <input type="number" class="set-input" x-model.number="set.weight"
+                               min="0" step="0.5" placeholder="0">
+                        <input type="number" class="set-input" x-model.number="set.reps"
+                               min="0" placeholder="10">
+                        <button type="button" class="btn btn-icon btn-danger btn-small"
+                                @click="removeSetFromTemplateExercise(exIndex, setIndex)"
+                                x-show="ex.sets.length > 1" title="Remove Set">
+                          <span>✕</span>
+                        </button>
+                      </div>
+                    </template>
+                  </div>
+
+                  <!-- Add Set Button -->
+                  <button type="button" class="btn btn-add-set"
+                          @click="addSetToTemplateExercise(exIndex)">
+                    + Add Set
+                  </button>
+
+                  <!-- Rest Time (shared for all sets) -->
+                  <div class="rest-time-row">
+                    <label>Rest between sets:</label>
+                    <input type="number" class="input input-small"
+                           x-model.number="ex.default_rest_seconds" min="0" placeholder="60">
+                    <span class="input-suffix">seconds</span>
                   </div>
                 </div>
               </template>
@@ -381,7 +364,7 @@
                           type="button"
                           class="checkbox-btn"
                           :class="{ 'checked': set.is_done }"
-                          @click="set.is_done = !set.is_done; if(set.is_done) startRestTimer(set.rest_seconds)">
+                          @click="set.is_done = !set.is_done; if(set.is_done) startRestTimer(ex.rest_seconds)">
                           <span x-show="set.is_done">&#10003;</span>
                         </button>
                       </div>
@@ -550,7 +533,7 @@
                 required>
                 <option value="">Select metric...</option>
                 <option value="total_sets">Total Sets</option>
-                <option value="max_volume">Max Volume</option>
+                <option value="max_volume_set">Max Volume Set</option>
               </select>
             </div>
 

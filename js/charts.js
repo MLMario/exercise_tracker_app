@@ -49,7 +49,7 @@ async function getUserCharts() {
 /**
  * Create a new chart
  * @param {Object|string} chartDataOrExerciseId - Either chart data object or exercise UUID
- * @param {string} [metricType] - 'total_sets' or 'max_volume' (if using separate params)
+ * @param {string} [metricType] - 'total_sets' or 'max_volume_set' (if using separate params)
  * @param {string} [xAxisMode] - 'date' or 'session' (if using separate params)
  * @returns {Promise<{data: Object|null, error: Error|null}>}
  */
@@ -310,15 +310,15 @@ function destroyChart(chartInstance) {
 
 /**
  * Get display name for metric type
- * @param {string} metricType - 'total_sets' or 'max_volume'
+ * @param {string} metricType - 'total_sets' or 'max_volume_set'
  * @returns {string} Display name
  */
 function getMetricDisplayName(metricType) {
   switch (metricType) {
     case 'total_sets':
       return 'Total Sets';
-    case 'max_volume':
-      return 'Max Volume (lbs)';
+    case 'max_volume_set':
+      return 'Max Volume Set (lbs)';
     default:
       return metricType;
   }

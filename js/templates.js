@@ -19,7 +19,7 @@ async function getTemplates() {
       return { data: null, error: new Error('User not authenticated') };
     }
 
-    // Get templates with their exercises (needed for startWorkoutFromTemplate)
+    // Get templates with their exercises and sets
     const { data, error } = await window.supabaseClient
       .from('templates')
       .select(`
@@ -30,15 +30,17 @@ async function getTemplates() {
         template_exercises(
           id,
           exercise_id,
-          default_sets,
-          default_reps,
-          default_weight,
           default_rest_seconds,
           order,
           exercises(
             id,
             name,
             category
+          ),
+          template_exercise_sets(
+            set_number,
+            weight,
+            reps
           )
         )
       `)
@@ -49,22 +51,30 @@ async function getTemplates() {
       return { data: null, error };
     }
 
-    // Transform data to include exercises array in the format expected by the app
+    // Transform data to include exercises array with sets
     const templatesWithExercises = data.map(template => {
       // Sort exercises by order
       const sortedTemplateExercises = (template.template_exercises || [])
         .sort((a, b) => a.order - b.order);
 
-      // Transform to the format expected by startWorkoutFromTemplate
-      const exercises = sortedTemplateExercises.map(te => ({
-        exercise_id: te.exercise_id,
-        name: te.exercises?.name || 'Unknown Exercise',
-        category: te.exercises?.category || 'Other',
-        default_sets: te.default_sets,
-        default_reps: te.default_reps,
-        default_weight: te.default_weight,
-        default_rest_seconds: te.default_rest_seconds
-      }));
+      // Transform to the format expected by the app
+      const exercises = sortedTemplateExercises.map(te => {
+        // Sort sets by set_number
+        const sortedSets = (te.template_exercise_sets || [])
+          .sort((a, b) => a.set_number - b.set_number);
+
+        return {
+          exercise_id: te.exercise_id,
+          name: te.exercises?.name || 'Unknown Exercise',
+          category: te.exercises?.category || 'Other',
+          default_rest_seconds: te.default_rest_seconds,
+          sets: sortedSets.map(set => ({
+            set_number: set.set_number,
+            weight: set.weight,
+            reps: set.reps
+          }))
+        };
+      });
 
       return {
         id: template.id,
@@ -98,7 +108,7 @@ async function getTemplate(id) {
       return { data: null, error: new Error('User not authenticated') };
     }
 
-    // Get template with its exercises
+    // Get template with its exercises and sets (normalized schema)
     const { data, error } = await window.supabaseClient
       .from('templates')
       .select(`
@@ -109,15 +119,17 @@ async function getTemplate(id) {
         template_exercises(
           id,
           exercise_id,
-          default_sets,
-          default_reps,
-          default_weight,
           default_rest_seconds,
           order,
           exercises(
             id,
             name,
             category
+          ),
+          template_exercise_sets(
+            set_number,
+            weight,
+            reps
           )
         )
       `)
@@ -172,21 +184,19 @@ async function createTemplate(name, exercises = []) {
       return { data: null, error: templateError };
     }
 
-    // If exercises are provided, insert them
+    // If exercises are provided, insert them with their sets
     if (exercises && exercises.length > 0) {
       const templateExercises = exercises.map((exercise, index) => ({
         template_id: template.id,
         exercise_id: exercise.exercise_id,
-        default_sets: exercise.default_sets ?? 3,
-        default_reps: exercise.default_reps ?? 10,
-        default_weight: exercise.default_weight ?? 0,
         default_rest_seconds: exercise.default_rest_seconds ?? 90,
         order: index
       }));
 
-      const { error: exercisesError } = await window.supabaseClient
+      const { data: insertedExercises, error: exercisesError } = await window.supabaseClient
         .from('template_exercises')
-        .insert(templateExercises);
+        .insert(templateExercises)
+        .select('id');
 
       if (exercisesError) {
         // Rollback: delete the template if exercises insertion fails
@@ -196,6 +206,38 @@ async function createTemplate(name, exercises = []) {
           .eq('id', template.id);
 
         return { data: null, error: exercisesError };
+      }
+
+      // Insert sets for each exercise
+      const allSets = [];
+      exercises.forEach((exercise, index) => {
+        const templateExerciseId = insertedExercises[index].id;
+        const sets = exercise.sets || [];
+
+        sets.forEach(set => {
+          allSets.push({
+            template_exercise_id: templateExerciseId,
+            set_number: set.set_number,
+            weight: set.weight ?? 0,
+            reps: set.reps ?? 10
+          });
+        });
+      });
+
+      if (allSets.length > 0) {
+        const { error: setsError } = await window.supabaseClient
+          .from('template_exercise_sets')
+          .insert(allSets);
+
+        if (setsError) {
+          // Rollback: delete the template if sets insertion fails
+          await window.supabaseClient
+            .from('templates')
+            .delete()
+            .eq('id', template.id);
+
+          return { data: null, error: setsError };
+        }
       }
     }
 
@@ -240,7 +282,7 @@ async function updateTemplate(id, name, exercises = []) {
       return { data: null, error: templateError };
     }
 
-    // Delete existing template_exercises
+    // Delete existing template_exercises (cascades to delete sets)
     const { error: deleteError } = await window.supabaseClient
       .from('template_exercises')
       .delete()
@@ -250,24 +292,48 @@ async function updateTemplate(id, name, exercises = []) {
       return { data: null, error: deleteError };
     }
 
-    // Insert new template_exercises if provided
+    // Insert new template_exercises with sets if provided
     if (exercises && exercises.length > 0) {
       const templateExercises = exercises.map((exercise, index) => ({
         template_id: id,
         exercise_id: exercise.exercise_id,
-        default_sets: exercise.default_sets ?? 3,
-        default_reps: exercise.default_reps ?? 10,
-        default_weight: exercise.default_weight ?? 0,
         default_rest_seconds: exercise.default_rest_seconds ?? 90,
         order: index
       }));
 
-      const { error: exercisesError } = await window.supabaseClient
+      const { data: insertedExercises, error: exercisesError } = await window.supabaseClient
         .from('template_exercises')
-        .insert(templateExercises);
+        .insert(templateExercises)
+        .select('id');
 
       if (exercisesError) {
         return { data: null, error: exercisesError };
+      }
+
+      // Insert sets for each exercise
+      const allSets = [];
+      exercises.forEach((exercise, index) => {
+        const templateExerciseId = insertedExercises[index].id;
+        const sets = exercise.sets || [];
+
+        sets.forEach(set => {
+          allSets.push({
+            template_exercise_id: templateExerciseId,
+            set_number: set.set_number,
+            weight: set.weight ?? 0,
+            reps: set.reps ?? 10
+          });
+        });
+      });
+
+      if (allSets.length > 0) {
+        const { error: setsError } = await window.supabaseClient
+          .from('template_exercise_sets')
+          .insert(allSets);
+
+        if (setsError) {
+          return { data: null, error: setsError };
+        }
       }
     }
 
@@ -346,10 +412,7 @@ async function addExerciseToTemplate(templateId, exercise) {
       .insert({
         template_id: templateId,
         exercise_id: exercise.exercise_id,
-        default_sets: exercise.default_sets || null,
-        default_reps: exercise.default_reps || null,
-        default_weight: exercise.default_weight || null,
-        default_rest_seconds: exercise.default_rest_seconds || null,
+        default_rest_seconds: exercise.default_rest_seconds ?? 90,
         order: maxOrder + 1
       })
       .select()
@@ -357,6 +420,27 @@ async function addExerciseToTemplate(templateId, exercise) {
 
     if (error) {
       return { data: null, error };
+    }
+
+    // Insert 3 default sets for the exercise
+    const defaultSets = [
+      { template_exercise_id: data.id, set_number: 1, weight: 0, reps: 10 },
+      { template_exercise_id: data.id, set_number: 2, weight: 0, reps: 10 },
+      { template_exercise_id: data.id, set_number: 3, weight: 0, reps: 10 }
+    ];
+
+    const { error: setsError } = await window.supabaseClient
+      .from('template_exercise_sets')
+      .insert(defaultSets);
+
+    if (setsError) {
+      // Rollback: delete the template_exercise if sets insertion fails
+      await window.supabaseClient
+        .from('template_exercises')
+        .delete()
+        .eq('id', data.id);
+
+      return { data: null, error: setsError };
     }
 
     // Update template's updated_at timestamp
@@ -412,10 +496,10 @@ async function removeExerciseFromTemplate(templateId, exerciseId) {
 }
 
 /**
- * Update exercise defaults in a template
+ * Update exercise defaults in a template (only rest_seconds at exercise level)
  * @param {string} templateId - Template UUID
  * @param {string} exerciseId - Exercise UUID
- * @param {Object} defaults - Object with default values
+ * @param {Object} defaults - Object with default values (only default_rest_seconds supported)
  * @returns {Promise<{data: Object|null, error: Error|null}>}
  */
 async function updateTemplateExercise(templateId, exerciseId, defaults) {
@@ -431,9 +515,7 @@ async function updateTemplateExercise(templateId, exerciseId, defaults) {
     }
 
     const updateData = {};
-    if (defaults.default_sets !== undefined) updateData.default_sets = defaults.default_sets;
-    if (defaults.default_reps !== undefined) updateData.default_reps = defaults.default_reps;
-    if (defaults.default_weight !== undefined) updateData.default_weight = defaults.default_weight;
+    // Only default_rest_seconds is stored at exercise level (normalized schema)
     if (defaults.default_rest_seconds !== undefined) updateData.default_rest_seconds = defaults.default_rest_seconds;
 
     const { data, error } = await window.supabaseClient

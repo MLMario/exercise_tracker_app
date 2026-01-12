@@ -6,7 +6,7 @@ document.addEventListener('alpine:init', () => {
     user: null,
     isLoading: true,
     currentSurface: 'auth', // 'auth', 'dashboard', 'workout', 'templateEditor'
-    authSurface: 'login', // 'login', 'register', or 'reset'
+    authSurface: 'login', // 'login', 'register', 'reset', or 'updatePassword'
 
     // Auth form fields
     authEmail: '',
@@ -16,7 +16,11 @@ document.addEventListener('alpine:init', () => {
     showLoginPassword: false,
     showRegisterPassword: false,
     showConfirmPassword: false,
+    showUpdatePassword: false,
+    showUpdateConfirmPassword: false,
     resetEmailSent: false,
+    passwordUpdateSuccess: false,
+    isPasswordRecoveryMode: false, // Flag to prevent SIGNED_IN from overriding PASSWORD_RECOVERY
 
     // Dashboard data
     templates: [],
@@ -83,9 +87,39 @@ document.addEventListener('alpine:init', () => {
       // Set up storage event listener for multi-tab sync
       this.setupStorageEventListener();
 
+      // Check URL hash for password recovery tokens BEFORE setting up auth listener
+      // Supabase recovery links include type=recovery in the hash
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const hashType = hashParams.get('type');
+      console.log('[AUTH DEBUG] URL hash type:', hashType);
+      if (hashType === 'recovery') {
+        console.log('[AUTH DEBUG] Detected recovery token in URL, setting isPasswordRecoveryMode = true');
+        this.isPasswordRecoveryMode = true;
+        this.currentSurface = 'auth';
+        this.authSurface = 'updatePassword';
+      }
+
       // Listen for auth state changes
-      window.auth.onAuthStateChange((_, session) => {
+      window.auth.onAuthStateChange((event, session) => {
+        console.log('[AUTH DEBUG] Event:', event, 'Session:', session ? 'exists' : 'null', 'User:', session?.user?.email);
         this.user = session?.user || null;
+
+        // Handle PASSWORD_RECOVERY event (user clicked reset link in email)
+        if (event === 'PASSWORD_RECOVERY') {
+          this.isPasswordRecoveryMode = true;
+          this.currentSurface = 'auth';
+          this.authSurface = 'updatePassword';
+          this.error = '';
+          this.successMessage = '';
+          return; // Don't navigate to dashboard
+        }
+
+        // If we're in password recovery mode, stay on updatePassword surface
+        // (Supabase fires SIGNED_IN after PASSWORD_RECOVERY, which would override)
+        if (this.isPasswordRecoveryMode) {
+          return;
+        }
+
         if (this.user) {
           this.currentSurface = 'dashboard';
           this.loadDashboardAndRestore();
@@ -98,11 +132,19 @@ document.addEventListener('alpine:init', () => {
       });
 
       // Check initial session
+      console.log('[AUTH DEBUG] Checking initial session...');
+      console.log('[AUTH DEBUG] Current URL:', window.location.href);
+      console.log('[AUTH DEBUG] URL hash:', window.location.hash);
       const session = await window.auth.getSession();
+      console.log('[AUTH DEBUG] Initial session result:', session ? 'exists' : 'null', session?.user?.email);
+      console.log('[AUTH DEBUG] isPasswordRecoveryMode:', this.isPasswordRecoveryMode);
       this.user = session?.user || null;
-      if (this.user) {
+      if (this.user && !this.isPasswordRecoveryMode) {
+        console.log('[AUTH DEBUG] Navigating to dashboard (user exists, not in recovery mode)');
         this.currentSurface = 'dashboard';
         await this.loadDashboardAndRestore();
+      } else if (this.isPasswordRecoveryMode) {
+        console.log('[AUTH DEBUG] Staying on updatePassword surface (recovery mode active)');
       }
       this.isLoading = false;
 
@@ -168,6 +210,11 @@ document.addEventListener('alpine:init', () => {
         this.resetEmailSent = false;
       }
 
+      // Reset passwordUpdateSuccess when leaving updatePassword surface
+      if (surface !== 'updatePassword') {
+        this.passwordUpdateSuccess = false;
+      }
+
       // Clear password fields when switching surfaces
       this.authPassword = '';
       this.authConfirmPassword = '';
@@ -180,6 +227,10 @@ document.addEventListener('alpine:init', () => {
         this.showRegisterPassword = !this.showRegisterPassword;
       } else if (field === 'confirm') {
         this.showConfirmPassword = !this.showConfirmPassword;
+      } else if (field === 'update') {
+        this.showUpdatePassword = !this.showUpdatePassword;
+      } else if (field === 'updateConfirm') {
+        this.showUpdateConfirmPassword = !this.showUpdateConfirmPassword;
       }
     },
 
@@ -214,6 +265,53 @@ document.addEventListener('alpine:init', () => {
       return this.authPassword === this.authConfirmPassword;
     },
 
+    async handlePasswordUpdate() {
+      this.error = '';
+      this.successMessage = '';
+
+      // Validate passwords match
+      if (this.authPassword !== this.authConfirmPassword) {
+        this.error = 'Passwords do not match';
+        return;
+      }
+
+      // Validate password length
+      if (this.authPassword.length < 6) {
+        this.error = 'Password must be at least 6 characters';
+        return;
+      }
+
+      this.authLoading = true;
+
+      try {
+        const result = await window.auth.updateUser(this.authPassword);
+
+        if (result.error) {
+          this.error = result.error.message;
+        } else {
+          this.passwordUpdateSuccess = true;
+          this.successMessage = 'Password updated successfully!';
+          // Clear password fields
+          this.authPassword = '';
+          this.authConfirmPassword = '';
+        }
+      } catch (err) {
+        this.error = err.message;
+      } finally {
+        this.authLoading = false;
+      }
+    },
+
+    goToLoginAfterPasswordUpdate() {
+      this.passwordUpdateSuccess = false;
+      this.isPasswordRecoveryMode = false; // Clear flag so normal auth flow resumes
+      this.authSurface = 'login';
+      this.error = '';
+      this.successMessage = '';
+      this.showUpdatePassword = false;
+      this.showUpdateConfirmPassword = false;
+    },
+
     async handleLogout() {
       // Clear workout backup before logout (while user.id is still available)
       this.clearWorkoutFromStorage();
@@ -225,7 +323,11 @@ document.addEventListener('alpine:init', () => {
       this.showLoginPassword = false;
       this.showRegisterPassword = false;
       this.showConfirmPassword = false;
+      this.showUpdatePassword = false;
+      this.showUpdateConfirmPassword = false;
       this.resetEmailSent = false;
+      this.passwordUpdateSuccess = false;
+      this.isPasswordRecoveryMode = false;
       this.destroyAllCharts();
       this.successMessage = 'Logged out successfully';
       this.clearMessages();

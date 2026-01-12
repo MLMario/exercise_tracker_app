@@ -1730,3 +1730,196 @@ input[type="checkbox"]:focus {
     padding: var(--spacing-lg) var(--spacing-xl);
   }
 }
+
+/* ==========================================================================
+   17. Dashboard Surface Styles (Mockup Update)
+   ========================================================================== */
+
+/* Badge - Generic pill badge styling */
+.dashboard-content .badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(79, 158, 255, 0.1);
+  color: var(--color-accent);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Dashboard Surface Header */
+.dashboard-surface .app-header {
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.dashboard-surface .header-content {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-surface .app-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-accent);
+}
+
+/* Dashboard Content */
+.dashboard-content {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-md);
+}
+
+/* Section Header */
+.dashboard-content .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.dashboard-content .section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Templates Grid */
+.templates-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Template Card Updates */
+.dashboard-content .template-card {
+  margin-bottom: 0;
+  transition: border-color var(--transition-fast);
+}
+
+.dashboard-content .template-card:hover {
+  border-color: var(--color-accent);
+}
+
+.dashboard-content .template-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.dashboard-content .template-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.dashboard-content .template-actions .btn-primary {
+  flex: 1;
+}
+
+/* Charts Grid */
+.charts-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Chart Card Updates */
+.dashboard-content .chart-card {
+  transition: border-color var(--transition-fast);
+}
+
+.dashboard-content .chart-card:hover {
+  border-color: var(--color-accent);
+}
+
+.dashboard-content .chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.dashboard-content .chart-info {
+  flex: 1;
+}
+
+.dashboard-content .chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--color-text-primary);
+}
+
+.dashboard-content .chart-meta {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.dashboard-content .chart-meta .badge {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-secondary);
+}
+
+/* Chart Canvas Container */
+.dashboard-content .chart-canvas-container {
+  height: 200px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Icon Button Styling for Dashboard */
+.dashboard-content .btn-icon {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.dashboard-content .btn-icon:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.dashboard-content .btn-icon.btn-danger:hover:not(:disabled) {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  background-color: rgba(248, 113, 113, 0.1);
+}
+
+/* Responsive - Wider screens */
+@media (min-width: 640px) {
+  .dashboard-content {
+    max-width: 100%;
+    padding: var(--spacing-lg);
+  }
+
+  .templates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: var(--spacing-md);
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-surface .header-content,
+  .dashboard-content {
+    max-width: 1200px;
+  }
+}

@@ -126,8 +126,15 @@ async function resetPassword(email) {
       };
     }
 
-    // Attempt to send password reset email
-    const { data, error } = await window.supabaseClient.auth.resetPasswordForEmail(email);
+    // Get the current site URL for the redirect
+    // This ensures the reset link brings users back to this exact deployment
+    const redirectTo = window.location.origin + window.location.pathname;
+    console.log('[AUTH DEBUG] resetPasswordForEmail redirectTo:', redirectTo);
+
+    // Attempt to send password reset email with explicit redirect URL
+    const { data, error } = await window.supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectTo
+    });
 
     if (error) {
       return { success: false, error };
@@ -136,6 +143,44 @@ async function resetPassword(email) {
     return { success: true, error: null };
   } catch (err) {
     console.error('Reset password error:', err);
+    return {
+      success: false,
+      error: err
+    };
+  }
+}
+
+/**
+ * Update user's password (used after PASSWORD_RECOVERY event)
+ *
+ * @param {string} password - New password
+ * @returns {Promise<{success: boolean, error: Error|null}>} Update result
+ */
+async function updateUser(password) {
+  try {
+    if (!password) {
+      return {
+        success: false,
+        error: new Error('Password is required')
+      };
+    }
+
+    if (password.length < 6) {
+      return {
+        success: false,
+        error: new Error('Password must be at least 6 characters')
+      };
+    }
+
+    const { data, error } = await window.supabaseClient.auth.updateUser({ password });
+
+    if (error) {
+      return { success: false, error };
+    }
+
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Update user error:', err);
     return {
       success: false,
       error: err
@@ -222,6 +267,7 @@ window.auth = {
   login,
   logout,
   resetPassword,
+  updateUser,
   getCurrentUser,
   getSession,
   onAuthStateChange

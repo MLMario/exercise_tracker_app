@@ -75,12 +75,15 @@ document.addEventListener('alpine:init', () => {
     // ==================== INITIALIZATION ====================
 
     async init() {
+      // Set up storage event listener for multi-tab sync
+      this.setupStorageEventListener();
+
       // Listen for auth state changes
-      window.auth.onAuthStateChange((event, session) => {
+      window.auth.onAuthStateChange((_, session) => {
         this.user = session?.user || null;
         if (this.user) {
           this.currentSurface = 'dashboard';
-          this.loadDashboard();
+          this.loadDashboardAndRestore();
         } else {
           this.currentSurface = 'auth';
           this.templates = [];
@@ -94,9 +97,18 @@ document.addEventListener('alpine:init', () => {
       this.user = session?.user || null;
       if (this.user) {
         this.currentSurface = 'dashboard';
-        await this.loadDashboard();
+        await this.loadDashboardAndRestore();
       }
       this.isLoading = false;
+
+      // Set up watcher for automatic localStorage backup
+      this.setupWorkoutWatcher();
+    },
+
+    async loadDashboardAndRestore() {
+      await this.loadDashboard();
+      // After dashboard loads (templates available), try to restore workout
+      await this.restoreWorkoutFromStorage();
     },
 
     // ==================== AUTH METHODS ====================
@@ -135,6 +147,8 @@ document.addEventListener('alpine:init', () => {
     },
 
     async handleLogout() {
+      // Clear workout backup before logout (while user.id is still available)
+      this.clearWorkoutFromStorage();
       await window.auth.logout();
       this.authEmail = '';
       this.authPassword = '';
@@ -732,6 +746,9 @@ document.addEventListener('alpine:init', () => {
         this.successMessage = 'Workout saved successfully!';
         this.clearMessages();
 
+        // Clear localStorage backup
+        this.clearWorkoutFromStorage();
+
         // Reset workout state
         this.activeWorkout = {
           template_id: null,
@@ -820,6 +837,10 @@ document.addEventListener('alpine:init', () => {
     confirmCancelWorkout() {
       this.showCancelWorkoutModal = false;
       this.stopTimer();
+
+      // Clear localStorage backup
+      this.clearWorkoutFromStorage();
+
       this.activeWorkout = {
         template_id: null,
         template_name: '',
@@ -1077,6 +1098,134 @@ document.addEventListener('alpine:init', () => {
         this.error = '';
         this.successMessage = '';
       }, 5000);
+    },
+
+    // ==================== LOCALSTORAGE BACKUP METHODS ====================
+
+    getWorkoutStorageKey() {
+      return this.user ? `activeWorkout_${this.user.id}` : null;
+    },
+
+    saveWorkoutToStorage() {
+      const key = this.getWorkoutStorageKey();
+      if (!key) return;
+
+      // Only save if there's an active workout
+      if (!this.activeWorkout.started_at || this.activeWorkout.exercises.length === 0) {
+        return;
+      }
+
+      const backupData = {
+        activeWorkout: this.activeWorkout,
+        originalTemplateSnapshot: this.originalTemplateSnapshot,
+        last_saved_at: new Date().toISOString()
+      };
+
+      localStorage.setItem(key, JSON.stringify(backupData));
+    },
+
+    loadWorkoutFromStorage() {
+      const key = this.getWorkoutStorageKey();
+      if (!key) return null;
+
+      const stored = localStorage.getItem(key);
+      if (!stored) return null;
+
+      try {
+        const backupData = JSON.parse(stored);
+
+        // Basic validation - check required fields exist
+        if (!backupData.activeWorkout ||
+            !backupData.activeWorkout.started_at ||
+            !Array.isArray(backupData.activeWorkout.exercises) ||
+            backupData.activeWorkout.exercises.length === 0) {
+          this.clearWorkoutFromStorage();
+          return null;
+        }
+
+        return backupData;
+      } catch (e) {
+        // Corrupted data - silently discard
+        this.clearWorkoutFromStorage();
+        return null;
+      }
+    },
+
+    clearWorkoutFromStorage() {
+      const key = this.getWorkoutStorageKey();
+      if (key) {
+        localStorage.removeItem(key);
+      }
+    },
+
+    async restoreWorkoutFromStorage() {
+      const backupData = this.loadWorkoutFromStorage();
+      if (!backupData) return false;
+
+      const { activeWorkout, originalTemplateSnapshot } = backupData;
+
+      // Check if template still exists (if workout was from a template)
+      if (activeWorkout.template_id) {
+        const templateExists = this.templates.some(t => t.id === activeWorkout.template_id);
+        if (!templateExists) {
+          // Template was deleted - discard and warn user
+          this.clearWorkoutFromStorage();
+          this.error = 'Your previous workout was discarded because the template was deleted.';
+          this.clearMessages();
+          return false;
+        }
+      }
+
+      // Restore the workout state
+      this.activeWorkout = activeWorkout;
+      this.originalTemplateSnapshot = originalTemplateSnapshot;
+      this.currentSurface = 'workout';
+
+      return true;
+    },
+
+    setupWorkoutWatcher() {
+      // Watch activeWorkout deeply for any changes
+      this.$watch('activeWorkout', () => {
+        this.saveWorkoutToStorage();
+      }, { deep: true });
+    },
+
+    setupStorageEventListener() {
+      // Listen for storage changes from other tabs
+      window.addEventListener('storage', (event) => {
+        const key = this.getWorkoutStorageKey();
+        if (event.key !== key) return;
+
+        if (event.newValue === null) {
+          // Workout was cleared in another tab
+          if (this.currentSurface === 'workout') {
+            this.activeWorkout = {
+              template_id: null,
+              template_name: '',
+              started_at: null,
+              exercises: []
+            };
+            this.originalTemplateSnapshot = null;
+            this.stopTimer();
+            this.currentSurface = 'dashboard';
+          }
+        } else {
+          // Workout was updated in another tab - sync it
+          try {
+            const backupData = JSON.parse(event.newValue);
+            if (backupData.activeWorkout) {
+              this.activeWorkout = backupData.activeWorkout;
+              this.originalTemplateSnapshot = backupData.originalTemplateSnapshot;
+              if (this.currentSurface !== 'workout' && this.activeWorkout.started_at) {
+                this.currentSurface = 'workout';
+              }
+            }
+          } catch (e) {
+            // Ignore parse errors from other tabs
+          }
+        }
+      });
     }
   }));
 });

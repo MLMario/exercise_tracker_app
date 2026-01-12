@@ -281,7 +281,10 @@ async function getExerciseHistory(exerciseId, options = {}) {
 
         sets.forEach(set => {
           if (set.weight > maxWeight) maxWeight = set.weight;
-          const volume = (set.weight || 0) * (set.reps || 0);
+          // Volume: weight × reps for weighted exercises, just reps for bodyweight
+          const volume = (set.weight > 0)
+            ? (set.weight * (set.reps || 0))
+            : (set.reps || 0);
           if (volume > maxVolumeSet) maxVolumeSet = volume;
         });
       });

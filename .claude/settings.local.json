@@ -12,7 +12,8 @@
       "Bash(pip install:*)",
       "Bash(playwright install:*)",
       "Bash(ipconfig:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nFix swipe-to-delete functionality for mobile\n\nBug fixes:\n- Fixed delete button not responding to clicks: handleSwipeStart was\n  calling handleSwipeCancel\\(\\) which hid the delete button before the\n  click event could fire. Now checks if click target is the delete\n  button and returns early.\n- Fixed checkbox intercepting delete button clicks: Added CSS to disable\n  pointer-events on checkbox when row is in swipe-revealed state.\n- Fixed red X remaining visible after deletion: Created combined\n  deleteSetWithSwipeReset\\(\\) function and updated handleSwipeCancel\\(\\)\n  to clear transforms on all set rows.\n- Added media query for hover effects so delete buttons only show on\n  hover for desktop devices \\(pointer: fine\\).\n- Increased z-index of delete button when revealed to ensure it''s\n  clickable above other elements.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ],
     "deny": [],
     "ask": []

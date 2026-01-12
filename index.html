@@ -591,6 +591,38 @@
       </div>
     </div>
 
+    <!-- Finish Workout Modal -->
+    <div x-show="showFinishWorkoutModal" class="modal-overlay" @click.self="dismissFinishWorkoutModal">
+      <div class="modal modal-sm">
+        <div class="modal-header">
+          <h2>Finish Workout?</h2>
+        </div>
+        <div class="modal-body">
+          <p>Save this workout and end your session?</p>
+        </div>
+        <div class="modal-footer">
+          <button @click="dismissFinishWorkoutModal" class="btn btn-secondary">Cancel</button>
+          <button @click="confirmFinishWorkout" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cancel Workout Modal -->
+    <div x-show="showCancelWorkoutModal" class="modal-overlay" @click.self="dismissCancelWorkoutModal">
+      <div class="modal modal-sm">
+        <div class="modal-header">
+          <h2>Cancel Workout?</h2>
+        </div>
+        <div class="modal-body">
+          <p>All progress will be lost. This cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button @click="dismissCancelWorkoutModal" class="btn btn-secondary">Go Back</button>
+          <button @click="confirmCancelWorkout" class="btn btn-danger">Discard</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast Messages -->
     <div class="toast-container">
       <div x-show="error" class="toast toast-error">

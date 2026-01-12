@@ -49,6 +49,10 @@ document.addEventListener('alpine:init', () => {
     showTemplateUpdateModal: false,
     pendingWorkoutData: null,
 
+    // Workout confirmation modals
+    showFinishWorkoutModal: false,
+    showCancelWorkoutModal: false,
+
     // Timer state (NOT timerState object)
     timerActive: false,
     timerPaused: false,
@@ -710,23 +714,7 @@ document.addEventListener('alpine:init', () => {
         return;
       }
 
-      if (!confirm('Finish and save this workout?')) {
-        return;
-      }
-
-      // Check for template changes
-      if (this.activeWorkout.template_id && this.hasTemplateChanges()) {
-        this.pendingWorkoutData = {
-          template_id: this.activeWorkout.template_id,
-          started_at: this.activeWorkout.started_at,
-          finished_at: new Date().toISOString(),
-          exercises: this.activeWorkout.exercises
-        };
-        this.showTemplateUpdateModal = true;
-        return;
-      }
-
-      await this.saveWorkoutAndCleanup();
+      this.showFinishWorkoutModal = true;
     },
 
     async saveWorkoutAndCleanup() {
@@ -803,10 +791,34 @@ document.addEventListener('alpine:init', () => {
     },
 
     cancelWorkout() {
-      if (!confirm('Cancel this workout? All progress will be lost.')) {
+      this.showCancelWorkoutModal = true;
+    },
+
+    // Finish workout modal handlers
+    confirmFinishWorkout() {
+      this.showFinishWorkoutModal = false;
+
+      if (this.activeWorkout.template_id && this.hasTemplateChanges()) {
+        this.pendingWorkoutData = {
+          template_id: this.activeWorkout.template_id,
+          started_at: this.activeWorkout.started_at,
+          finished_at: new Date().toISOString(),
+          exercises: this.activeWorkout.exercises
+        };
+        this.showTemplateUpdateModal = true;
         return;
       }
 
+      this.saveWorkoutAndCleanup();
+    },
+
+    dismissFinishWorkoutModal() {
+      this.showFinishWorkoutModal = false;
+    },
+
+    // Cancel workout modal handlers
+    confirmCancelWorkout() {
+      this.showCancelWorkoutModal = false;
       this.stopTimer();
       this.activeWorkout = {
         template_id: null,
@@ -818,6 +830,10 @@ document.addEventListener('alpine:init', () => {
       this.currentSurface = 'dashboard';
       this.successMessage = 'Workout cancelled';
       this.clearMessages();
+    },
+
+    dismissCancelWorkoutModal() {
+      this.showCancelWorkoutModal = false;
     },
 
     hasTemplateChanges() {

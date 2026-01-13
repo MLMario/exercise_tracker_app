@@ -29,7 +29,7 @@ A technical debt refactor of an existing fitness tracking app. Migrating from ze
 
 - [ ] Vite build setup with TypeScript
 - [ ] Surface-based module structure (auth, dashboard, workout, templateEditor)
-- [ ] Evaluate and select UI framework (Alpine.js, Vue, React, or Preact)
+- [x] Evaluate and select UI framework (Alpine.js, Vue, React, or Preact) — Preact selected
 - [ ] Type definitions for all service modules
 - [ ] Type definitions for Supabase schema
 
@@ -76,7 +76,7 @@ A technical debt refactor of an existing fitness tracking app. Migrating from ze
 | Vite as bundler | Fast, modern, great DX, minimal config | — Pending |
 | TypeScript (full migration) | Type safety, better refactoring, IDE support | — Pending |
 | Surface-based modules | Matches existing `currentSurface` pattern, clear boundaries | — Pending |
-| Evaluate UI frameworks | Alpine.js may not be best fit for modular structure | — Pending |
+| Evaluate UI frameworks | Alpine.js may not be best fit for modular structure | Preact - best ecosystem for scaling, 4KB bundle |
 
 ---
 

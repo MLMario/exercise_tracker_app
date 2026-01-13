@@ -465,4 +465,24 @@ If bundle size is critical priority or Vue 3 proves problematic:
 
 ## Decision
 
-*[To be completed after user selection]*
+**Selected: Preact**
+
+**Date:** 2026-01-12
+
+**Rationale:**
+- User prioritized scalability and efficient feature development over migration ease
+- React ecosystem provides the largest library of pre-built components
+- Preact chosen over full React for bundle size (4KB vs 40KB gzip)
+- API-compatible with React - can swap to full React if needed later
+- JSX rewrite required but acceptable trade-off for ecosystem access
+
+**Migration approach:** Full rewrite, surface by surface
+- Start with Auth surface (simplest)
+- Progress through Dashboard, Template Editor
+- End with Workout (most complex - timer, swipe gestures)
+
+**Risks to monitor:**
+- JSX learning curve (different from Alpine templates)
+- Two-way binding requires manual handling (controlled inputs)
+- Swipe gestures may need custom hooks
+- Chart.js lifecycle management in functional components

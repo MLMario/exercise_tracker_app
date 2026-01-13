@@ -1,3 +1,15 @@
+/**
+ * ARCHIVED: Alpine.js Application Component
+ *
+ * This file contains the original Alpine.js implementation of the fitness app.
+ * It has been replaced by Preact surfaces in src/surfaces/.
+ *
+ * Kept for reference during migration validation.
+ * Can be deleted after confirming all functionality works in Preact.
+ *
+ * Archived: 2026-01-13
+ */
+
 document.addEventListener('alpine:init', () => {
   Alpine.data('fitnessApp', () => ({
     // ==================== STATE VARIABLES ====================
@@ -383,8 +395,10 @@ document.addEventListener('alpine:init', () => {
         const { data, error } = await window.charts.getUserCharts();
         if (error) throw new Error(error.message);
         this.userCharts = data || [];
-        // Wait for DOM to update, then render charts
+        // Wait for DOM to update, then wait for paint frames before rendering charts
+        // Need double rAF: first schedules for next frame, second ensures paint completed
         await this.$nextTick();
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
         await this.renderAllCharts();
       } catch (err) {
         throw new Error('Failed to load charts: ' + err.message);

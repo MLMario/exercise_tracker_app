@@ -4,7 +4,7 @@
  * Barrel export for the template editor surface components.
  */
 
-export { default as TemplateEditorSurface } from './TemplateEditorSurface';
+export { TemplateEditorSurface, default } from './TemplateEditorSurface';
 export type {
   EditingSet,
   EditingExercise,

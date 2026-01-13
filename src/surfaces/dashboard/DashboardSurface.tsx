@@ -39,6 +39,10 @@ export interface UserChart {
 interface DashboardSurfaceProps {
   /** Callback to navigate back to auth surface (logout) */
   onLogout?: () => void;
+  /** Callback to navigate to template editor with existing template */
+  onEditTemplate?: (template: TemplateWithExercises) => void;
+  /** Callback to navigate to template editor for new template */
+  onCreateNewTemplate?: () => void;
 }
 
 /**
@@ -47,7 +51,7 @@ interface DashboardSurfaceProps {
  * Manages dashboard data state and loading.
  * Will render template list, charts, and provide workout functionality.
  */
-export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
+export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate }: DashboardSurfaceProps) {
   // ==================== DASHBOARD STATE ====================
   // Mirrors js/app.js lines 25-30 state variables
 
@@ -226,10 +230,11 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
    * Matches js/app.js lines 444-453.
    */
   const handleCreateNewTemplate = (): void => {
-    // Navigation will be wired to surface navigation in Phase 12
-    console.log('Navigate to template editor (new)');
     setError('');
     setSuccessMessage('');
+    if (onCreateNewTemplate) {
+      onCreateNewTemplate();
+    }
   };
 
   /**
@@ -238,10 +243,11 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
    * Matches js/app.js lines 455-467.
    */
   const handleEditTemplate = (template: TemplateWithExercises): void => {
-    // Navigation will be wired to surface navigation in Phase 12
-    console.log('Navigate to template editor (edit)', template.id);
     setError('');
     setSuccessMessage('');
+    if (onEditTemplate) {
+      onEditTemplate(template);
+    }
   };
 
   /**

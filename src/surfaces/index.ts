@@ -10,3 +10,6 @@ export type { AuthSubSurface, PasswordField } from './auth';
 
 export { default as DashboardSurface } from './dashboard';
 export type { UserChart } from './dashboard';
+
+export { default as TemplateEditorSurface } from './template-editor';
+export type { EditingSet, EditingExercise, EditingTemplate } from './template-editor';

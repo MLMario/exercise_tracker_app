@@ -9,6 +9,7 @@
 
 import { useState, useEffect } from 'preact/hooks';
 import type { TemplateWithExercises } from '@/types';
+import { WorkoutExerciseCard } from './WorkoutExerciseCard';
 
 // ============================================================================
 // Interfaces
@@ -227,6 +228,113 @@ export function WorkoutSurface({
     setShowFinishWorkoutModal(true);
   };
 
+  // ==================== SET MANAGEMENT HANDLERS ====================
+  // Matches js/app.js lines 743-770
+
+  /**
+   * Add a new set to an exercise.
+   * Matches js/app.js lines 743-752.
+   */
+  const handleAddSet = (exerciseIndex: number): void => {
+    setActiveWorkout(prev => {
+      const updated = { ...prev };
+      const exercise = { ...updated.exercises[exerciseIndex] };
+      const lastSet = exercise.sets[exercise.sets.length - 1];
+      exercise.sets = [...exercise.sets, {
+        set_number: exercise.sets.length + 1,
+        weight: lastSet?.weight || 0,
+        reps: lastSet?.reps || 10,
+        is_done: false
+      }];
+      updated.exercises = [...updated.exercises];
+      updated.exercises[exerciseIndex] = exercise;
+      return updated;
+    });
+  };
+
+  /**
+   * Delete a set from an exercise.
+   * Matches js/app.js lines 755-762.
+   */
+  const handleDeleteSet = (exerciseIndex: number, setIndex: number): void => {
+    setActiveWorkout(prev => {
+      const updated = { ...prev };
+      const exercise = { ...updated.exercises[exerciseIndex] };
+      if (exercise.sets.length > 1) {
+        exercise.sets = exercise.sets.filter((_, i) => i !== setIndex);
+        // Renumber remaining sets
+        exercise.sets = exercise.sets.map((set, i) => ({
+          ...set,
+          set_number: i + 1
+        }));
+      }
+      updated.exercises = [...updated.exercises];
+      updated.exercises[exerciseIndex] = exercise;
+      return updated;
+    });
+  };
+
+  /**
+   * Update set weight.
+   */
+  const handleWeightChange = (exerciseIndex: number, setIndex: number, weight: number): void => {
+    setActiveWorkout(prev => {
+      const updated = { ...prev };
+      const exercise = { ...updated.exercises[exerciseIndex] };
+      exercise.sets = [...exercise.sets];
+      exercise.sets[setIndex] = { ...exercise.sets[setIndex], weight };
+      updated.exercises = [...updated.exercises];
+      updated.exercises[exerciseIndex] = exercise;
+      return updated;
+    });
+  };
+
+  /**
+   * Update set reps.
+   */
+  const handleRepsChange = (exerciseIndex: number, setIndex: number, reps: number): void => {
+    setActiveWorkout(prev => {
+      const updated = { ...prev };
+      const exercise = { ...updated.exercises[exerciseIndex] };
+      exercise.sets = [...exercise.sets];
+      exercise.sets[setIndex] = { ...exercise.sets[setIndex], reps };
+      updated.exercises = [...updated.exercises];
+      updated.exercises[exerciseIndex] = exercise;
+      return updated;
+    });
+  };
+
+  /**
+   * Toggle set done state.
+   * Timer integration will be added in Plan 03.
+   */
+  const handleToggleDone = (exerciseIndex: number, setIndex: number, _restSeconds: number): void => {
+    setActiveWorkout(prev => {
+      const updated = { ...prev };
+      const exercise = { ...updated.exercises[exerciseIndex] };
+      exercise.sets = [...exercise.sets];
+      const set = { ...exercise.sets[setIndex] };
+      set.is_done = !set.is_done;
+      exercise.sets[setIndex] = set;
+      updated.exercises = [...updated.exercises];
+      updated.exercises[exerciseIndex] = exercise;
+      // Timer start will be added in Plan 03
+      return updated;
+    });
+  };
+
+  /**
+   * Remove exercise from workout.
+   * Matches js/app.js lines 898-905.
+   */
+  const handleRemoveExercise = (index: number): void => {
+    // Timer stop will be added in Plan 03
+    setActiveWorkout(prev => ({
+      ...prev,
+      exercises: prev.exercises.filter((_, i) => i !== index)
+    }));
+  };
+
   // ==================== RENDER ====================
   // Structure matches index.html lines 524-661
 
@@ -270,13 +378,31 @@ export function WorkoutSurface({
 
       {/* Main workout content */}
       <div class="workout-content">
-        {/* Exercises list - placeholder for Plan 02 */}
+        {/* Exercises list */}
         <div class="exercises-list">
-          {activeWorkout.exercises.length > 0 ? (
-            <p class="placeholder-text">
-              {activeWorkout.exercises.length} exercise(s) loaded - cards will be rendered in Plan 02
-            </p>
-          ) : null}
+          {activeWorkout.exercises.map((exercise, index) => (
+            <WorkoutExerciseCard
+              key={exercise.exercise_id || index}
+              exercise={exercise}
+              exerciseIndex={index}
+              onWeightChange={handleWeightChange}
+              onRepsChange={handleRepsChange}
+              onToggleDone={handleToggleDone}
+              onAddSet={handleAddSet}
+              onDeleteSet={handleDeleteSet}
+              onRemoveExercise={handleRemoveExercise}
+              // Timer props will be connected in Plan 03
+              isTimerActive={activeTimerExerciseIndex === index && timerActive}
+              timerProgress={activeTimerExerciseIndex === index && timerTotalSeconds > 0
+                ? ((timerTotalSeconds - timerSeconds) / timerTotalSeconds) * 100
+                : 0
+              }
+              timerDisplay={activeTimerExerciseIndex === index
+                ? formatTime(timerSeconds)
+                : undefined
+              }
+            />
+          ))}
         </div>
 
         {/* Empty state when no exercises */}

@@ -19,7 +19,7 @@ None
 - [x] **Phase 3: Framework Evaluation** - Evaluate Alpine.js alternatives, make framework selection → **Preact**
 - [x] **Phase 4: Auth Service** - Migrate auth service with full TypeScript types
 - [x] **Phase 5: Data Services** - Migrate exercises, templates, logging services with types
-- [ ] **Phase 6: Auth Surface** - Refactor auth UI (login, register, password reset, session)
+- [x] **Phase 6: Auth Surface** - Refactor auth UI (login, register, password reset, session)
 - [ ] **Phase 7: Dashboard Surface** - Refactor main dashboard view and navigation
 - [ ] **Phase 8: Template Editor Surface** - Refactor template CRUD operations
 - [ ] **Phase 9: Exercise Library Surface** - Refactor exercise browser, filter, custom creation
@@ -114,7 +114,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Framework Evaluation | 1/1 | Complete | 2026-01-12 |
 | 4. Auth Service | 1/1 | Complete | 2026-01-12 |
 | 5. Data Services | 3/3 | Complete | 2026-01-12 |
-| 6. Auth Surface | 0/TBD | Not started | - |
+| 6. Auth Surface | 3/3 | Complete | 2026-01-12 |
 | 7. Dashboard Surface | 0/TBD | Not started | - |
 | 8. Template Editor Surface | 0/TBD | Not started | - |
 | 9. Exercise Library Surface | 0/TBD | Not started | - |

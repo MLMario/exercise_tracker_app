@@ -1,6 +1,11 @@
 /// <reference types="vite/client" />
 
-import type { TemplatesService, ExercisesService } from '@/types';
+import type {
+  TemplatesService,
+  ExercisesService,
+  LoggingService,
+  ChartsService,
+} from '@/types';
 
 interface ImportMetaEnv {
   readonly VITE_SUPABASE_URL: string;
@@ -22,5 +27,9 @@ declare global {
     templates: TemplatesService;
     /** Exercises service - manages exercise library */
     exercises: ExercisesService;
+    /** Logging service - manages workout logs and metrics */
+    logging: LoggingService;
+    /** Charts service - manages chart CRUD and rendering */
+    charts: ChartsService;
   }
 }

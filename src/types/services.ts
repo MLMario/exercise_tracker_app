@@ -560,3 +560,128 @@ export interface LoggingService {
    */
   getRecentExerciseData(exerciseId: string): Promise<RecentExerciseData | null>;
 }
+
+// ============================================================================
+// Charts Service Types
+// ============================================================================
+
+/**
+ * User chart configuration data.
+ * Returned by getUserCharts() with joined exercise info.
+ */
+export interface UserChartData {
+  /** Chart UUID */
+  id: string;
+  /** User UUID */
+  user_id: string;
+  /** Exercise UUID */
+  exercise_id: string;
+  /** Metric type for the chart */
+  metric_type: 'total_sets' | 'max_volume_set';
+  /** X-axis grouping mode */
+  x_axis_mode: 'date' | 'session';
+  /** Display order */
+  order: number;
+  /** ISO timestamp when created */
+  created_at: string;
+  /** Joined exercise data */
+  exercises: {
+    id: string;
+    name: string;
+    category: string;
+  };
+}
+
+/**
+ * Input data for creating a chart.
+ */
+export interface CreateChartInput {
+  /** Exercise UUID */
+  exercise_id: string;
+  /** Metric type for the chart */
+  metric_type: string;
+  /** X-axis grouping mode */
+  x_axis_mode: string;
+}
+
+/**
+ * Options for rendering a chart.
+ */
+export interface RenderChartOptions {
+  /** Metric type for y-axis label */
+  metricType: string;
+  /** Exercise name for chart title */
+  exerciseName: string;
+}
+
+/**
+ * Charts service interface.
+ * Provides chart CRUD operations and Chart.js rendering.
+ */
+export interface ChartsService {
+  /**
+   * Get all charts for the current user.
+   *
+   * @returns Promise resolving to user charts or error
+   */
+  getUserCharts(): Promise<ServiceResult<UserChartData[]>>;
+
+  /**
+   * Create a new chart.
+   *
+   * @param chartData - Chart configuration data
+   * @returns Promise resolving to created chart or error
+   */
+  createChart(chartData: CreateChartInput): Promise<ServiceResult<UserChartData>>;
+
+  /**
+   * Delete a chart by ID.
+   *
+   * @param id - Chart UUID
+   * @returns Promise resolving to error status
+   */
+  deleteChart(id: string): Promise<ServiceError>;
+
+  /**
+   * Reorder charts based on array position.
+   *
+   * @param chartIds - Array of chart UUIDs in desired order
+   * @returns Promise resolving to error status
+   */
+  reorderCharts(chartIds: string[]): Promise<ServiceError>;
+
+  /**
+   * Render a Chart.js line chart.
+   *
+   * @param canvasId - ID of the canvas element
+   * @param chartData - Chart data with labels and values
+   * @param options - Rendering options
+   * @returns Chart.js instance or null if error
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  renderChart(canvasId: string, chartData: ChartData, options: RenderChartOptions): any;
+
+  /**
+   * Destroy a Chart.js instance.
+   *
+   * @param chartInstance - The Chart.js instance to destroy
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  destroyChart(chartInstance: any): void;
+
+  /**
+   * Get display name for metric type.
+   *
+   * @param metricType - Metric type string
+   * @returns Display name
+   */
+  getMetricDisplayName(metricType: string): string;
+
+  /**
+   * Get display name for x-axis mode.
+   *
+   * @param mode - X-axis mode string
+   * @returns Display name
+   */
+  getModeDisplayName(mode: string): string;
+}

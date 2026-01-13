@@ -7,9 +7,12 @@
  * State variables mirror the Alpine.js implementation in js/app.js lines 25-30.
  */
 
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
+import type { Chart } from 'chart.js';
 import type { Exercise, TemplateWithExercises } from '@/types';
 import { TemplateList } from './TemplateList';
+import { ChartSection } from './ChartSection';
+import { AddChartModal } from './AddChartModal';
 
 /**
  * UserChart type for chart configuration.
@@ -60,6 +63,21 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
   // Flag to control when charts need to reload
   const [chartsNeedRefresh, setChartsNeedRefresh] = useState(true);
 
+  // Chart.js instances keyed by chart ID - stored in ref to avoid re-renders
+  const chartInstancesRef = useRef<Record<string, Chart>>({});
+  // State version of chartInstances for rendering - updated after rendering
+  const [chartInstances, setChartInstances] = useState<Record<string, Chart>>({});
+
+  // Modal state for add chart
+  const [showAddChartModal, setShowAddChartModal] = useState(false);
+
+  // Modal state for delete chart confirmation
+  const [showDeleteChartModal, setShowDeleteChartModal] = useState(false);
+  const [pendingDeleteChartId, setPendingDeleteChartId] = useState<string | null>(null);
+
+  // Chart modal error
+  const [chartError, setChartError] = useState('');
+
   // Loading state for initial data fetch
   const [isLoading, setIsLoading] = useState(true);
 
@@ -92,6 +110,90 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
     setAvailableExercises(data || []);
   };
 
+  // ==================== CHART DATA LOADING ====================
+  // Matches js/app.js lines 381-440
+
+  /**
+   * Load user charts from the charts service.
+   * Matches js/app.js lines 381-392.
+   */
+  const loadUserCharts = async (): Promise<void> => {
+    try {
+      const { data, error } = await window.charts.getUserCharts();
+      if (error) throw new Error(error.message);
+      setUserCharts(data || []);
+    } catch (err) {
+      throw new Error('Failed to load charts: ' + (err instanceof Error ? err.message : String(err)));
+    }
+  };
+
+  /**
+   * Destroy all Chart.js instances to prevent memory leaks.
+   * Matches js/app.js lines 433-440.
+   */
+  const destroyAllCharts = (): void => {
+    Object.values(chartInstancesRef.current).forEach(chart => {
+      if (chart && typeof chart.destroy === 'function') {
+        chart.destroy();
+      }
+    });
+    chartInstancesRef.current = {};
+    setChartInstances({});
+  };
+
+  /**
+   * Render all charts using Chart.js.
+   * Matches js/app.js lines 394-431.
+   */
+  const renderAllCharts = async (): Promise<void> => {
+    // Destroy existing chart instances first
+    destroyAllCharts();
+
+    const newInstances: Record<string, Chart> = {};
+
+    for (const chart of userCharts) {
+      try {
+        const canvasId = `chart-${chart.id}`;
+        const canvas = document.getElementById(canvasId);
+
+        if (!canvas) {
+          console.warn(`Canvas not found for chart ${chart.id}`);
+          continue;
+        }
+
+        const { data: chartData, error } = await window.logging.getExerciseMetrics(
+          chart.exercise_id,
+          { metric: chart.metric_type, mode: chart.x_axis_mode }
+        );
+
+        if (error) {
+          console.error(`Failed to get metrics for chart ${chart.id}:`, error);
+          continue;
+        }
+
+        if (chartData) {
+          const chartInstance = window.charts.renderChart(
+            canvasId,
+            chartData,
+            {
+              metricType: chart.metric_type,
+              exerciseName: chart.exercises?.name || 'Exercise'
+            }
+          );
+
+          if (chartInstance) {
+            newInstances[chart.id] = chartInstance;
+          }
+        }
+      } catch (err) {
+        console.error(`Failed to render chart ${chart.id}:`, err);
+      }
+    }
+
+    chartInstancesRef.current = newInstances;
+    setChartInstances({ ...newInstances });
+  };
+
   /**
    * Load all dashboard data (templates and exercises in parallel).
    * Matches js/app.js lines 343-359.
@@ -105,8 +207,8 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
       await Promise.all([
         loadTemplates(),
         loadExercises(),
+        loadUserCharts(),
       ]);
-      // Charts loading will be added later - for now just clear the refresh flag
       setChartsNeedRefresh(false);
     } catch (err) {
       setError('Failed to load dashboard: ' + (err instanceof Error ? err.message : String(err)));
@@ -178,14 +280,132 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
     setSuccessMessage('');
   };
 
+  // ==================== CHART MODAL HANDLERS ====================
+  // Matches js/app.js lines 1196-1283
+
+  /**
+   * Open the add chart modal.
+   * Matches js/app.js lines 1198-1207.
+   */
+  const openAddChartModal = (): void => {
+    setShowAddChartModal(true);
+    setChartError('');
+    setError('');
+    setSuccessMessage('');
+  };
+
+  /**
+   * Close the add chart modal.
+   * Matches js/app.js lines 1209-1216.
+   */
+  const closeAddChartModal = (): void => {
+    setShowAddChartModal(false);
+    setChartError('');
+  };
+
+  /**
+   * Handle chart creation.
+   * Matches js/app.js lines 1218-1251.
+   */
+  const handleCreateChart = async (
+    exerciseId: string,
+    metricType: string,
+    xAxisMode: string
+  ): Promise<void> => {
+    setChartError('');
+
+    if (!exerciseId) {
+      setChartError('Please select an exercise');
+      return;
+    }
+
+    if (!metricType) {
+      setChartError('Please select a metric type');
+      return;
+    }
+
+    if (!xAxisMode) {
+      setChartError('Please select an x-axis mode');
+      return;
+    }
+
+    try {
+      const { error } = await window.charts.createChart({
+        exercise_id: exerciseId,
+        metric_type: metricType,
+        x_axis_mode: xAxisMode
+      });
+
+      if (error) throw new Error(error.message);
+
+      closeAddChartModal();
+      await loadUserCharts();
+    } catch (err) {
+      setChartError('Failed to add chart: ' + (err instanceof Error ? err.message : String(err)));
+    }
+  };
+
+  /**
+   * Handle delete chart button click.
+   * Opens confirmation modal.
+   * Matches js/app.js lines 1253-1256.
+   */
+  const handleDeleteChart = (id: string): void => {
+    setPendingDeleteChartId(id);
+    setShowDeleteChartModal(true);
+  };
+
+  /**
+   * Dismiss the delete chart confirmation modal.
+   * Matches js/app.js lines 1258-1261.
+   */
+  const dismissDeleteChartModal = (): void => {
+    setShowDeleteChartModal(false);
+    setPendingDeleteChartId(null);
+  };
+
+  /**
+   * Confirm chart deletion.
+   * Matches js/app.js lines 1263-1283.
+   */
+  const confirmDeleteChart = async (): Promise<void> => {
+    const id = pendingDeleteChartId;
+    setShowDeleteChartModal(false);
+    setPendingDeleteChartId(null);
+
+    if (!id) return;
+
+    setError('');
+    try {
+      // Destroy chart instance
+      if (chartInstancesRef.current[id]) {
+        chartInstancesRef.current[id].destroy();
+        delete chartInstancesRef.current[id];
+        setChartInstances({ ...chartInstancesRef.current });
+      }
+
+      const { error } = await window.charts.deleteChart(id);
+      if (error) throw new Error(error.message);
+
+      await loadUserCharts();
+    } catch (err) {
+      setError('Failed to remove chart: ' + (err instanceof Error ? err.message : String(err)));
+    }
+  };
+
   // ==================== INITIALIZATION ====================
 
   useEffect(() => {
     // Load dashboard data on component mount
     loadDashboard();
+
+    // Cleanup chart instances on unmount
+    return () => {
+      destroyAllCharts();
+    };
   }, []);
 
-  // ==================== PLACEHOLDER RENDER ====================
+  // ==================== RENDER ====================
   // Structure matches expected sections for dashboard
 
   return (
@@ -237,14 +457,14 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
             onStartWorkout={handleStartWorkout}
           />
 
-          {/* Charts section - placeholder */}
-          <section class="charts-section">
-            <h2>Progress Charts</h2>
-            <p class="placeholder-text">
-              {userCharts.length} chart(s) configured
-            </p>
-            {/* Charts will be implemented in later plans */}
-          </section>
+          {/* Charts section */}
+          <ChartSection
+            charts={userCharts}
+            chartInstances={chartInstances}
+            onAddChart={openAddChartModal}
+            onDeleteChart={handleDeleteChart}
+            onRenderCharts={renderAllCharts}
+          />
 
           {/* Exercises info - placeholder */}
           <section class="exercises-info">
@@ -253,6 +473,45 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
             </p>
           </section>
         </main>
+      )}
+
+      {/* Add Chart Modal */}
+      <AddChartModal
+        isOpen={showAddChartModal}
+        exercises={availableExercises}
+        onClose={closeAddChartModal}
+        onSubmit={handleCreateChart}
+        error={chartError}
+      />
+
+      {/* Delete Chart Confirmation Modal */}
+      {showDeleteChartModal && (
+        <div class="modal-overlay" onClick={dismissDeleteChartModal}>
+          <div class="modal-content delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <div class="modal-header">
+              <h2>Delete Chart</h2>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete this chart?</p>
+            </div>
+            <div class="modal-actions">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onClick={dismissDeleteChartModal}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                onClick={confirmDeleteChart}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

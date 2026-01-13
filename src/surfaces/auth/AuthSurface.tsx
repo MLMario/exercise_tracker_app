@@ -12,6 +12,8 @@ import { useState, useEffect } from 'preact/hooks';
 import { auth } from '@/services/auth';
 import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
+import { ResetPasswordForm } from './ResetPasswordForm';
+import { UpdatePasswordForm } from './UpdatePasswordForm';
 
 /**
  * Auth sub-surface type - controls which auth form is displayed
@@ -206,6 +208,92 @@ export function AuthSurface() {
   };
 
   /**
+   * Handle password reset request
+   * Matches js/app.js lines 242-267
+   */
+  const handlePasswordReset = async () => {
+    setError('');
+    setSuccessMessage('');
+
+    if (!authEmail) {
+      setError('Email is required');
+      return;
+    }
+
+    setAuthLoading(true);
+
+    try {
+      const result = await auth.resetPassword(authEmail);
+
+      if (result.error) {
+        setError(result.error.message);
+      } else {
+        setResetEmailSent(true);
+        setSuccessMessage('Password reset email sent. Check your inbox.');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  /**
+   * Handle password update (after clicking recovery link)
+   * Matches js/app.js lines 273-308
+   */
+  const handlePasswordUpdate = async () => {
+    setError('');
+    setSuccessMessage('');
+
+    // Validate passwords match
+    if (authPassword !== authConfirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    // Validate password length
+    if (authPassword.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    setAuthLoading(true);
+
+    try {
+      const result = await auth.updateUser(authPassword);
+
+      if (result.error) {
+        setError(result.error.message);
+      } else {
+        setPasswordUpdateSuccess(true);
+        setSuccessMessage('Password updated successfully!');
+        // Clear password fields
+        setAuthPassword('');
+        setAuthConfirmPassword('');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  /**
+   * Navigate to login after password update success
+   * Matches js/app.js lines 310-318
+   */
+  const goToLoginAfterPasswordUpdate = () => {
+    setPasswordUpdateSuccess(false);
+    setIsPasswordRecoveryMode(false); // Clear flag so normal auth flow resumes
+    setAuthSurface('login');
+    setError('');
+    setSuccessMessage('');
+    setShowUpdatePassword(false);
+    setShowUpdateConfirmPassword(false);
+  };
+
+  /**
    * Clear error message
    */
   const clearError = () => setError('');
@@ -255,22 +343,33 @@ export function AuthSurface() {
 
       case 'reset':
         return (
-          <div class="auth-surface-placeholder" data-surface="reset">
-            <h2>Reset Password Surface</h2>
-            <p>Reset Email Sent: {resetEmailSent ? 'true' : 'false'}</p>
-            <button type="button" onClick={() => switchAuthSurface('login')}>
-              Back to Login
-            </button>
-          </div>
+          <ResetPasswordForm
+            email={authEmail}
+            setEmail={setAuthEmail}
+            error={error}
+            isLoading={authLoading}
+            resetEmailSent={resetEmailSent}
+            onSubmit={handlePasswordReset}
+            onBackToLogin={() => switchAuthSurface('login')}
+          />
         );
 
       case 'updatePassword':
         return (
-          <div class="auth-surface-placeholder" data-surface="updatePassword">
-            <h2>Update Password Surface</h2>
-            <p>Password Update Success: {passwordUpdateSuccess ? 'true' : 'false'}</p>
-            <p>Recovery Mode: {isPasswordRecoveryMode ? 'true' : 'false'}</p>
-          </div>
+          <UpdatePasswordForm
+            password={authPassword}
+            setPassword={setAuthPassword}
+            confirmPassword={authConfirmPassword}
+            setConfirmPassword={setAuthConfirmPassword}
+            showPassword={showUpdatePassword}
+            showConfirmPassword={showUpdateConfirmPassword}
+            onTogglePassword={(field) => togglePasswordVisibility(field)}
+            error={error}
+            isLoading={authLoading}
+            passwordUpdateSuccess={passwordUpdateSuccess}
+            onSubmit={handlePasswordUpdate}
+            onGoToLogin={goToLoginAfterPasswordUpdate}
+          />
         );
 
       default:

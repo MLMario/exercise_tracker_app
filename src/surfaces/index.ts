@@ -7,3 +7,6 @@
 
 export { default as AuthSurface } from './auth';
 export type { AuthSubSurface, PasswordField } from './auth';
+
+export { default as DashboardSurface } from './dashboard';
+export type { UserChart } from './dashboard';

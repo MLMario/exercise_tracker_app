@@ -68,6 +68,59 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
   // Success message display
   const [successMessage, setSuccessMessage] = useState('');
 
+  // ==================== DATA LOADING ====================
+  // Matches js/app.js lines 341-391
+
+  /**
+   * Load templates from the templates service.
+   * Matches js/app.js lines 361-369.
+   */
+  const loadTemplates = async (): Promise<void> => {
+    const { data, error } = await window.templates.getTemplates();
+    if (error) throw new Error('Failed to load templates: ' + error.message);
+    setTemplates(data || []);
+  };
+
+  /**
+   * Load exercises from the exercises service.
+   * Matches js/app.js lines 371-379.
+   */
+  const loadExercises = async (): Promise<void> => {
+    const { data, error } = await window.exercises.getExercises();
+    if (error) throw new Error('Failed to load exercises: ' + error.message);
+    setAvailableExercises(data || []);
+  };
+
+  /**
+   * Load all dashboard data (templates and exercises in parallel).
+   * Matches js/app.js lines 343-359.
+   */
+  const loadDashboard = async (): Promise<void> => {
+    setError('');
+    setSuccessMessage('');
+    setIsLoading(true);
+
+    try {
+      await Promise.all([
+        loadTemplates(),
+        loadExercises(),
+      ]);
+      // Charts loading will be added later - for now just clear the refresh flag
+      setChartsNeedRefresh(false);
+    } catch (err) {
+      setError('Failed to load dashboard: ' + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ==================== INITIALIZATION ====================
+
+  useEffect(() => {
+    // Load dashboard data on component mount
+    loadDashboard();
+  }, []);
+
   // ==================== PLACEHOLDER RENDER ====================
   // Structure matches expected sections for dashboard
 

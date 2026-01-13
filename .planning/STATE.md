@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-12)
 
 **Core value:** The app must work exactly as before - this is a pure refactor
-**Current focus:** Phase 8 — Template Editor Surface
+**Current focus:** Phase 9 — Workout Surface
 
 ## Current Position
 
-Phase: 8 of 12 (Template Editor Surface) — COMPLETE
+Phase: 8 of 11 (Template Editor Surface) — COMPLETE
 Plan: 3 of 3 in phase
 Status: Phase complete, ready for Phase 9 planning
-Last activity: 2026-01-12 — Completed Phase 8 via sequential execution (3 plans, 6 tasks)
+Last activity: 2026-01-13 — Removed Phase 9 (Exercise Library Surface), renumbered subsequent phases
 
-Progress: ███████░░░ 67%
+Progress: ████████░░ 73%
 
 ## Performance Metrics
 
@@ -66,7 +66,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-12
-Stopped at: Phase 8 complete
+Last session: 2026-01-13
+Stopped at: Phase 8 complete, Exercise Library Surface removed
 Resume file: None
 Next action: /gsd:plan-phase 9

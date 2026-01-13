@@ -22,10 +22,9 @@ None
 - [x] **Phase 6: Auth Surface** - Refactor auth UI (login, register, password reset, session)
 - [x] **Phase 7: Dashboard Surface** - Refactor main dashboard view and navigation
 - [x] **Phase 8: Template Editor Surface** - Refactor template CRUD operations
-- [ ] **Phase 9: Exercise Library Surface** - Refactor exercise browser, filter, custom creation
-- [ ] **Phase 10: Workout Surface** - Refactor active workout (timer, sets, swipe gestures)
-- [ ] **Phase 11: Charts Surface** - Refactor progress charts rendering
-- [ ] **Phase 12: Integration** - Multi-tab sync, localStorage backup, routing, final cleanup
+- [ ] **Phase 9: Workout Surface** - Refactor active workout (timer, sets, swipe gestures)
+- [ ] **Phase 10: Charts Surface** - Refactor progress charts rendering
+- [ ] **Phase 11: Integration** - Multi-tab sync, localStorage backup, routing, final cleanup
 
 ## Phase Details
 
@@ -78,34 +77,28 @@ None
 **Research**: Unlikely (internal UI patterns)
 **Plans**: TBD
 
-### Phase 9: Exercise Library Surface
-**Goal**: Exercise browser, filter, and custom exercise creation refactored
-**Depends on**: Phase 5, Phase 7
-**Research**: Unlikely (internal UI patterns)
-**Plans**: TBD
-
-### Phase 10: Workout Surface
+### Phase 9: Workout Surface
 **Goal**: Active workout tracking (timer, sets, swipe gestures) refactored - the complex one
 **Depends on**: Phase 5, Phase 8
 **Research**: Unlikely (internal patterns, but complex implementation)
 **Plans**: TBD
 
-### Phase 11: Charts Surface
+### Phase 10: Charts Surface
 **Goal**: Progress charts rendering refactored with clean Chart.js integration
 **Depends on**: Phase 5
 **Research**: Unlikely (Chart.js already in use)
 **Plans**: TBD
 
-### Phase 12: Integration
+### Phase 11: Integration
 **Goal**: Multi-tab sync, localStorage backup, routing wired up, old code removed
-**Depends on**: All surface phases (6-11)
+**Depends on**: All surface phases (6-10)
 **Research**: Unlikely (wiring existing pieces)
 **Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -117,7 +110,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Auth Surface | 3/3 | Complete | 2026-01-12 |
 | 7. Dashboard Surface | 3/3 | Complete | 2026-01-12 |
 | 8. Template Editor Surface | 3/3 | Complete | 2026-01-12 |
-| 9. Exercise Library Surface | 0/TBD | Not started | - |
-| 10. Workout Surface | 0/TBD | Not started | - |
-| 11. Charts Surface | 0/TBD | Not started | - |
-| 12. Integration | 0/TBD | Not started | - |
+| 9. Workout Surface | 0/TBD | Not started | - |
+| 10. Charts Surface | 0/TBD | Not started | - |
+| 11. Integration | 0/TBD | Not started | - |

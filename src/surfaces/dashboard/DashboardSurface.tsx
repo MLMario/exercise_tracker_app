@@ -9,6 +9,7 @@
 
 import { useState, useEffect } from 'preact/hooks';
 import type { Exercise, TemplateWithExercises } from '@/types';
+import { TemplateList } from './TemplateList';
 
 /**
  * UserChart type for chart configuration.
@@ -114,6 +115,69 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
     }
   };
 
+  // ==================== TEMPLATE ACTIONS ====================
+  // Matches js/app.js lines 444-536, 695-730
+
+  /**
+   * Handle create new template action.
+   * Navigates to template editor surface (new template).
+   * Matches js/app.js lines 444-453.
+   */
+  const handleCreateNewTemplate = (): void => {
+    // Navigation will be wired to surface navigation in Phase 12
+    console.log('Navigate to template editor (new)');
+    setError('');
+    setSuccessMessage('');
+  };
+
+  /**
+   * Handle edit template action.
+   * Navigates to template editor surface with existing template.
+   * Matches js/app.js lines 455-467.
+   */
+  const handleEditTemplate = (template: TemplateWithExercises): void => {
+    // Navigation will be wired to surface navigation in Phase 12
+    console.log('Navigate to template editor (edit)', template.id);
+    setError('');
+    setSuccessMessage('');
+  };
+
+  /**
+   * Handle delete template action.
+   * Confirms deletion and calls templates service.
+   * Matches js/app.js lines 511-527.
+   */
+  const handleDeleteTemplate = async (id: string): Promise<void> => {
+    if (!window.confirm('Are you sure you want to delete this template?')) {
+      return;
+    }
+
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const { error } = await window.templates.deleteTemplate(id);
+      if (error) throw new Error(error.message);
+      setSuccessMessage('Template deleted successfully');
+      // Reload templates after successful delete
+      await loadTemplates();
+    } catch (err) {
+      setError('Failed to delete template: ' + (err instanceof Error ? err.message : String(err)));
+    }
+  };
+
+  /**
+   * Handle start workout action.
+   * Navigates to workout surface with the selected template.
+   * Matches js/app.js lines 695-730.
+   */
+  const handleStartWorkout = (template: TemplateWithExercises): void => {
+    // Navigation will be wired to surface navigation in Phase 12
+    console.log('Navigate to workout surface', template.id);
+    setError('');
+    setSuccessMessage('');
+  };
+
   // ==================== INITIALIZATION ====================
 
   useEffect(() => {
@@ -164,14 +228,14 @@ export function DashboardSurface({ onLogout }: DashboardSurfaceProps) {
       {/* Main content - only show when not loading */}
       {!isLoading && (
         <main class="dashboard-content">
-          {/* Template list section - placeholder */}
-          <section class="templates-section">
-            <h2>Workout Templates</h2>
-            <p class="placeholder-text">
-              {templates.length} template(s) loaded
-            </p>
-            {/* Template list will be implemented in later plans */}
-          </section>
+          {/* Template list section */}
+          <TemplateList
+            templates={templates}
+            onCreateNew={handleCreateNewTemplate}
+            onEdit={handleEditTemplate}
+            onDelete={handleDeleteTemplate}
+            onStartWorkout={handleStartWorkout}
+          />
 
           {/* Charts section - placeholder */}
           <section class="charts-section">

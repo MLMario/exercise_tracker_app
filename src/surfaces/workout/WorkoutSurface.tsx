@@ -7,10 +7,10 @@
  * State variables mirror the Alpine.js implementation in js/app.js lines 48-77.
  */
 
-import { useState, useEffect, useRef } from 'preact/hooks';
-import type { TemplateWithExercises } from '@/types';
+import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
+import type { TemplateWithExercises, Exercise } from '@/types';
 import { WorkoutExerciseCard } from './WorkoutExerciseCard';
-import { ConfirmationModal } from '@/components';
+import { ConfirmationModal, ExercisePickerModal } from '@/components';
 
 // ============================================================================
 // Interfaces
@@ -75,6 +75,16 @@ interface WorkoutData {
   started_at: string;
   finished_at: string;
   exercises: WorkoutExercise[];
+}
+
+/**
+ * LocalStorage backup data structure.
+ * Matches js/app.js lines 1309-1313.
+ */
+interface WorkoutBackupData {
+  activeWorkout: ActiveWorkout;
+  originalTemplateSnapshot: TemplateSnapshot | null;
+  last_saved_at: string;
 }
 
 /**
@@ -176,6 +186,9 @@ export function WorkoutSurface({
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Available exercises for exercise picker
+  const [availableExercises, setAvailableExercises] = useState<Exercise[]>([]);
+
   // ==================== INITIALIZATION ====================
   // Matches js/app.js lines 695-730
 
@@ -226,6 +239,91 @@ export function WorkoutSurface({
       }
     };
   }, []);
+
+  // ==================== EXERCISE LOADING ====================
+  // Load available exercises for picker
+
+  useEffect(() => {
+    const loadExercises = async () => {
+      const { data } = await window.exercises.getExercises();
+      setAvailableExercises(data || []);
+    };
+    loadExercises();
+  }, []);
+
+  // ==================== LOCALSTORAGE BACKUP ====================
+  // Matches js/app.js lines 1294-1420
+
+  /**
+   * Get localStorage key for workout backup.
+   * Uses template_id for uniqueness since we don't have user context here.
+   * Matches js/app.js lines 1296-1298.
+   */
+  const getWorkoutStorageKey = useCallback((): string | null => {
+    return activeWorkout.template_id ? `activeWorkout_${activeWorkout.template_id}` : null;
+  }, [activeWorkout.template_id]);
+
+  /**
+   * Save workout to localStorage.
+   * Matches js/app.js lines 1300-1316.
+   */
+  const saveWorkoutToStorage = useCallback((): void => {
+    const key = getWorkoutStorageKey();
+    if (!key || !activeWorkout.started_at || activeWorkout.exercises.length === 0) return;
+
+    const backupData: WorkoutBackupData = {
+      activeWorkout,
+      originalTemplateSnapshot,
+      last_saved_at: new Date().toISOString()
+    };
+
+    localStorage.setItem(key, JSON.stringify(backupData));
+  }, [activeWorkout, originalTemplateSnapshot, getWorkoutStorageKey]);
+
+  /**
+   * Clear workout from localStorage.
+   * Matches js/app.js lines 1345-1350.
+   */
+  const clearWorkoutFromStorage = useCallback((): void => {
+    const key = getWorkoutStorageKey();
+    if (key) {
+      localStorage.removeItem(key);
+    }
+  }, [getWorkoutStorageKey]);
+
+  // Auto-save workout to localStorage on changes
+  useEffect(() => {
+    if (activeWorkout.started_at) {
+      saveWorkoutToStorage();
+    }
+  }, [activeWorkout, saveWorkoutToStorage]);
+
+  // Multi-tab sync listener
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent): void => {
+      const key = getWorkoutStorageKey();
+      if (event.key !== key) return;
+
+      if (event.newValue === null) {
+        // Workout was cleared in another tab - navigate back
+        onCancel?.();
+      } else {
+        // Workout updated in another tab - sync it
+        try {
+          const backupData: WorkoutBackupData = JSON.parse(event.newValue);
+          if (backupData.activeWorkout) {
+            setActiveWorkout(backupData.activeWorkout);
+            setOriginalTemplateSnapshot(backupData.originalTemplateSnapshot);
+          }
+        } catch {
+          // Ignore parse errors
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [activeWorkout.template_id, getWorkoutStorageKey, onCancel]);
 
   // ==================== TIMER METHODS ====================
   // Matches js/app.js lines 1089-1173
@@ -408,6 +506,7 @@ export function WorkoutSurface({
   const confirmCancelWorkout = (): void => {
     setShowCancelWorkoutModal(false);
     stopTimer();
+    clearWorkoutFromStorage();
     onCancel?.();
   };
 
@@ -464,6 +563,9 @@ export function WorkoutSurface({
 
       const { error: saveError } = await window.logging.createWorkoutLog(workoutData);
       if (saveError) throw new Error(saveError.message);
+
+      // Clear localStorage backup
+      clearWorkoutFromStorage();
 
       // Reset state and navigate back
       stopTimer();
@@ -644,6 +746,69 @@ export function WorkoutSurface({
     }));
   };
 
+  // ==================== EXERCISE PICKER HANDLERS ====================
+
+  /**
+   * Open exercise picker modal.
+   */
+  const handleOpenExercisePicker = (): void => {
+    setShowExercisePicker(true);
+  };
+
+  /**
+   * Handle exercise selection from picker.
+   * Adds the exercise to the workout with default sets.
+   */
+  const handleSelectExercise = (exercise: Exercise): void => {
+    // Check if exercise already in workout
+    const exists = activeWorkout.exercises.some(ex => ex.exercise_id === exercise.id);
+    if (exists) {
+      setError('Exercise already in workout');
+      return;
+    }
+
+    // Add exercise with default sets
+    setActiveWorkout(prev => ({
+      ...prev,
+      exercises: [...prev.exercises, {
+        exercise_id: exercise.id,
+        name: exercise.name,
+        category: exercise.category,
+        order: prev.exercises.length,
+        rest_seconds: 90,
+        sets: [
+          { set_number: 1, weight: 0, reps: 10, is_done: false },
+          { set_number: 2, weight: 0, reps: 10, is_done: false },
+          { set_number: 3, weight: 0, reps: 10, is_done: false }
+        ]
+      }]
+    }));
+
+    setShowExercisePicker(false);
+  };
+
+  /**
+   * Handle creating a new exercise from the picker.
+   * Creates the exercise and returns it for selection.
+   */
+  const handleCreateExercise = async (name: string, category: string): Promise<Exercise | null> => {
+    // Cast category to ExerciseCategory (picker provides valid values)
+    const { data, error: createError } = await window.exercises.createExercise(
+      name,
+      category as Exercise['category']
+    );
+    if (createError) {
+      throw new Error(createError.message);
+    }
+    if (data) {
+      // Refresh exercises list
+      const { data: exercises } = await window.exercises.getExercises();
+      setAvailableExercises(exercises || []);
+      return data;
+    }
+    return null;
+  };
+
   // ==================== RENDER ====================
   // Structure matches index.html lines 524-661
 
@@ -724,8 +889,7 @@ export function WorkoutSurface({
           <button
             type="button"
             class="btn btn-primary btn-block"
-            onClick={() => setShowExercisePicker(true)}
-            disabled
+            onClick={handleOpenExercisePicker}
           >
             Add Exercise
           </button>
@@ -767,6 +931,16 @@ export function WorkoutSurface({
         confirmVariant="primary"
         onConfirm={confirmTemplateUpdate}
         onCancel={declineTemplateUpdate}
+      />
+
+      {/* Exercise Picker Modal */}
+      <ExercisePickerModal
+        isOpen={showExercisePicker}
+        exercises={availableExercises}
+        excludeIds={activeWorkout.exercises.map(ex => ex.exercise_id)}
+        onClose={() => setShowExercisePicker(false)}
+        onSelect={handleSelectExercise}
+        onCreateExercise={handleCreateExercise}
       />
     </div>
   );

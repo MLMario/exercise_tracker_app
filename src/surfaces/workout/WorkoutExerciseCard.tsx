@@ -39,6 +39,10 @@ export interface WorkoutExerciseCardProps {
   isTimerActive: boolean;
   /** Callback to adjust timer by delta seconds */
   onAdjustTimer: (deltaSeconds: number) => void;
+  /** Key of the currently revealed set row (or null) */
+  revealedSetKey: string | null;
+  /** Callback when set swipe state changes */
+  onSetSwipeStateChange: (setIndex: number, isRevealed: boolean) => void;
 }
 
 // ============================================================================
@@ -68,7 +72,9 @@ export function WorkoutExerciseCard({
   timerSeconds,
   timerProgress,
   isTimerActive,
-  onAdjustTimer
+  onAdjustTimer,
+  revealedSetKey,
+  onSetSwipeStateChange
 }: WorkoutExerciseCardProps) {
   /**
    * Handle remove exercise button click.
@@ -133,6 +139,8 @@ export function WorkoutExerciseCard({
             onRepsChange={onRepsChange}
             onToggleDone={handleToggleDone}
             onDelete={onDeleteSet}
+            shouldResetSwipe={revealedSetKey !== `${exerciseIndex}-${setIndex}`}
+            onSwipeStateChange={(isRevealed) => onSetSwipeStateChange(setIndex, isRevealed)}
           />
         ))}
       </div>

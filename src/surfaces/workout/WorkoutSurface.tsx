@@ -154,6 +154,9 @@ export function WorkoutSurface({
   const [showTemplateUpdateModal, setShowTemplateUpdateModal] = useState(false);
   const [showExercisePicker, setShowExercisePicker] = useState(false);
 
+  // Swipe state - track which set row is currently revealed
+  const [revealedSetKey, setRevealedSetKey] = useState<string | null>(null);
+
   // Pending workout data (for template update decision)
   const [pendingWorkoutData, setPendingWorkoutData] = useState<unknown | null>(null);
 
@@ -308,6 +311,29 @@ export function WorkoutSurface({
     }
   };
 
+  // ==================== SWIPE COORDINATION HANDLERS ====================
+  // Matches js/app.js lines 883-896
+
+  /**
+   * Close any open swipe-revealed rows when user taps elsewhere.
+   * Matches js/app.js lines 884-896.
+   */
+  const handleSwipeCancel = (): void => {
+    setRevealedSetKey(null);
+  };
+
+  /**
+   * Handle when a set row's swipe state changes.
+   * Only one row can be revealed at a time.
+   */
+  const handleSetSwipeStateChange = (exerciseIndex: number, setIndex: number, isRevealed: boolean): void => {
+    if (isRevealed) {
+      setRevealedSetKey(`${exerciseIndex}-${setIndex}`);
+    } else if (revealedSetKey === `${exerciseIndex}-${setIndex}`) {
+      setRevealedSetKey(null);
+    }
+  };
+
   // ==================== HANDLERS ====================
 
   /**
@@ -364,9 +390,12 @@ export function WorkoutSurface({
 
   /**
    * Delete a set from an exercise.
-   * Matches js/app.js lines 755-762.
+   * Matches js/app.js lines 755-762 and deleteSetWithSwipeReset behavior.
    */
   const handleDeleteSet = (exerciseIndex: number, setIndex: number): void => {
+    // First close any revealed rows
+    setRevealedSetKey(null);
+
     setActiveWorkout(prev => {
       const updated = { ...prev };
       const exercise = { ...updated.exercises[exerciseIndex] };
@@ -465,7 +494,7 @@ export function WorkoutSurface({
   // Structure matches index.html lines 524-661
 
   return (
-    <div class="workout-surface">
+    <div class="workout-surface" onClick={handleSwipeCancel}>
       {/* Header bar - Cancel / Title / Finish */}
       <header class="app-header workout-header">
         <button
@@ -522,6 +551,9 @@ export function WorkoutSurface({
               timerProgress={getTimerProgress(index)}
               isTimerActive={isTimerActiveForExercise(index)}
               onAdjustTimer={(delta) => adjustTimer(delta, index)}
+              // Swipe props
+              revealedSetKey={revealedSetKey}
+              onSetSwipeStateChange={(setIndex, isRevealed) => handleSetSwipeStateChange(index, setIndex, isRevealed)}
             />
           ))}
         </div>

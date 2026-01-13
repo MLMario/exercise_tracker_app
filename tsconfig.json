@@ -9,7 +9,8 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "baseUrl": ".",
     "paths": {

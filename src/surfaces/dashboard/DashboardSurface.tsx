@@ -7,12 +7,13 @@
  * State variables mirror the Alpine.js implementation in js/app.js lines 25-30.
  */
 
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 import type { Chart } from 'chart.js';
 import type { Exercise, TemplateWithExercises } from '@/types';
 import { TemplateList } from './TemplateList';
 import { ChartSection } from './ChartSection';
 import { AddChartModal } from './AddChartModal';
+import type { ChartData } from './ChartCard';
 
 /**
  * UserChart type for chart configuration.
@@ -71,8 +72,9 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
 
   // Chart.js instances keyed by chart ID - stored in ref to avoid re-renders
   const chartInstancesRef = useRef<Record<string, Chart>>({});
-  // State version of chartInstances for rendering - updated after rendering
-  const [chartInstances, setChartInstances] = useState<Record<string, Chart>>({});
+
+  // Chart data (labels/values) keyed by chart ID - fetched upfront for each chart
+  const [chartDataMap, setChartDataMap] = useState<Record<string, ChartData | null>>({});
 
   // Modal state for add chart
   const [showAddChartModal, setShowAddChartModal] = useState(false);
@@ -120,14 +122,40 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   // Matches js/app.js lines 381-440
 
   /**
-   * Load user charts from the charts service.
+   * Load user charts from the charts service and fetch metrics data for each.
    * Matches js/app.js lines 381-392.
    */
   const loadUserCharts = async (): Promise<void> => {
     try {
       const { data, error } = await window.charts.getUserCharts();
       if (error) throw new Error(error.message);
-      setUserCharts(data || []);
+
+      const charts = data || [];
+      setUserCharts(charts);
+
+      // Fetch chart data for each chart upfront
+      const dataMap: Record<string, ChartData | null> = {};
+
+      for (const chart of charts) {
+        try {
+          const { data: metricsData, error: metricsError } = await window.logging.getExerciseMetrics(
+            chart.exercise_id,
+            { metric: chart.metric_type, mode: chart.x_axis_mode }
+          );
+
+          if (metricsError) {
+            console.error(`Failed to get metrics for chart ${chart.id}:`, metricsError);
+            dataMap[chart.id] = null;
+          } else {
+            dataMap[chart.id] = metricsData || null;
+          }
+        } catch (err) {
+          console.error(`Failed to fetch data for chart ${chart.id}:`, err);
+          dataMap[chart.id] = null;
+        }
+      }
+
+      setChartDataMap(dataMap);
     } catch (err) {
       throw new Error('Failed to load charts: ' + (err instanceof Error ? err.message : String(err)));
     }
@@ -144,61 +172,23 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
       }
     });
     chartInstancesRef.current = {};
-    setChartInstances({});
   };
 
   /**
-   * Render all charts using Chart.js.
-   * Matches js/app.js lines 394-431.
+   * Callback when a ChartCard renders its chart.
+   * Registers the instance for tracking.
    */
-  const renderAllCharts = async (): Promise<void> => {
-    // Destroy existing chart instances first
-    destroyAllCharts();
+  const handleChartRendered = useCallback((chartId: string, instance: Chart): void => {
+    chartInstancesRef.current[chartId] = instance;
+  }, []);
 
-    const newInstances: Record<string, Chart> = {};
-
-    for (const chart of userCharts) {
-      try {
-        const canvasId = `chart-${chart.id}`;
-        const canvas = document.getElementById(canvasId);
-
-        if (!canvas) {
-          console.warn(`Canvas not found for chart ${chart.id}`);
-          continue;
-        }
-
-        const { data: chartData, error } = await window.logging.getExerciseMetrics(
-          chart.exercise_id,
-          { metric: chart.metric_type, mode: chart.x_axis_mode }
-        );
-
-        if (error) {
-          console.error(`Failed to get metrics for chart ${chart.id}:`, error);
-          continue;
-        }
-
-        if (chartData) {
-          const chartInstance = window.charts.renderChart(
-            canvasId,
-            chartData,
-            {
-              metricType: chart.metric_type,
-              exerciseName: chart.exercises?.name || 'Exercise'
-            }
-          );
-
-          if (chartInstance) {
-            newInstances[chart.id] = chartInstance;
-          }
-        }
-      } catch (err) {
-        console.error(`Failed to render chart ${chart.id}:`, err);
-      }
-    }
-
-    chartInstancesRef.current = newInstances;
-    setChartInstances({ ...newInstances });
-  };
+  /**
+   * Callback when a ChartCard destroys its chart.
+   * Removes the instance from tracking.
+   */
+  const handleChartDestroyed = useCallback((chartId: string): void => {
+    delete chartInstancesRef.current[chartId];
+  }, []);
 
   /**
    * Load all dashboard data (templates and exercises in parallel).
@@ -390,8 +380,14 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
       if (chartInstancesRef.current[id]) {
         chartInstancesRef.current[id].destroy();
         delete chartInstancesRef.current[id];
-        setChartInstances({ ...chartInstancesRef.current });
       }
+
+      // Remove chart data from map
+      setChartDataMap(prev => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
+      });
 
       const { error } = await window.charts.deleteChart(id);
       if (error) throw new Error(error.message);
@@ -469,10 +465,11 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
           {/* Charts section */}
           <ChartSection
             charts={userCharts}
-            chartInstances={chartInstances}
+            chartDataMap={chartDataMap}
             onAddChart={openAddChartModal}
             onDeleteChart={handleDeleteChart}
-            onRenderCharts={renderAllCharts}
+            onChartRendered={handleChartRendered}
+            onChartDestroyed={handleChartDestroyed}
           />
 
           {/* Exercises info - placeholder */}

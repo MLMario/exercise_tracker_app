@@ -2,13 +2,23 @@
  * ChartCard Component
  *
  * Displays a single user chart with Chart.js canvas and delete functionality.
- * The canvas element is provided for Chart.js to render into.
+ * Uses useRef + useEffect to render chart when canvas mounts, ensuring
+ * the canvas is always available before Chart.js attempts to render.
  *
  * Matches behavior from js/app.js chart rendering.
  */
 
+import { useRef, useEffect } from 'preact/hooks';
 import type { Chart } from 'chart.js';
 import type { UserChart } from './DashboardSurface';
+
+/**
+ * Chart data structure for rendering
+ */
+export interface ChartData {
+  labels: string[];
+  values: number[];
+}
 
 /**
  * Props interface for ChartCard component
@@ -16,10 +26,14 @@ import type { UserChart } from './DashboardSurface';
 export interface ChartCardProps {
   /** Chart configuration data */
   chart: UserChart;
-  /** The rendered Chart.js instance (null while loading) */
-  chartInstance: Chart | null;
+  /** Chart data (labels and values) for rendering */
+  chartData: ChartData | null;
   /** Handler for deleting this chart */
   onDelete: (id: string) => void;
+  /** Callback when chart is rendered with its instance */
+  onChartRendered?: (chartId: string, instance: Chart) => void;
+  /** Callback when chart is destroyed */
+  onChartDestroyed?: (chartId: string) => void;
 }
 
 /**
@@ -65,13 +79,74 @@ function formatMetricType(metricType: string): string {
  * ChartCard Component
  *
  * Renders a chart card with title, canvas element, and delete button.
- * The canvas is used by Chart.js to render the chart.
+ * Uses useRef to get canvas reference and useEffect to render chart
+ * when canvas mounts, ensuring DOM availability.
  */
 export function ChartCard({
   chart,
-  chartInstance,
+  chartData,
   onDelete,
+  onChartRendered,
+  onChartDestroyed,
 }: ChartCardProps) {
+  // Ref for canvas element - ensures we have DOM reference
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Ref for chart instance to track rendered state
+  const chartInstanceRef = useRef<Chart | null>(null);
+
+  /**
+   * Render chart when canvas mounts and chartData is available.
+   * This ensures the canvas is in the DOM before Chart.js renders.
+   */
+  useEffect(() => {
+    // Skip if no canvas or no chart data
+    if (!canvasRef.current || !chartData) {
+      return;
+    }
+
+    // Skip if already rendered for this data
+    if (chartInstanceRef.current) {
+      return;
+    }
+
+    const canvasId = `chart-${chart.id}`;
+
+    try {
+      const instance = window.charts.renderChart(
+        canvasId,
+        chartData,
+        {
+          metricType: chart.metric_type,
+          exerciseName: chart.exercises?.name || 'Exercise'
+        }
+      );
+
+      if (instance) {
+        chartInstanceRef.current = instance;
+        if (onChartRendered) {
+          onChartRendered(chart.id, instance);
+        }
+      }
+    } catch (err) {
+      console.error(`Failed to render chart ${chart.id}:`, err);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      if (chartInstanceRef.current) {
+        try {
+          window.charts.destroyChart(`chart-${chart.id}`);
+        } catch {
+          // Chart may already be destroyed
+        }
+        chartInstanceRef.current = null;
+        if (onChartDestroyed) {
+          onChartDestroyed(chart.id);
+        }
+      }
+    };
+  }, [chart.id, chartData, chart.metric_type, chart.exercises?.name, onChartRendered, onChartDestroyed]);
+
   /**
    * Handle delete button click
    */
@@ -83,6 +158,9 @@ export function ChartCard({
   const exerciseName = chart.exercises?.name || 'Exercise';
   const metricLabel = formatMetricType(chart.metric_type);
   const chartTitle = `${exerciseName} - ${metricLabel}`;
+
+  // Determine if chart is rendered
+  const isRendered = chartInstanceRef.current !== null;
 
   return (
     <div class="chart-card">
@@ -102,16 +180,17 @@ export function ChartCard({
       {/* Chart canvas container */}
       <div class="chart-card-content">
         {/* Loading indicator when chart not yet rendered */}
-        {!chartInstance && (
+        {!chartData && (
           <div class="chart-loading">
             Loading chart...
           </div>
         )}
 
-        {/* Canvas element for Chart.js - always rendered for DOM availability */}
+        {/* Canvas element for Chart.js - uses ref for reliable DOM access */}
         <canvas
+          ref={canvasRef}
           id={`chart-${chart.id}`}
-          class={chartInstance ? 'chart-canvas' : 'chart-canvas loading'}
+          class={isRendered ? 'chart-canvas' : 'chart-canvas loading'}
         />
       </div>
     </div>

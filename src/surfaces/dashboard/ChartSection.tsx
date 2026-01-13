@@ -2,15 +2,14 @@
  * ChartSection Component
  *
  * Displays the progress charts section with grid of chart cards.
- * Handles empty state and triggers chart rendering after DOM updates.
+ * Handles empty state. Chart rendering is delegated to ChartCard components.
  *
  * Matches behavior from js/app.js chart section.
  */
 
-import { useEffect } from 'preact/hooks';
 import type { Chart } from 'chart.js';
 import type { UserChart } from './DashboardSurface';
-import { ChartCard } from './ChartCard';
+import { ChartCard, type ChartData } from './ChartCard';
 
 /**
  * Props interface for ChartSection component
@@ -18,14 +17,16 @@ import { ChartCard } from './ChartCard';
 export interface ChartSectionProps {
   /** User's chart configurations */
   charts: UserChart[];
-  /** Chart.js instances keyed by chart ID */
-  chartInstances: Record<string, Chart>;
+  /** Chart data keyed by chart ID */
+  chartDataMap: Record<string, ChartData | null>;
   /** Handler to open add chart modal */
   onAddChart: () => void;
   /** Handler to delete a chart */
   onDeleteChart: (id: string) => void;
-  /** Callback to trigger chart rendering after DOM update */
-  onRenderCharts: () => Promise<void>;
+  /** Callback when a chart is rendered */
+  onChartRendered?: (chartId: string, instance: Chart) => void;
+  /** Callback when a chart is destroyed */
+  onChartDestroyed?: (chartId: string) => void;
 }
 
 /**
@@ -55,30 +56,16 @@ function PlusIcon() {
  * ChartSection Component
  *
  * Renders the charts section with header, add button, and grid of charts.
- * Triggers chart rendering when charts array changes.
+ * Chart rendering is delegated to individual ChartCard components.
  */
 export function ChartSection({
   charts,
-  chartInstances,
+  chartDataMap,
   onAddChart,
   onDeleteChart,
-  onRenderCharts,
+  onChartRendered,
+  onChartDestroyed,
 }: ChartSectionProps) {
-  /**
-   * Trigger chart rendering after DOM updates.
-   * This ensures canvas elements are available for Chart.js.
-   */
-  useEffect(() => {
-    if (charts.length > 0) {
-      // Use setTimeout to ensure DOM has updated
-      const timerId = setTimeout(() => {
-        onRenderCharts();
-      }, 0);
-
-      return () => clearTimeout(timerId);
-    }
-  }, [charts]);
-
   return (
     <section class="charts-section">
       {/* Section header with title and add button */}
@@ -110,8 +97,10 @@ export function ChartSection({
             <ChartCard
               key={chart.id}
               chart={chart}
-              chartInstance={chartInstances[chart.id] || null}
+              chartData={chartDataMap[chart.id] || null}
               onDelete={onDeleteChart}
+              onChartRendered={onChartRendered}
+              onChartDestroyed={onChartDestroyed}
             />
           ))}
         </div>

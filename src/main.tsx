@@ -30,8 +30,8 @@ type EditingTemplateState = null | 'new' | TemplateWithExercises;
 /**
  * Root App component
  *
- * Manages top-level surface routing between auth, dashboard, and template editor.
- * Will be enhanced later to include auth state listening.
+ * Manages top-level surface routing between auth, dashboard, template editor, and workout.
+ * Includes auth state listening for automatic navigation on login/logout events.
  */
 function App() {
   // ==================== AUTH STATE ====================

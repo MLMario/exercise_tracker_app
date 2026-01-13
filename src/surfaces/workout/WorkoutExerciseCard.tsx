@@ -9,6 +9,7 @@
 
 import type { WorkoutExercise } from './WorkoutSurface';
 import { SetRow } from './SetRow';
+import { RestTimerBar } from './RestTimerBar';
 
 /**
  * Props for WorkoutExerciseCard component.
@@ -30,28 +31,19 @@ export interface WorkoutExerciseCardProps {
   onDeleteSet: (exerciseIndex: number, setIndex: number) => void;
   /** Callback to remove this exercise from workout */
   onRemoveExercise: (exerciseIndex: number) => void;
-  /** Timer display string (formatted time) - actual timer logic in Plan 03 */
-  timerDisplay?: string;
-  /** Timer progress 0-100 for progress bar - actual timer logic in Plan 03 */
-  timerProgress?: number;
-  /** Whether timer is currently active for this exercise - actual timer logic in Plan 03 */
-  isTimerActive?: boolean;
-  /** Callback to adjust timer by seconds - actual timer logic in Plan 03 */
-  onAdjustTimer?: (seconds: number, exerciseIndex: number) => void;
+  /** Current timer seconds to display */
+  timerSeconds: number;
+  /** Timer progress percentage (100 = full, 0 = empty) */
+  timerProgress: number;
+  /** Whether timer is currently active for this exercise */
+  isTimerActive: boolean;
+  /** Callback to adjust timer by delta seconds */
+  onAdjustTimer: (deltaSeconds: number) => void;
 }
 
-/**
- * Format seconds to MM:SS display.
- * Used for rest timer display.
- */
-function formatTime(seconds: number): string {
-  if (seconds === undefined || seconds === null || isNaN(seconds)) {
-    seconds = 0;
-  }
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
-}
+// ============================================================================
+// Component
+// ============================================================================
 
 /**
  * WorkoutExerciseCard component
@@ -59,7 +51,7 @@ function formatTime(seconds: number): string {
  * Renders a single exercise card with:
  * - Exercise header (name, category badge, remove button)
  * - Set table header and SetRow components
- * - Rest timer bar placeholder
+ * - Rest timer bar with countdown and controls
  * - Add Set button
  *
  * Matches index.html lines 540-646.
@@ -73,9 +65,9 @@ export function WorkoutExerciseCard({
   onAddSet,
   onDeleteSet,
   onRemoveExercise,
-  timerDisplay,
-  timerProgress = 0,
-  isTimerActive = false,
+  timerSeconds,
+  timerProgress,
+  isTimerActive,
   onAdjustTimer
 }: WorkoutExerciseCardProps) {
   /**
@@ -99,25 +91,6 @@ export function WorkoutExerciseCard({
   const handleToggleDone = (exIdx: number, setIdx: number): void => {
     onToggleDone(exIdx, setIdx, exercise.rest_seconds);
   };
-
-  /**
-   * Handle timer adjust button click.
-   */
-  const handleAdjustTimer = (seconds: number): void => {
-    if (onAdjustTimer) {
-      onAdjustTimer(seconds, exerciseIndex);
-    }
-  };
-
-  // Determine timer bar state class
-  const getTimerBarClass = (): string => {
-    if (!isTimerActive) return 'idle';
-    if (timerProgress > 0) return 'running';
-    return 'complete';
-  };
-
-  // Display time: timer display if active, else default rest_seconds
-  const displayTime = timerDisplay || formatTime(exercise.rest_seconds);
 
   return (
     <div class="card exercise-workout-card">
@@ -164,32 +137,14 @@ export function WorkoutExerciseCard({
         ))}
       </div>
 
-      {/* Rest Timer Bar - placeholder implementation, full logic in Plan 03 */}
-      <div class="rest-timer-bar-container">
-        <div class="rest-timer-bar-wrapper">
-          <div
-            class={`rest-timer-bar-fill ${getTimerBarClass()}`}
-            style={{ width: `${timerProgress}%` }}
-          />
-          <span class="rest-timer-bar-time">{displayTime}</span>
-        </div>
-        <div class="rest-timer-controls">
-          <button
-            type="button"
-            class="btn-timer-adjust"
-            onClick={() => handleAdjustTimer(-10)}
-          >
-            -10s
-          </button>
-          <button
-            type="button"
-            class="btn-timer-adjust"
-            onClick={() => handleAdjustTimer(10)}
-          >
-            +10s
-          </button>
-        </div>
-      </div>
+      {/* Rest Timer Bar */}
+      <RestTimerBar
+        displaySeconds={timerSeconds}
+        progress={timerProgress}
+        isActive={isTimerActive}
+        isComplete={isTimerActive && timerSeconds === 0}
+        onAdjust={onAdjustTimer}
+      />
 
       {/* Add Set Button */}
       <button

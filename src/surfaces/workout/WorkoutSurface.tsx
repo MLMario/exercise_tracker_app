@@ -517,10 +517,10 @@ export function WorkoutSurface({
               onAddSet={handleAddSet}
               onDeleteSet={handleDeleteSet}
               onRemoveExercise={handleRemoveExercise}
-              // Timer props - will be updated in Task 3
-              isTimerActive={isTimerActiveForExercise(index)}
+              // Timer props
+              timerSeconds={isTimerActiveForExercise(index) ? timerSeconds : exercise.rest_seconds}
               timerProgress={getTimerProgress(index)}
-              timerDisplay={formatTime(isTimerActiveForExercise(index) ? timerSeconds : exercise.rest_seconds)}
+              isTimerActive={isTimerActiveForExercise(index)}
               onAdjustTimer={(delta) => adjustTimer(delta, index)}
             />
           ))}

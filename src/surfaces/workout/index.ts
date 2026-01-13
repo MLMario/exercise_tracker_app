@@ -10,3 +10,5 @@ export { WorkoutExerciseCard } from './WorkoutExerciseCard';
 export type { WorkoutExerciseCardProps } from './WorkoutExerciseCard';
 export { SetRow } from './SetRow';
 export type { SetRowProps } from './SetRow';
+export { RestTimerBar } from './RestTimerBar';
+export type { RestTimerBarProps } from './RestTimerBar';

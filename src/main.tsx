@@ -14,6 +14,71 @@ import type { User } from '@supabase/supabase-js';
 
 console.log('Vite + TypeScript initialized');
 
+// ==================== SAVED WORKOUT TYPES ====================
+/**
+ * Saved workout data structure from localStorage.
+ * Matches WorkoutSurface's WorkoutBackupData interface.
+ */
+interface SavedWorkoutData {
+  activeWorkout: {
+    template_id: string | null;
+    template_name: string;
+    started_at: string;
+    exercises: Array<{
+      exercise_id: string;
+      name: string;
+      category: string;
+      order: number;
+      rest_seconds: number;
+      sets: Array<{
+        set_number: number;
+        weight: number;
+        reps: number;
+        is_done: boolean;
+      }>;
+    }>;
+  };
+  originalTemplateSnapshot: {
+    exercises: Array<{
+      exercise_id: string;
+      sets: Array<{
+        set_number: number;
+        weight: number;
+        reps: number;
+      }>;
+    }>;
+  } | null;
+  last_saved_at: string;
+}
+
+/**
+ * Check localStorage for a saved workout for the given user.
+ * Returns the saved data if valid, null otherwise.
+ *
+ * @param userId - The user's ID to check for saved workout
+ * @returns SavedWorkoutData if found and valid, null otherwise
+ */
+function checkForSavedWorkout(userId: string): SavedWorkoutData | null {
+  const key = `activeWorkout_${userId}`;
+  const stored = localStorage.getItem(key);
+  if (!stored) return null;
+
+  try {
+    const data = JSON.parse(stored) as SavedWorkoutData;
+    // Validate required fields
+    if (!data.activeWorkout?.started_at ||
+        !Array.isArray(data.activeWorkout?.exercises) ||
+        data.activeWorkout.exercises.length === 0) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return data;
+  } catch {
+    localStorage.removeItem(key);
+    return null;
+  }
+}
+
 /**
  * Application surface type - controls which major UI surface is displayed.
  */

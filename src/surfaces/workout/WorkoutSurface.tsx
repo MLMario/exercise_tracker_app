@@ -7,7 +7,7 @@
  * State variables mirror the Alpine.js implementation in js/app.js lines 48-77.
  */
 
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import type { TemplateWithExercises } from '@/types';
 import { WorkoutExerciseCard } from './WorkoutExerciseCard';
 
@@ -145,6 +145,9 @@ export function WorkoutSurface({
   const [timerPaused, setTimerPaused] = useState(false);
   const [activeTimerExerciseIndex, setActiveTimerExerciseIndex] = useState<number | null>(null);
 
+  // Ref to store interval ID
+  const timerIntervalRef = useRef<number | null>(null);
+
   // Modal visibility state
   const [showFinishWorkoutModal, setShowFinishWorkoutModal] = useState(false);
   const [showCancelWorkoutModal, setShowCancelWorkoutModal] = useState(false);
@@ -197,6 +200,113 @@ export function WorkoutSurface({
     };
     setOriginalTemplateSnapshot(snapshot);
   }, [template]);
+
+  // ==================== TIMER CLEANUP ====================
+  // Clean up timer on unmount
+
+  useEffect(() => {
+    return () => {
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
+    };
+  }, []);
+
+  // ==================== TIMER METHODS ====================
+  // Matches js/app.js lines 1089-1173
+
+  /**
+   * Check if timer is active for a specific exercise.
+   * Matches js/app.js lines 1159-1161.
+   */
+  const isTimerActiveForExercise = (exIndex: number): boolean => {
+    return timerActive && activeTimerExerciseIndex === exIndex;
+  };
+
+  /**
+   * Get timer progress percentage (100 = full, 0 = empty).
+   * Matches js/app.js lines 1164-1172.
+   */
+  const getTimerProgress = (exIndex: number): number => {
+    if (!isTimerActiveForExercise(exIndex)) {
+      return 100; // Full bar when idle
+    }
+    if (timerTotalSeconds <= 0) {
+      return 0;
+    }
+    return Math.round((timerSeconds / timerTotalSeconds) * 100);
+  };
+
+  /**
+   * Stop the current timer.
+   * Matches js/app.js lines 1125-1135.
+   */
+  const stopTimer = (): void => {
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
+    setTimerActive(false);
+    setTimerSeconds(0);
+    setTimerTotalSeconds(0);
+    setActiveTimerExerciseIndex(null);
+  };
+
+  /**
+   * Start rest timer for an exercise.
+   * Matches js/app.js lines 1090-1123.
+   */
+  const startRestTimer = (seconds: number, exIndex: number): void => {
+    if (!seconds || seconds <= 0) return;
+
+    // Stop any existing timer first
+    stopTimer();
+
+    setTimerActive(true);
+    setTimerSeconds(seconds);
+    setTimerTotalSeconds(seconds);
+    setActiveTimerExerciseIndex(exIndex);
+
+    // Start countdown
+    timerIntervalRef.current = window.setInterval(() => {
+      setTimerSeconds(prev => {
+        if (prev <= 1) {
+          // Timer complete
+          stopTimer();
+          // Play notification if supported
+          if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('Rest Timer Complete!', {
+              body: 'Time to start your next set'
+            });
+          }
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  /**
+   * Adjust timer by adding/subtracting seconds.
+   * Matches js/app.js lines 1141-1156.
+   */
+  const adjustTimer = (deltaSeconds: number, exIndex: number): void => {
+    if (isTimerActiveForExercise(exIndex)) {
+      // Timer is running - adjust running timer
+      setTimerSeconds(prev => Math.max(0, prev + deltaSeconds));
+      setTimerTotalSeconds(prev => Math.max(0, prev + deltaSeconds));
+    } else {
+      // Timer is idle - adjust exercise's default rest_seconds
+      setActiveWorkout(prev => {
+        const updated = { ...prev };
+        const exercise = { ...updated.exercises[exIndex] };
+        exercise.rest_seconds = Math.max(0, exercise.rest_seconds + deltaSeconds);
+        updated.exercises = [...updated.exercises];
+        updated.exercises[exIndex] = exercise;
+        return updated;
+      });
+    }
+  };
 
   // ==================== HANDLERS ====================
 
@@ -305,10 +415,14 @@ export function WorkoutSurface({
   };
 
   /**
-   * Toggle set done state.
-   * Timer integration will be added in Plan 03.
+   * Toggle set done state and start rest timer when marking done.
+   * Matches js/app.js lines 765-770.
    */
-  const handleToggleDone = (exerciseIndex: number, setIndex: number, _restSeconds: number): void => {
+  const handleToggleDone = (exerciseIndex: number, setIndex: number, restSeconds: number): void => {
+    // Get current done state before toggle
+    const currentSet = activeWorkout.exercises[exerciseIndex]?.sets[setIndex];
+    const wasNotDone = currentSet && !currentSet.is_done;
+
     setActiveWorkout(prev => {
       const updated = { ...prev };
       const exercise = { ...updated.exercises[exerciseIndex] };
@@ -318,17 +432,29 @@ export function WorkoutSurface({
       exercise.sets[setIndex] = set;
       updated.exercises = [...updated.exercises];
       updated.exercises[exerciseIndex] = exercise;
-      // Timer start will be added in Plan 03
       return updated;
     });
+
+    // Start rest timer when marking set as done (not when unchecking)
+    if (wasNotDone) {
+      startRestTimer(restSeconds, exerciseIndex);
+    }
   };
 
   /**
    * Remove exercise from workout.
+   * Stops timer if removing exercise that has active timer.
    * Matches js/app.js lines 898-905.
    */
   const handleRemoveExercise = (index: number): void => {
-    // Timer stop will be added in Plan 03
+    // Stop timer if removing exercise that has active timer
+    if (activeTimerExerciseIndex === index) {
+      stopTimer();
+    }
+    // Adjust activeTimerExerciseIndex if needed
+    if (activeTimerExerciseIndex !== null && index < activeTimerExerciseIndex) {
+      setActiveTimerExerciseIndex(prev => prev !== null ? prev - 1 : null);
+    }
     setActiveWorkout(prev => ({
       ...prev,
       exercises: prev.exercises.filter((_, i) => i !== index)
@@ -391,16 +517,11 @@ export function WorkoutSurface({
               onAddSet={handleAddSet}
               onDeleteSet={handleDeleteSet}
               onRemoveExercise={handleRemoveExercise}
-              // Timer props will be connected in Plan 03
-              isTimerActive={activeTimerExerciseIndex === index && timerActive}
-              timerProgress={activeTimerExerciseIndex === index && timerTotalSeconds > 0
-                ? ((timerTotalSeconds - timerSeconds) / timerTotalSeconds) * 100
-                : 0
-              }
-              timerDisplay={activeTimerExerciseIndex === index
-                ? formatTime(timerSeconds)
-                : undefined
-              }
+              // Timer props - will be updated in Task 3
+              isTimerActive={isTimerActiveForExercise(index)}
+              timerProgress={getTimerProgress(index)}
+              timerDisplay={formatTime(isTimerActiveForExercise(index) ? timerSeconds : exercise.rest_seconds)}
+              onAdjustTimer={(delta) => adjustTimer(delta, index)}
             />
           ))}
         </div>

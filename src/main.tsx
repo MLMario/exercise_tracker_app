@@ -6,7 +6,7 @@
  */
 
 import { render } from 'preact';
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { AuthSurface, DashboardSurface, TemplateEditorSurface, WorkoutSurface } from '@/surfaces';
 import { auth } from '@/services/auth';
 import type { TemplateWithExercises } from '@/types';
@@ -120,6 +120,20 @@ function App() {
   // Restored workout data - for resuming saved workout from localStorage
   const [restoredWorkoutData, setRestoredWorkoutData] = useState<SavedWorkoutData | null>(null);
 
+  // ==================== REFS FOR CLOSURE-SAFE STATE ACCESS ====================
+  // Auth listener callback captures state at creation time. Refs provide current values.
+  const currentSurfaceRef = useRef(currentSurface);
+  const isPasswordRecoveryModeRef = useRef(isPasswordRecoveryMode);
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    currentSurfaceRef.current = currentSurface;
+  }, [currentSurface]);
+
+  useEffect(() => {
+    isPasswordRecoveryModeRef.current = isPasswordRecoveryMode;
+  }, [isPasswordRecoveryMode]);
+
   // ==================== AUTH LISTENER ====================
   useEffect(() => {
     // Check URL hash for recovery mode before setting up listener
@@ -138,9 +152,14 @@ function App() {
         setCurrentSurface('auth');
       } else if (event === 'SIGNED_IN') {
         // Only navigate to dashboard if not in password recovery mode
-        if (!isPasswordRecoveryMode && session?.user) {
+        // Use refs for current values (closure captures initial state)
+        if (!isPasswordRecoveryModeRef.current && session?.user) {
           setUser(session.user);
-          setCurrentSurface('dashboard');
+          // Only navigate to dashboard if coming from auth surface
+          // Don't interrupt workout or template editor surfaces (e.g., on alt-tab token refresh)
+          if (currentSurfaceRef.current === 'auth') {
+            setCurrentSurface('dashboard');
+          }
         }
       } else if (event === 'SIGNED_OUT') {
         setUser(null);

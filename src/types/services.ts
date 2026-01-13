@@ -458,13 +458,13 @@ export type ExerciseHistoryData = ExerciseHistoryDateData | ExerciseHistorySessi
 /**
  * Metric type for exercise charts.
  */
-export type ExerciseMetricType = 'total_sets' | 'max_volume_set';
+export type ExerciseMetricType = 'total_sets' | 'max_volume_set' | 'max_weight';
 
 /**
  * Options for getExerciseMetrics.
  */
 export interface ExerciseMetricsOptions {
-  /** Metric to calculate: 'total_sets' or 'max_volume_set' */
+  /** Metric to calculate: 'total_sets', 'max_volume_set', or 'max_weight' */
   metric?: ExerciseMetricType;
   /** Grouping mode: 'date' or 'session' */
   mode?: ExerciseHistoryMode;

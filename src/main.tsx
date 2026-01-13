@@ -117,6 +117,9 @@ function App() {
   // Active workout template - controls workout surface
   const [activeWorkoutTemplate, setActiveWorkoutTemplate] = useState<TemplateWithExercises | null>(null);
 
+  // Restored workout data - for resuming saved workout from localStorage
+  const [restoredWorkoutData, setRestoredWorkoutData] = useState<SavedWorkoutData | null>(null);
+
   // ==================== AUTH LISTENER ====================
   useEffect(() => {
     // Check URL hash for recovery mode before setting up listener
@@ -151,7 +154,16 @@ function App() {
       // Only set user and navigate if there's a session and not in recovery mode
       if (session?.user && !isPasswordRecoveryMode) {
         setUser(session.user);
-        setCurrentSurface('dashboard');
+
+        // Check for saved workout before navigating to dashboard
+        const savedWorkout = checkForSavedWorkout(session.user.id);
+        if (savedWorkout) {
+          console.log('[APP] Found saved workout, restoring...');
+          setRestoredWorkoutData(savedWorkout);
+          setCurrentSurface('workout');
+        } else {
+          setCurrentSurface('dashboard');
+        }
       }
       setIsLoading(false);
     };
@@ -218,6 +230,7 @@ function App() {
    */
   const handleWorkoutFinish = () => {
     setActiveWorkoutTemplate(null);
+    setRestoredWorkoutData(null);
     setCurrentSurface('dashboard');
   };
 
@@ -226,6 +239,7 @@ function App() {
    */
   const handleWorkoutCancel = () => {
     setActiveWorkoutTemplate(null);
+    setRestoredWorkoutData(null);
     setCurrentSurface('dashboard');
   };
 
@@ -257,10 +271,12 @@ function App() {
     );
   }
 
-  if (currentSurface === 'workout' && activeWorkoutTemplate) {
+  if (currentSurface === 'workout' && (activeWorkoutTemplate || restoredWorkoutData)) {
     return (
       <WorkoutSurface
-        template={activeWorkoutTemplate}
+        template={activeWorkoutTemplate || undefined}
+        restoredWorkout={restoredWorkoutData || undefined}
+        userId={user?.id}
         onFinish={handleWorkoutFinish}
         onCancel={handleWorkoutCancel}
       />

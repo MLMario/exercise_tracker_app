@@ -91,8 +91,12 @@ interface WorkoutBackupData {
  * Props for WorkoutSurface component.
  */
 interface WorkoutSurfaceProps {
-  /** Template to start workout from */
-  template: TemplateWithExercises;
+  /** Template to start workout from (required if not restoring) */
+  template?: TemplateWithExercises;
+  /** Restored workout data from localStorage (takes precedence over template) */
+  restoredWorkout?: WorkoutBackupData;
+  /** User ID for localStorage key (required for proper backup/restore) */
+  userId?: string;
   /** Callback when workout saved */
   onFinish?: () => void;
   /** Callback when workout cancelled */
@@ -143,6 +147,8 @@ function formatWorkoutDate(isoString: string | null): string {
  */
 export function WorkoutSurface({
   template,
+  restoredWorkout,
+  userId,
   onFinish,
   onCancel
 }: WorkoutSurfaceProps) {
@@ -193,41 +199,52 @@ export function WorkoutSurface({
   // Matches js/app.js lines 695-730
 
   useEffect(() => {
-    // Initialize active workout from template
-    const initialWorkout: ActiveWorkout = {
-      template_id: template.id,
-      template_name: template.name,
-      started_at: new Date().toISOString(),
-      exercises: template.exercises.map((te, exIndex) => ({
-        exercise_id: te.exercise_id,
-        name: te.name,
-        category: te.category,
-        order: exIndex,
-        rest_seconds: te.default_rest_seconds || 90,
-        sets: te.sets.map(set => ({
-          set_number: set.set_number,
-          weight: set.weight,
-          reps: set.reps,
-          is_done: false
-        }))
-      }))
-    };
+    // Priority: restoredWorkout > template
+    if (restoredWorkout) {
+      // Restore from saved workout data
+      console.log('[WorkoutSurface] Restoring workout from saved data');
+      setActiveWorkout(restoredWorkout.activeWorkout);
+      setOriginalTemplateSnapshot(restoredWorkout.originalTemplateSnapshot);
+      return;
+    }
 
-    setActiveWorkout(initialWorkout);
-
-    // Store deep copy for change detection
-    const snapshot: TemplateSnapshot = {
-      exercises: template.exercises.map(te => ({
-        exercise_id: te.exercise_id,
-        sets: te.sets.map(set => ({
-          set_number: set.set_number,
-          weight: set.weight,
-          reps: set.reps
+    // Initialize from template if provided
+    if (template) {
+      const initialWorkout: ActiveWorkout = {
+        template_id: template.id,
+        template_name: template.name,
+        started_at: new Date().toISOString(),
+        exercises: template.exercises.map((te, exIndex) => ({
+          exercise_id: te.exercise_id,
+          name: te.name,
+          category: te.category,
+          order: exIndex,
+          rest_seconds: te.default_rest_seconds || 90,
+          sets: te.sets.map(set => ({
+            set_number: set.set_number,
+            weight: set.weight,
+            reps: set.reps,
+            is_done: false
+          }))
         }))
-      }))
-    };
-    setOriginalTemplateSnapshot(snapshot);
-  }, [template]);
+      };
+
+      setActiveWorkout(initialWorkout);
+
+      // Store deep copy for change detection
+      const snapshot: TemplateSnapshot = {
+        exercises: template.exercises.map(te => ({
+          exercise_id: te.exercise_id,
+          sets: te.sets.map(set => ({
+            set_number: set.set_number,
+            weight: set.weight,
+            reps: set.reps
+          }))
+        }))
+      };
+      setOriginalTemplateSnapshot(snapshot);
+    }
+  }, [template, restoredWorkout]);
 
   // ==================== TIMER CLEANUP ====================
   // Clean up timer on unmount
@@ -256,12 +273,12 @@ export function WorkoutSurface({
 
   /**
    * Get localStorage key for workout backup.
-   * Uses template_id for uniqueness since we don't have user context here.
+   * Uses userId for proper user-scoped storage.
    * Matches js/app.js lines 1296-1298.
    */
   const getWorkoutStorageKey = useCallback((): string | null => {
-    return activeWorkout.template_id ? `activeWorkout_${activeWorkout.template_id}` : null;
-  }, [activeWorkout.template_id]);
+    return userId ? `activeWorkout_${userId}` : null;
+  }, [userId]);
 
   /**
    * Save workout to localStorage.
@@ -323,7 +340,7 @@ export function WorkoutSurface({
 
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [activeWorkout.template_id, getWorkoutStorageKey, onCancel]);
+  }, [userId, getWorkoutStorageKey, onCancel]);
 
   // ==================== TIMER METHODS ====================
   // Matches js/app.js lines 1089-1173

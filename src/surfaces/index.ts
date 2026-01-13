@@ -13,3 +13,6 @@ export type { UserChart } from './dashboard';
 
 export { default as TemplateEditorSurface } from './template-editor';
 export type { EditingSet, EditingExercise, EditingTemplate } from './template-editor';
+
+export { default as WorkoutSurface } from './workout';
+export type { WorkoutSet, WorkoutExercise, ActiveWorkout } from './workout';

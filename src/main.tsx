@@ -7,7 +7,7 @@
 
 import { render } from 'preact';
 import { useState } from 'preact/hooks';
-import { AuthSurface, DashboardSurface, TemplateEditorSurface } from '@/surfaces';
+import { AuthSurface, DashboardSurface, TemplateEditorSurface, WorkoutSurface } from '@/surfaces';
 import type { TemplateWithExercises } from '@/types';
 
 console.log('Vite + TypeScript initialized');
@@ -15,7 +15,7 @@ console.log('Vite + TypeScript initialized');
 /**
  * Application surface type - controls which major UI surface is displayed.
  */
-type AppSurface = 'auth' | 'dashboard' | 'templateEditor';
+type AppSurface = 'auth' | 'dashboard' | 'templateEditor' | 'workout';
 
 /**
  * Template editing state.
@@ -38,6 +38,9 @@ function App() {
 
   // Template editing state - controls template editor surface
   const [editingTemplate, setEditingTemplate] = useState<EditingTemplateState>(null);
+
+  // Active workout template - controls workout surface
+  const [activeWorkoutTemplate, setActiveWorkoutTemplate] = useState<TemplateWithExercises | null>(null);
 
   /**
    * Handle logout - navigate back to auth surface
@@ -78,6 +81,30 @@ function App() {
     setCurrentSurface('dashboard');
   };
 
+  /**
+   * Handle start workout - navigate to workout surface with template
+   */
+  const handleStartWorkout = (template: TemplateWithExercises) => {
+    setActiveWorkoutTemplate(template);
+    setCurrentSurface('workout');
+  };
+
+  /**
+   * Handle workout finish - return to dashboard
+   */
+  const handleWorkoutFinish = () => {
+    setActiveWorkoutTemplate(null);
+    setCurrentSurface('dashboard');
+  };
+
+  /**
+   * Handle workout cancel - return to dashboard
+   */
+  const handleWorkoutCancel = () => {
+    setActiveWorkoutTemplate(null);
+    setCurrentSurface('dashboard');
+  };
+
   // Render the appropriate surface based on state
   if (currentSurface === 'auth') {
     return <AuthSurface />;
@@ -93,11 +120,22 @@ function App() {
     );
   }
 
+  if (currentSurface === 'workout' && activeWorkoutTemplate) {
+    return (
+      <WorkoutSurface
+        template={activeWorkoutTemplate}
+        onFinish={handleWorkoutFinish}
+        onCancel={handleWorkoutCancel}
+      />
+    );
+  }
+
   return (
     <DashboardSurface
       onLogout={handleLogout}
       onEditTemplate={handleEditTemplate}
       onCreateNewTemplate={handleCreateNewTemplate}
+      onStartWorkout={handleStartWorkout}
     />
   );
 }

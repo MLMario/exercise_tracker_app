@@ -43,6 +43,8 @@ interface DashboardSurfaceProps {
   onEditTemplate?: (template: TemplateWithExercises) => void;
   /** Callback to navigate to template editor for new template */
   onCreateNewTemplate?: () => void;
+  /** Callback to navigate to workout surface with a template */
+  onStartWorkout?: (template: TemplateWithExercises) => void;
 }
 
 /**
@@ -51,7 +53,7 @@ interface DashboardSurfaceProps {
  * Manages dashboard data state and loading.
  * Will render template list, charts, and provide workout functionality.
  */
-export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate }: DashboardSurfaceProps) {
+export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate, onStartWorkout }: DashboardSurfaceProps) {
   // ==================== DASHBOARD STATE ====================
   // Mirrors js/app.js lines 25-30 state variables
 
@@ -280,10 +282,11 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 695-730.
    */
   const handleStartWorkout = (template: TemplateWithExercises): void => {
-    // Navigation will be wired to surface navigation in Phase 12
-    console.log('Navigate to workout surface', template.id);
     setError('');
     setSuccessMessage('');
+    if (onStartWorkout) {
+      onStartWorkout(template);
+    }
   };
 
   // ==================== CHART MODAL HANDLERS ====================

@@ -16,7 +16,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ### v1.1 Fixes & Polish (Phases 12-13)
 
-- [ ] **Phase 12: Bug Fixes** (1/2 plans) - Workout visibility, password recovery routing, chart metric, console cleanup
+- [x] **Phase 12: Bug Fixes** (2/2 plans) - Workout visibility, password recovery routing, chart metric, console cleanup
 - [ ] **Phase 13: UI Polish** - Button styling, form backgrounds, app title rename
 
 <details>

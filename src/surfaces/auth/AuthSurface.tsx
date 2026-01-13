@@ -286,6 +286,10 @@ export function AuthSurface() {
   const goToLoginAfterPasswordUpdate = () => {
     setPasswordUpdateSuccess(false);
     setIsPasswordRecoveryMode(false); // Clear flag so normal auth flow resumes
+    // Clear URL hash to remove recovery tokens - prevents main.tsx from re-detecting recovery mode
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname);
+    }
     setAuthSurface('login');
     setError('');
     setSuccessMessage('');

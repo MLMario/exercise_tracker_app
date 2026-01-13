@@ -2,17 +2,25 @@
 
 ## Overview
 
-Technical debt refactor migrating a fitness tracking app from zero-build vanilla JavaScript to TypeScript + Vite with surface-based architecture. The journey starts with build tooling and type foundations, evaluates UI framework options, then systematically refactors each surface while preserving identical behavior.
+Technical debt refactor migrating a fitness tracking app from zero-build vanilla JavaScript to TypeScript + Vite with surface-based architecture.
 
-## Domain Expertise
+## Completed Milestones
 
-None
+- [v1.0 Exercise Tracker Refactor](milestones/v1.0-ROADMAP.md) (Phases 1-11) — SHIPPED 2026-01-13
+
+## Current Milestone
+
+**v1.1 Fixes & Polish** — Bug fixes from UAT and UI polish
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+### v1.1 Fixes & Polish (Phases 12-13)
+
+- [ ] **Phase 12: Bug Fixes** (1/2 plans) - Workout visibility, password recovery routing, chart metric, console cleanup
+- [ ] **Phase 13: UI Polish** - Button styling, form backgrounds, app title rename
+
+<details>
+<summary>v1.0 Refactor (Phases 1-11) — SHIPPED 2026-01-13</summary>
 
 - [x] **Phase 1: Foundation** - Vite + TypeScript setup, project structure, build pipeline
 - [x] **Phase 2: Type System** - Supabase schema types, shared interfaces, service module types
@@ -26,92 +34,43 @@ None
 - [x] **Phase 10: Charts Surface** - Refactor progress charts rendering
 - [x] **Phase 11: Integration** - Multi-tab sync, localStorage backup, routing, final cleanup
 
+</details>
+
 ## Phase Details
 
-### Phase 1: Foundation
-**Goal**: Vite build working with TypeScript, project structure established, existing JS loadable
-**Depends on**: Nothing (first phase)
-**Research**: Unlikely (standard Vite/TypeScript setup)
-**Plans**: TBD
+### Phase 12: Bug Fixes
+**Goal**: Fix bugs discovered during v1.0 UAT testing
+**Depends on**: v1.0 complete
+**Scope**:
+- Workout hides when alt-tabbing and returning to browser
+- Password Recovery redirects to wrong surface after success
+- Charts "Max Weight" metric fails to display data
+- Remove console.log statements from auth debug code
 
-### Phase 2: Type System
-**Goal**: Complete type definitions for Supabase schema and service interfaces
-**Depends on**: Phase 1
-**Research**: Unlikely (analyzing existing code patterns)
-**Plans**: TBD
+### Phase 13: UI Polish
+**Goal**: Visual polish and branding updates
+**Depends on**: Phase 12
+**Scope**:
+- Style "Add Chart" button to match app design
+- Fix logout button positioning
+- Style "Remove Chart" (X) button
+- Add transparency to "Add Chart" form background
+- Rename app title from "Exercise Tracker" to "Ironlift Strength"
 
-### Phase 3: Framework Evaluation
-**Goal**: Evaluate Alpine.js vs Vue/React/Preact, select framework for surfaces
-**Depends on**: Phase 1
-**Research**: Likely (comparing UI frameworks)
-**Research topics**: Current Alpine.js ecosystem, Vue 3 composition API, React/Preact bundle sizes, migration complexity from Alpine.js patterns
-**Plans**: TBD
+<details>
+<summary>v1.0 Phase Details (Archived)</summary>
 
-### Phase 4: Auth Service
-**Goal**: Auth service fully typed and migrated to new architecture
-**Depends on**: Phase 2
-**Research**: Unlikely (internal refactoring, Supabase auth patterns established)
-**Plans**: TBD
+See [v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md) for full phase details.
 
-### Phase 5: Data Services
-**Goal**: Exercises, templates, and logging services migrated with types
-**Depends on**: Phase 2
-**Research**: Unlikely (internal refactoring)
-**Plans**: TBD
-
-### Phase 6: Auth Surface
-**Goal**: Login, register, password reset UI refactored to new architecture
-**Depends on**: Phase 3, Phase 4
-**Research**: Unlikely (internal UI patterns)
-**Plans**: TBD
-
-### Phase 7: Dashboard Surface
-**Goal**: Main dashboard view and navigation refactored
-**Depends on**: Phase 3, Phase 5
-**Research**: Unlikely (internal UI patterns)
-**Plans**: TBD
-
-### Phase 8: Template Editor Surface
-**Goal**: Template create/edit/delete/reorder UI refactored
-**Depends on**: Phase 5, Phase 7
-**Research**: Unlikely (internal UI patterns)
-**Plans**: TBD
-
-### Phase 9: Workout Surface
-**Goal**: Active workout tracking (timer, sets, swipe gestures) refactored - the complex one
-**Depends on**: Phase 5, Phase 8
-**Research**: Unlikely (internal patterns, but complex implementation)
-**Plans**: TBD
-
-### Phase 10: Charts Surface
-**Goal**: Progress charts rendering refactored with clean Chart.js integration
-**Depends on**: Phase 5
-**Research**: Unlikely (Chart.js already in use)
-**Plans**: TBD
-
-### Phase 11: Integration
-**Goal**: Multi-tab sync, localStorage backup, routing wired up, old code removed
-**Depends on**: All surface phases (6-10)
-**Research**: Unlikely (wiring existing pieces)
-**Plans**: TBD
+</details>
 
 ## Progress
 
-**Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
+| Milestone | Phases | Plans | Status | Completed |
+|-----------|--------|-------|--------|-----------|
+| v1.0 Refactor | 1-11 | 27 | Complete | 2026-01-13 |
+| v1.1 Fixes & Polish | 12-13 | TBD | In Progress | - |
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation | 2/2 | Complete | 2026-01-12 |
-| 2. Type System | 2/2 | Complete | 2026-01-12 |
-| 3. Framework Evaluation | 1/1 | Complete | 2026-01-12 |
-| 4. Auth Service | 1/1 | Complete | 2026-01-12 |
-| 5. Data Services | 3/3 | Complete | 2026-01-12 |
-| 6. Auth Surface | 3/3 | Complete | 2026-01-12 |
-| 7. Dashboard Surface | 3/3 | Complete | 2026-01-12 |
-| 8. Template Editor Surface | 3/3 | Complete | 2026-01-12 |
-| 9. Workout Surface | 5/5 | Complete | 2026-01-13 |
-| 10. Charts Surface | 1/1 | Complete | 2026-01-13 |
-| 11. Integration | 3/3 | Complete | 2026-01-13 |
+---
 
-**🎉 MILESTONE COMPLETE** - All 11 phases executed, 27 plans total
+*See `.planning/MILESTONES.md` for milestone history.*

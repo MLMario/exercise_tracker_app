@@ -10,19 +10,19 @@ See: .planning/PROJECT.md (updated 2026-01-13)
 ## Current Position
 
 Milestone: v1.1 Fixes & Polish
-Phase: 12 of 13 (planned)
-Plan: 2 plans ready (12-01, 12-02)
-Status: **Ready to Execute**
-Last activity: 2026-01-13 — Phase 12 planned
+Phase: 12 of 13 (Bug Fixes)
+Plan: 1 of 2 in current phase
+Status: In progress
+Last activity: 2026-01-13 — Completed 12-01-PLAN.md
 
-Progress: ░░░░░░░░░░░ 0%
+Progress: █░░░░░░░░░░ 50% (1/2 plans in Phase 12)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
+- Total plans completed: 28
 - Average duration: ~4 min
-- Total execution time: ~108 min
+- Total execution time: ~111 min
 
 **By Phase:**
 
@@ -40,10 +40,12 @@ Progress: ░░░░░░░░░░░ 0%
 | 10-charts-surface | 1 | 3 min | 3 min |
 | 11-integration | 3 | 25 min | 8.3 min |
 
-**Final Stats:**
-- 11 phases completed
-- 27 plans executed
-- Alpine.js → Preact migration complete
+| 12-bug-fixes | 1 | 3 min | 3 min |
+
+**Current Stats:**
+- 12 phases in progress (1 plan done)
+- 28 plans executed
+- Alpine.js → Preact migration complete (v1.0)
 
 ## Accumulated Context
 
@@ -60,6 +62,7 @@ Recent decisions affecting current work:
 - String UUIDs/ISO timestamps: matching Supabase JSON format
 - Barrel exports: clean imports via @/types
 - **Preact selected**: React-compatible 4KB framework for surface migrations (Phase 3)
+- **useRef for closures**: Event listener callbacks capture state; use refs for current values (Phase 12)
 
 ### Deferred Issues
 
@@ -72,6 +75,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-13
-Stopped at: Phase 12 planned
+Stopped at: Completed 12-01-PLAN.md
 Resume file: None
-Next action: /gsd:execute-phase 12
+Next action: /gsd:execute-plan 12-02

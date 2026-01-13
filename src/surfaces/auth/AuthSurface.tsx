@@ -79,7 +79,6 @@ export function AuthSurface() {
     const hashType = hashParams.get('type');
 
     if (hashType === 'recovery') {
-      console.log('[AUTH DEBUG] Detected recovery token in URL, setting isPasswordRecoveryMode = true');
       setIsPasswordRecoveryMode(true);
       setAuthSurface('updatePassword');
     }

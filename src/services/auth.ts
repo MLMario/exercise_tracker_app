@@ -142,7 +142,6 @@ async function resetPassword(email: string): Promise<SuccessResult> {
     // Get the current site URL for the redirect
     // This ensures the reset link brings users back to this exact deployment
     const redirectTo = window.location.origin + window.location.pathname;
-    console.log('[AUTH DEBUG] resetPasswordForEmail redirectTo:', redirectTo);
 
     // Attempt to send password reset email with explicit redirect URL
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -294,5 +293,3 @@ declare global {
 }
 
 window.auth = auth;
-
-console.log('Auth module loaded successfully');

@@ -232,5 +232,3 @@ declare global {
 }
 
 window.exercises = exercises;
-
-console.log('Exercises module loaded successfully');

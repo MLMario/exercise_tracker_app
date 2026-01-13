@@ -647,5 +647,3 @@ declare global {
 }
 
 window.logging = logging;
-
-console.log('Logging module loaded successfully');

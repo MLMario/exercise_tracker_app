@@ -202,7 +202,6 @@ export function WorkoutSurface({
     // Priority: restoredWorkout > template
     if (restoredWorkout) {
       // Restore from saved workout data
-      console.log('[WorkoutSurface] Restoring workout from saved data');
       setActiveWorkout(restoredWorkout.activeWorkout);
       setOriginalTemplateSnapshot(restoredWorkout.originalTemplateSnapshot);
       return;

@@ -12,8 +12,6 @@ import { auth } from '@/services/auth';
 import type { TemplateWithExercises } from '@/types';
 import type { User } from '@supabase/supabase-js';
 
-console.log('Vite + TypeScript initialized');
-
 // ==================== SAVED WORKOUT TYPES ====================
 /**
  * Saved workout data structure from localStorage.
@@ -145,8 +143,6 @@ function App() {
 
     // Set up auth state change listener
     const subscription = auth.onAuthStateChange((event, session) => {
-      console.log('[APP] Auth state change:', event);
-
       if (event === 'PASSWORD_RECOVERY') {
         setIsPasswordRecoveryMode(true);
         setCurrentSurface('auth');
@@ -177,7 +173,6 @@ function App() {
         // Check for saved workout before navigating to dashboard
         const savedWorkout = checkForSavedWorkout(session.user.id);
         if (savedWorkout) {
-          console.log('[APP] Found saved workout, restoring...');
           setRestoredWorkoutData(savedWorkout);
           setCurrentSurface('workout');
         } else {
@@ -323,5 +318,3 @@ if (!appElement) {
 
 // Render the App component
 render(<App />, appElement);
-
-console.log('App rendered to #app');

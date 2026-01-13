@@ -736,5 +736,3 @@ declare global {
 }
 
 window.templates = templates;
-
-console.log('Templates module loaded successfully');

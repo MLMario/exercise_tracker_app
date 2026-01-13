@@ -5,3 +5,4 @@
  */
 
 export { auth } from './auth';
+export { exercises } from './exercises';

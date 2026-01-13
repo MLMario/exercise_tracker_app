@@ -9,7 +9,7 @@
  * Swipe handlers match js/app.js lines 773-896.
  */
 
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 import type { WorkoutSet } from './WorkoutSurface';
 
 // ============================================================================
@@ -92,13 +92,13 @@ export function SetRow({
   /**
    * Reset swipe to original position.
    */
-  const resetSwipe = (): void => {
+  const resetSwipe = useCallback((): void => {
     setIsRevealed(false);
     if (setRowRef.current) {
       setRowRef.current.style.transform = '';
     }
     onSwipeStateChange?.(false);
-  };
+  }, [onSwipeStateChange]);
 
   /**
    * Handle swipe start (pointerdown/touchstart).
@@ -214,7 +214,7 @@ export function SetRow({
     if (shouldResetSwipe && isRevealed) {
       resetSwipe();
     }
-  }, [shouldResetSwipe]);
+  }, [shouldResetSwipe, isRevealed, resetSwipe]);
 
   // ==================== INPUT HANDLERS ====================
 
@@ -254,8 +254,10 @@ export function SetRow({
   // ==================== RENDER ====================
   // Structure matches index.html lines 569-615
 
-  // Style to prevent text selection during swipe
-  const wrapperStyle = swipeData?.isDragging ? { userSelect: 'none' as const } : {};
+  // Style to prevent text selection and vertical scroll during swipe
+  const wrapperStyle = swipeData?.isDragging
+    ? { userSelect: 'none' as const, touchAction: 'none' as const }
+    : {};
 
   return (
     <div
@@ -304,7 +306,7 @@ export function SetRow({
         type="button"
         class="btn-remove-set"
         onClick={handleDelete}
-        style={{ visibility: canDelete && isRevealed ? 'visible' : 'hidden' }}
+        style={{ visibility: canDelete && (isRevealed || swipeData?.isDragging) ? 'visible' : 'hidden' }}
         title="Remove Set"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

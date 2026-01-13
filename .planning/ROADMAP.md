@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-01-12 |
 | 2. Type System | 2/2 | Complete | 2026-01-12 |
-| 3. Framework Evaluation | 0/TBD | Not started | - |
+| 3. Framework Evaluation | 0/1 | Planned | - |
 | 4. Auth Service | 0/TBD | Not started | - |
 | 5. Data Services | 0/TBD | Not started | - |
 | 6. Auth Surface | 0/TBD | Not started | - |

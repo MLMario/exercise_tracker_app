@@ -10,6 +10,8 @@
 
 import { useState, useEffect } from 'preact/hooks';
 import { auth } from '@/services/auth';
+import { LoginForm } from './LoginForm';
+import { RegisterForm } from './RegisterForm';
 
 /**
  * Auth sub-surface type - controls which auth form is displayed
@@ -102,21 +104,29 @@ export function AuthSurface() {
   /**
    * Switch to a different auth sub-surface
    * Clears form state when switching between surfaces
+   * Matches js/app.js lines 208-226
    */
   const switchAuthSurface = (surface: AuthSubSurface) => {
     setAuthSurface(surface);
     setError('');
     setSuccessMessage('');
 
-    // Reset form fields when switching surfaces
-    if (surface === 'login' || surface === 'register') {
+    // Reset status flags when switching surfaces
+    if (surface !== 'reset') {
       setResetEmailSent(false);
+    }
+    if (surface !== 'updatePassword') {
       setPasswordUpdateSuccess(false);
     }
+
+    // Clear password fields when switching surfaces
+    setAuthPassword('');
+    setAuthConfirmPassword('');
   };
 
   /**
    * Toggle password visibility for a specific field
+   * Matches js/app.js lines 228-240
    */
   const togglePasswordVisibility = (field: PasswordField) => {
     switch (field) {
@@ -139,6 +149,63 @@ export function AuthSurface() {
   };
 
   /**
+   * Validate that password and confirm password match
+   * Matches js/app.js lines 269-271
+   */
+  const validatePasswords = (): boolean => {
+    return authPassword === authConfirmPassword;
+  };
+
+  /**
+   * Handle auth form submission (login or register)
+   * Matches js/app.js lines 168-206
+   */
+  const handleAuth = async () => {
+    setError('');
+    setAuthLoading(true);
+
+    // Validate inputs
+    if (!authEmail || !authPassword) {
+      setError('Email and password are required');
+      setAuthLoading(false);
+      return;
+    }
+
+    try {
+      let result;
+      if (authSurface === 'login') {
+        result = await auth.login(authEmail, authPassword);
+      } else {
+        // Validate password confirmation for register mode
+        if (!validatePasswords()) {
+          setError('Passwords do not match');
+          setAuthLoading(false);
+          return;
+        }
+        result = await auth.register(authEmail, authPassword);
+      }
+
+      if (result.error) {
+        setError(result.error.message);
+      } else {
+        // Clear form fields on success
+        setAuthEmail('');
+        setAuthPassword('');
+        setAuthConfirmPassword('');
+        setSuccessMessage(
+          authSurface === 'login'
+            ? 'Logged in successfully'
+            : 'Account created successfully'
+        );
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  /**
    * Clear error message
    */
   const clearError = () => setError('');
@@ -150,35 +217,40 @@ export function AuthSurface() {
 
   // ==================== RENDER ====================
 
-  // Placeholder content for each sub-surface
-  // These will be replaced with actual form components in plan 06-02
+  /**
+   * Render the appropriate sub-surface based on authSurface state
+   */
   const renderSubSurface = () => {
     switch (authSurface) {
       case 'login':
         return (
-          <div class="auth-surface-placeholder" data-surface="login">
-            <h2>Login Surface</h2>
-            <p>Email: {authEmail || '(empty)'}</p>
-            <p>Loading: {authLoading ? 'true' : 'false'}</p>
-            <button type="button" onClick={() => switchAuthSurface('register')}>
-              Switch to Register
-            </button>
-            <button type="button" onClick={() => switchAuthSurface('reset')}>
-              Forgot Password
-            </button>
-          </div>
+          <LoginForm
+            email={authEmail}
+            setEmail={setAuthEmail}
+            setPassword={setAuthPassword}
+            showPassword={showLoginPassword}
+            onTogglePassword={() => togglePasswordVisibility('login')}
+            error={error}
+            isLoading={authLoading}
+            onSubmit={handleAuth}
+            onForgotPassword={() => switchAuthSurface('reset')}
+          />
         );
 
       case 'register':
         return (
-          <div class="auth-surface-placeholder" data-surface="register">
-            <h2>Register Surface</h2>
-            <p>Email: {authEmail || '(empty)'}</p>
-            <p>Confirm Password: {authConfirmPassword ? '***' : '(empty)'}</p>
-            <button type="button" onClick={() => switchAuthSurface('login')}>
-              Switch to Login
-            </button>
-          </div>
+          <RegisterForm
+            email={authEmail}
+            setEmail={setAuthEmail}
+            setPassword={setAuthPassword}
+            setConfirmPassword={setAuthConfirmPassword}
+            showPassword={showRegisterPassword}
+            showConfirmPassword={showConfirmPassword}
+            onTogglePassword={(field) => togglePasswordVisibility(field)}
+            error={error}
+            isLoading={authLoading}
+            onSubmit={handleAuth}
+          />
         );
 
       case 'reset':
@@ -206,12 +278,26 @@ export function AuthSurface() {
     }
   };
 
+  // Determine if tabs should be shown
+  const showTabs = authSurface !== 'reset' && authSurface !== 'updatePassword';
+
   return (
     <div class="auth-surface-container">
-      {/* Error display */}
-      {error && (
-        <div class="error-message" onClick={clearError}>
-          {error}
+      {/* Tab Navigation - matches index.html lines 30-43 */}
+      {showTabs && (
+        <div class="auth-tabs">
+          <button
+            class={`auth-tab${authSurface === 'login' ? ' active' : ''}`}
+            onClick={() => switchAuthSurface('login')}
+          >
+            Login
+          </button>
+          <button
+            class={`auth-tab${authSurface === 'register' ? ' active' : ''}`}
+            onClick={() => switchAuthSurface('register')}
+          >
+            Register
+          </button>
         </div>
       )}
 
@@ -222,14 +308,31 @@ export function AuthSurface() {
         </div>
       )}
 
-      {/* Sub-surface content */}
-      {renderSubSurface()}
-
-      {/* Debug info (remove in production) */}
-      <div class="debug-info" style={{ marginTop: '1rem', fontSize: '0.75rem', color: '#666' }}>
-        <p>Current sub-surface: {authSurface}</p>
-        <p>Password visibility - Login: {showLoginPassword ? 'on' : 'off'}, Register: {showRegisterPassword ? 'on' : 'off'}</p>
+      {/* Surfaces Container */}
+      <div class="surfaces-container">
+        {renderSubSurface()}
       </div>
+
+      {/* Footer switch links */}
+      {showTabs && (
+        <div class="auth-footer">
+          {authSurface === 'login' ? (
+            <p>
+              Don't have an account?{' '}
+              <a href="#" onClick={(e) => { e.preventDefault(); switchAuthSurface('register'); }}>
+                Sign up
+              </a>
+            </p>
+          ) : (
+            <p>
+              Already have an account?{' '}
+              <a href="#" onClick={(e) => { e.preventDefault(); switchAuthSurface('login'); }}>
+                Log in
+              </a>
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

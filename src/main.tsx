@@ -6,9 +6,11 @@
  */
 
 import { render } from 'preact';
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { AuthSurface, DashboardSurface, TemplateEditorSurface, WorkoutSurface } from '@/surfaces';
+import { auth } from '@/services/auth';
 import type { TemplateWithExercises } from '@/types';
+import type { User } from '@supabase/supabase-js';
 
 console.log('Vite + TypeScript initialized');
 
@@ -32,9 +34,17 @@ type EditingTemplateState = null | 'new' | TemplateWithExercises;
  * Will be enhanced later to include auth state listening.
  */
 function App() {
-  // Current surface state - hardcoded to 'dashboard' for testing
-  // Will be controlled by auth state in future updates
-  const [currentSurface, setCurrentSurface] = useState<AppSurface>('dashboard');
+  // ==================== AUTH STATE ====================
+  // Current user (null = not authenticated)
+  const [user, setUser] = useState<User | null>(null);
+  // Loading state while checking initial session
+  const [isLoading, setIsLoading] = useState(true);
+  // Password recovery mode flag - prevents SIGNED_IN from overriding navigation
+  const [isPasswordRecoveryMode, setIsPasswordRecoveryMode] = useState(false);
+
+  // ==================== SURFACE STATE ====================
+  // Current surface state - controlled by auth state
+  const [currentSurface, setCurrentSurface] = useState<AppSurface>('auth');
 
   // Template editing state - controls template editor surface
   const [editingTemplate, setEditingTemplate] = useState<EditingTemplateState>(null);
@@ -42,11 +52,60 @@ function App() {
   // Active workout template - controls workout surface
   const [activeWorkoutTemplate, setActiveWorkoutTemplate] = useState<TemplateWithExercises | null>(null);
 
+  // ==================== AUTH LISTENER ====================
+  useEffect(() => {
+    // Check URL hash for recovery mode before setting up listener
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    if (hashParams.get('type') === 'recovery') {
+      setIsPasswordRecoveryMode(true);
+      setCurrentSurface('auth');
+    }
+
+    // Set up auth state change listener
+    const subscription = auth.onAuthStateChange((event, session) => {
+      console.log('[APP] Auth state change:', event);
+
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecoveryMode(true);
+        setCurrentSurface('auth');
+      } else if (event === 'SIGNED_IN') {
+        // Only navigate to dashboard if not in password recovery mode
+        if (!isPasswordRecoveryMode && session?.user) {
+          setUser(session.user);
+          setCurrentSurface('dashboard');
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setCurrentSurface('auth');
+      }
+    });
+
+    // Check initial session
+    const checkInitialSession = async () => {
+      const session = await auth.getSession();
+      // Only set user and navigate if there's a session and not in recovery mode
+      if (session?.user && !isPasswordRecoveryMode) {
+        setUser(session.user);
+        setCurrentSurface('dashboard');
+      }
+      setIsLoading(false);
+    };
+
+    checkInitialSession();
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
+
   /**
-   * Handle logout - navigate back to auth surface
+   * Handle logout - sign out and navigate back to auth surface
+   * Auth listener will handle the actual navigation
    */
-  const handleLogout = () => {
-    setCurrentSurface('auth');
+  const handleLogout = async () => {
+    await auth.logout();
+    // Auth listener will handle navigation via SIGNED_OUT event
   };
 
   /**
@@ -104,6 +163,19 @@ function App() {
     setActiveWorkoutTemplate(null);
     setCurrentSurface('dashboard');
   };
+
+  // ==================== RENDER ====================
+
+  // Show loading screen while checking initial session
+  if (isLoading) {
+    return (
+      <div class="loading-screen">
+        <div class="loading-content">
+          <h2>Loading...</h2>
+        </div>
+      </div>
+    );
+  }
 
   // Render the appropriate surface based on state
   if (currentSurface === 'auth') {

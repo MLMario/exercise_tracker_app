@@ -10,6 +10,7 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
 import type { TemplateWithExercises } from '@/types';
 import { WorkoutExerciseCard } from './WorkoutExerciseCard';
+import { ConfirmationModal } from '@/components';
 
 // ============================================================================
 // Interfaces
@@ -63,6 +64,17 @@ interface TemplateSnapshot {
       reps: number;
     }[];
   }[];
+}
+
+/**
+ * Workout data for saving to backend.
+ * Matches js/app.js lines 1005-1010.
+ */
+interface WorkoutData {
+  template_id: string | null;
+  started_at: string;
+  finished_at: string;
+  exercises: WorkoutExercise[];
 }
 
 /**
@@ -158,7 +170,7 @@ export function WorkoutSurface({
   const [revealedSetKey, setRevealedSetKey] = useState<string | null>(null);
 
   // Pending workout data (for template update decision)
-  const [pendingWorkoutData, setPendingWorkoutData] = useState<unknown | null>(null);
+  const [pendingWorkoutData, setPendingWorkoutData] = useState<WorkoutData | null>(null);
 
   // Message state
   const [error, setError] = useState('');
@@ -334,6 +346,51 @@ export function WorkoutSurface({
     }
   };
 
+  // ==================== TEMPLATE CHANGE DETECTION ====================
+  // Matches js/app.js lines 1046-1087
+
+  /**
+   * Check if workout has changes compared to original template.
+   * Matches js/app.js lines 1046-1087.
+   */
+  const hasTemplateChanges = (): boolean => {
+    if (!originalTemplateSnapshot || !activeWorkout.template_id) {
+      return false;
+    }
+
+    const original = originalTemplateSnapshot.exercises;
+    const current = activeWorkout.exercises;
+
+    // Check exercise count
+    if (original.length !== current.length) return true;
+
+    // Check each exercise
+    for (const currEx of current) {
+      const origEx = original.find(e => e.exercise_id === currEx.exercise_id);
+      if (!origEx) return true; // New exercise added
+      if (origEx.sets.length !== currEx.sets.length) return true; // Set count changed
+
+      // Check set values
+      for (let j = 0; j < currEx.sets.length; j++) {
+        const origSet = origEx.sets[j];
+        const currSet = currEx.sets[j];
+        if (!origSet) return true;
+        if (origSet.weight !== currSet.weight || origSet.reps !== currSet.reps) {
+          return true;
+        }
+      }
+    }
+
+    // Check if any original exercises removed
+    for (const origEx of original) {
+      if (!current.find(e => e.exercise_id === origEx.exercise_id)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   // ==================== HANDLERS ====================
 
   /**
@@ -341,10 +398,17 @@ export function WorkoutSurface({
    * Matches js/app.js lines 996-999.
    */
   const handleCancelWorkout = (): void => {
-    // TODO: Add confirmation modal in future plan
-    if (onCancel) {
-      onCancel();
-    }
+    setShowCancelWorkoutModal(true);
+  };
+
+  /**
+   * Confirm cancel workout - discard and navigate back.
+   * Matches js/app.js lines 1023-1040.
+   */
+  const confirmCancelWorkout = (): void => {
+    setShowCancelWorkoutModal(false);
+    stopTimer();
+    onCancel?.();
   };
 
   /**
@@ -360,8 +424,98 @@ export function WorkoutSurface({
       return;
     }
 
-    // TODO: Show finish modal and save workout in future plan
     setShowFinishWorkoutModal(true);
+  };
+
+  /**
+   * Confirm finish workout - check for template changes.
+   * Matches js/app.js lines 1001-1016.
+   */
+  const confirmFinishWorkout = (): void => {
+    setShowFinishWorkoutModal(false);
+
+    if (activeWorkout.template_id && hasTemplateChanges()) {
+      // Save workout data for after template update decision
+      setPendingWorkoutData({
+        template_id: activeWorkout.template_id,
+        started_at: activeWorkout.started_at!,
+        finished_at: new Date().toISOString(),
+        exercises: activeWorkout.exercises
+      });
+      setShowTemplateUpdateModal(true);
+      return;
+    }
+
+    saveWorkoutAndCleanup();
+  };
+
+  /**
+   * Save workout and cleanup state.
+   * Matches js/app.js lines 919-955.
+   */
+  const saveWorkoutAndCleanup = async (): Promise<void> => {
+    try {
+      const workoutData = pendingWorkoutData || {
+        template_id: activeWorkout.template_id,
+        started_at: activeWorkout.started_at!,
+        finished_at: new Date().toISOString(),
+        exercises: activeWorkout.exercises
+      };
+
+      const { error: saveError } = await window.logging.createWorkoutLog(workoutData);
+      if (saveError) throw new Error(saveError.message);
+
+      // Reset state and navigate back
+      stopTimer();
+      setPendingWorkoutData(null);
+      onFinish?.();
+    } catch (err) {
+      setError('Failed to save workout: ' + (err instanceof Error ? err.message : String(err)));
+    }
+  };
+
+  /**
+   * Confirm template update - update template then save workout.
+   * Matches js/app.js lines 957-989.
+   */
+  const confirmTemplateUpdate = async (): Promise<void> => {
+    try {
+      const templateExercises = activeWorkout.exercises.map(ex => ({
+        exercise_id: ex.exercise_id,
+        name: ex.name,
+        category: ex.category,
+        default_rest_seconds: ex.rest_seconds,
+        sets: ex.sets.map(set => ({
+          set_number: set.set_number,
+          weight: set.weight,
+          reps: set.reps
+        }))
+      }));
+
+      const { error: updateError } = await window.templates.updateTemplate(
+        activeWorkout.template_id!,
+        activeWorkout.template_name,
+        templateExercises
+      );
+
+      if (updateError) {
+        setError('Failed to update template: ' + updateError.message);
+      }
+    } catch (err) {
+      setError('Failed to update template: ' + (err instanceof Error ? err.message : String(err)));
+    }
+
+    setShowTemplateUpdateModal(false);
+    await saveWorkoutAndCleanup();
+  };
+
+  /**
+   * Decline template update - just save workout.
+   * Matches js/app.js lines 991-994.
+   */
+  const declineTemplateUpdate = (): void => {
+    setShowTemplateUpdateModal(false);
+    saveWorkoutAndCleanup();
   };
 
   // ==================== SET MANAGEMENT HANDLERS ====================
@@ -577,6 +731,43 @@ export function WorkoutSurface({
           </button>
         </div>
       </div>
+
+      {/* Finish Workout Modal */}
+      <ConfirmationModal
+        isOpen={showFinishWorkoutModal}
+        title="Finish Workout?"
+        message="Save this workout and end your session?"
+        confirmLabel="Save"
+        cancelLabel="Cancel"
+        confirmVariant="primary"
+        onConfirm={confirmFinishWorkout}
+        onCancel={() => setShowFinishWorkoutModal(false)}
+      />
+
+      {/* Cancel Workout Modal */}
+      <ConfirmationModal
+        isOpen={showCancelWorkoutModal}
+        title="Cancel Workout?"
+        message="All progress will be lost. This cannot be undone."
+        confirmLabel="Discard"
+        cancelLabel="Go Back"
+        confirmVariant="danger"
+        onConfirm={confirmCancelWorkout}
+        onCancel={() => setShowCancelWorkoutModal(false)}
+      />
+
+      {/* Template Update Modal */}
+      <ConfirmationModal
+        isOpen={showTemplateUpdateModal}
+        title="Update Template?"
+        message="You made changes during this workout. Update the template with these changes?"
+        secondaryMessage="This will update exercises, sets, weights, and reps."
+        confirmLabel="Yes, Update"
+        cancelLabel="No, Keep Original"
+        confirmVariant="primary"
+        onConfirm={confirmTemplateUpdate}
+        onCancel={declineTemplateUpdate}
+      />
     </div>
   );
 }

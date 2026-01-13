@@ -6,3 +6,4 @@
 
 export { auth } from './auth';
 export { exercises } from './exercises';
+export { templates } from './templates';

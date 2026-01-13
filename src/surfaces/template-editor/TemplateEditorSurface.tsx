@@ -8,9 +8,10 @@
  * Exercise manipulation methods mirror js/app.js lines 613-655.
  */
 
-import { useState } from 'preact/hooks';
-import type { TemplateWithExercises } from '@/types';
+import { useState, useEffect } from 'preact/hooks';
+import type { TemplateWithExercises, Exercise, ExerciseCategory } from '@/types';
 import { ExerciseList } from './ExerciseList';
+import { ExercisePickerModal } from '@/components';
 
 /**
  * Set configuration within an editing exercise.
@@ -113,6 +114,35 @@ export function TemplateEditorSurface({
 
   // Success message display
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Exercise picker state
+  const [showExercisePicker, setShowExercisePicker] = useState(false);
+  const [availableExercises, setAvailableExercises] = useState<Exercise[]>([]);
+
+  // ==================== EFFECTS ====================
+
+  /**
+   * Load available exercises on mount.
+   * Matches dashboard pattern for loading exercises.
+   */
+  useEffect(() => {
+    const loadExercises = async (): Promise<void> => {
+      try {
+        const { data, error } = await window.exercises.getExercises();
+        if (error) {
+          console.error('Failed to load exercises:', error.message);
+          return;
+        }
+        if (data) {
+          setAvailableExercises(data);
+        }
+      } catch (err) {
+        console.error('Failed to load exercises:', err);
+      }
+    };
+
+    loadExercises();
+  }, []);
 
   // ==================== HANDLERS ====================
   // Matches js/app.js lines 469-536
@@ -312,11 +342,81 @@ export function TemplateEditorSurface({
 
   /**
    * Open exercise picker to add a new exercise.
-   * Placeholder for Plan 03.
+   * Matches js/app.js lines 538-543 (openExercisePickerForTemplate).
    */
   const handleOpenExercisePicker = (): void => {
-    // TODO: Implement in Plan 03
-    console.log('Opening exercise picker...');
+    setShowExercisePicker(true);
+  };
+
+  /**
+   * Handle selecting an exercise from the picker.
+   * Matches js/app.js lines 570-590 (selectExercise for template context).
+   */
+  const handleSelectExercise = (exercise: Exercise): void => {
+    // Check if already added
+    const exists = editingTemplate.exercises.some(
+      (ex) => ex.exercise_id === exercise.id
+    );
+    if (exists) {
+      setError('Exercise already added to template');
+      return;
+    }
+
+    // Add exercise with 3 default sets
+    setEditingTemplate((prev) => ({
+      ...prev,
+      exercises: [
+        ...prev.exercises,
+        {
+          exercise_id: exercise.id,
+          name: exercise.name,
+          category: exercise.category,
+          default_rest_seconds: 90,
+          sets: [
+            { set_number: 1, weight: 0, reps: 10 },
+            { set_number: 2, weight: 0, reps: 10 },
+            { set_number: 3, weight: 0, reps: 10 },
+          ],
+        },
+      ],
+    }));
+
+    setShowExercisePicker(false);
+  };
+
+  /**
+   * Handle creating a new exercise.
+   * Matches js/app.js lines 653-691 (createNewExercise).
+   */
+  const handleCreateExercise = async (
+    name: string,
+    category: string
+  ): Promise<Exercise | null> => {
+    try {
+      const { data: newExercise, error } = await window.exercises.createExercise(
+        name,
+        category as ExerciseCategory
+      );
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (newExercise) {
+        // Add to available exercises
+        setAvailableExercises((prev) => [...prev, newExercise]);
+        setSuccessMessage('Exercise created successfully');
+        return newExercise;
+      }
+
+      return null;
+    } catch (err) {
+      setError(
+        'Failed to create exercise: ' +
+          (err instanceof Error ? err.message : String(err))
+      );
+      return null;
+    }
   };
 
   // ==================== RENDER ====================
@@ -396,6 +496,16 @@ export function TemplateEditorSurface({
           />
         </form>
       </div>
+
+      {/* Exercise Picker Modal */}
+      <ExercisePickerModal
+        isOpen={showExercisePicker}
+        exercises={availableExercises}
+        excludeIds={editingTemplate.exercises.map((e) => e.exercise_id)}
+        onClose={() => setShowExercisePicker(false)}
+        onSelect={handleSelectExercise}
+        onCreateExercise={handleCreateExercise}
+      />
     </div>
   );
 }

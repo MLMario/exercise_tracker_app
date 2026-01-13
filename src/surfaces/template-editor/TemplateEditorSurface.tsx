@@ -5,10 +5,12 @@
  * Manages editingTemplate state and save/cancel operations.
  *
  * State variables mirror the Alpine.js implementation in js/app.js lines 32-37.
+ * Exercise manipulation methods mirror js/app.js lines 613-655.
  */
 
 import { useState } from 'preact/hooks';
 import type { TemplateWithExercises } from '@/types';
+import { ExerciseList } from './ExerciseList';
 
 /**
  * Set configuration within an editing exercise.
@@ -185,6 +187,138 @@ export function TemplateEditorSurface({
     onCancel();
   };
 
+  // ==================== EXERCISE MANIPULATION ====================
+  // Matches js/app.js lines 613-655
+
+  /**
+   * Move exercise up in the list.
+   * Matches js/app.js lines 617-623.
+   */
+  const handleMoveExerciseUp = (index: number): void => {
+    if (index > 0) {
+      setEditingTemplate(prev => {
+        const newExercises = [...prev.exercises];
+        const temp = newExercises[index];
+        newExercises[index] = newExercises[index - 1];
+        newExercises[index - 1] = temp;
+        return { ...prev, exercises: newExercises };
+      });
+    }
+  };
+
+  /**
+   * Move exercise down in the list.
+   * Matches js/app.js lines 625-631.
+   */
+  const handleMoveExerciseDown = (index: number): void => {
+    setEditingTemplate(prev => {
+      if (index < prev.exercises.length - 1) {
+        const newExercises = [...prev.exercises];
+        const temp = newExercises[index];
+        newExercises[index] = newExercises[index + 1];
+        newExercises[index + 1] = temp;
+        return { ...prev, exercises: newExercises };
+      }
+      return prev;
+    });
+  };
+
+  /**
+   * Remove exercise from template.
+   * Matches js/app.js lines 613-615.
+   */
+  const handleRemoveExercise = (index: number): void => {
+    setEditingTemplate(prev => ({
+      ...prev,
+      exercises: prev.exercises.filter((_, i) => i !== index)
+    }));
+  };
+
+  /**
+   * Add a new set to an exercise.
+   * Matches js/app.js lines 633-641.
+   */
+  const handleAddSet = (exerciseIndex: number): void => {
+    setEditingTemplate(prev => {
+      const newExercises = [...prev.exercises];
+      const exercise = { ...newExercises[exerciseIndex] };
+      const lastSet = exercise.sets[exercise.sets.length - 1];
+      exercise.sets = [
+        ...exercise.sets,
+        {
+          set_number: exercise.sets.length + 1,
+          weight: lastSet?.weight || 0,
+          reps: lastSet?.reps || 10
+        }
+      ];
+      newExercises[exerciseIndex] = exercise;
+      return { ...prev, exercises: newExercises };
+    });
+  };
+
+  /**
+   * Remove a set from an exercise.
+   * Matches js/app.js lines 643-654.
+   */
+  const handleRemoveSet = (exerciseIndex: number, setIndex: number): void => {
+    setEditingTemplate(prev => {
+      const exercise = prev.exercises[exerciseIndex];
+      if (exercise.sets.length > 1) {
+        const newExercises = [...prev.exercises];
+        const newExercise = { ...newExercises[exerciseIndex] };
+        newExercise.sets = newExercise.sets
+          .filter((_, i) => i !== setIndex)
+          .map((set, i) => ({ ...set, set_number: i + 1 }));
+        newExercises[exerciseIndex] = newExercise;
+        return { ...prev, exercises: newExercises };
+      }
+      return prev;
+    });
+  };
+
+  /**
+   * Update a set's weight or reps.
+   */
+  const handleUpdateSet = (
+    exerciseIndex: number,
+    setIndex: number,
+    field: 'weight' | 'reps',
+    value: number
+  ): void => {
+    setEditingTemplate(prev => {
+      const newExercises = [...prev.exercises];
+      const newExercise = { ...newExercises[exerciseIndex] };
+      const newSets = [...newExercise.sets];
+      newSets[setIndex] = { ...newSets[setIndex], [field]: value };
+      newExercise.sets = newSets;
+      newExercises[exerciseIndex] = newExercise;
+      return { ...prev, exercises: newExercises };
+    });
+  };
+
+  /**
+   * Update an exercise's rest time.
+   */
+  const handleUpdateRestTime = (exerciseIndex: number, seconds: number): void => {
+    setEditingTemplate(prev => {
+      const newExercises = [...prev.exercises];
+      newExercises[exerciseIndex] = {
+        ...newExercises[exerciseIndex],
+        default_rest_seconds: seconds
+      };
+      return { ...prev, exercises: newExercises };
+    });
+  };
+
+  /**
+   * Open exercise picker to add a new exercise.
+   * Placeholder for Plan 03.
+   */
+  const handleOpenExercisePicker = (): void => {
+    // TODO: Implement in Plan 03
+    console.log('Opening exercise picker...');
+  };
+
   // ==================== RENDER ====================
   // Structure matches index.html lines 415-521
 
@@ -247,32 +381,19 @@ export function TemplateEditorSurface({
             />
           </div>
 
-          {/* Exercises section - placeholder for Plan 02 */}
-          <div class="form-section">
-            <div class="section-header">
-              <h3>Exercises</h3>
-              <button
-                type="button"
-                class="btn btn-primary"
-                disabled={isSubmitting}
-              >
-                Add Exercise
-              </button>
-            </div>
-
-            {/* Exercises list placeholder */}
-            <div class="exercises-list">
-              {editingTemplate.exercises.length === 0 ? (
-                <div class="empty-state">
-                  <p>No exercises added yet. Click "Add Exercise" to start building your template.</p>
-                </div>
-              ) : (
-                <div class="placeholder-text">
-                  {editingTemplate.exercises.length} exercise(s) in template
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Exercises section */}
+          <ExerciseList
+            exercises={editingTemplate.exercises}
+            onAddExercise={handleOpenExercisePicker}
+            onMoveUp={handleMoveExerciseUp}
+            onMoveDown={handleMoveExerciseDown}
+            onRemove={handleRemoveExercise}
+            onAddSet={handleAddSet}
+            onRemoveSet={handleRemoveSet}
+            onUpdateSet={handleUpdateSet}
+            onUpdateRestTime={handleUpdateRestTime}
+            isSubmitting={isSubmitting}
+          />
         </form>
       </div>
     </div>

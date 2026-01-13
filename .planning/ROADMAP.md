@@ -16,7 +16,7 @@ None
 
 - [x] **Phase 1: Foundation** - Vite + TypeScript setup, project structure, build pipeline
 - [x] **Phase 2: Type System** - Supabase schema types, shared interfaces, service module types
-- [ ] **Phase 3: Framework Evaluation** - Evaluate Alpine.js alternatives, make framework selection
+- [x] **Phase 3: Framework Evaluation** - Evaluate Alpine.js alternatives, make framework selection → **Preact**
 - [ ] **Phase 4: Auth Service** - Migrate auth service with full TypeScript types
 - [ ] **Phase 5: Data Services** - Migrate exercises, templates, logging services with types
 - [ ] **Phase 6: Auth Surface** - Refactor auth UI (login, register, password reset, session)
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete | 2026-01-12 |
 | 2. Type System | 2/2 | Complete | 2026-01-12 |
-| 3. Framework Evaluation | 0/1 | Planned | - |
+| 3. Framework Evaluation | 1/1 | Complete | 2026-01-12 |
 | 4. Auth Service | 0/TBD | Not started | - |
 | 5. Data Services | 0/TBD | Not started | - |
 | 6. Auth Surface | 0/TBD | Not started | - |

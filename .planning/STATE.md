@@ -2,28 +2,28 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-13)
+See: .planning/PROJECT.md (updated 2026-01-14)
 
 **Core value:** The app must work exactly as before - this is a pure refactor
-**Current focus:** Remove legacy window globals, enable direct TypeScript imports
+**Current focus:** v1.3 UI Refinements - Template mini-grid redesign + dashboard cleanup
 
 ## Current Position
 
-Milestone: v1.2 Legacy Code Cleanup
-Phase: 17 of 17 (Remove Legacy Files)
-Plan: 1 of ? in current phase
-Status: In progress
-Branch: `002-js-complete-service-migration` ✓
-Last activity: 2026-01-14 — Completed 17-01-PLAN.md
+Milestone: v1.3 UI Refinements
+Phase: 18 of 19 (Template List Redesign)
+Plan: Not started
+Status: Ready to plan
+Branch: `003-template-list-redesing`
+Last activity: 2026-01-14 — Milestone v1.3 created
 
-Progress: █████████░ 85%
+Progress: ░░░░░░░░░░ 0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 33
+- Total plans completed: 35
 - Average duration: ~4 min
-- Total execution time: ~128 min
+- Total execution time: ~132 min
 
 **By Phase:**
 
@@ -45,15 +45,15 @@ Progress: █████████░ 85%
 | 14-workout-service-imports | 1 | 3 min | 3 min |
 | 15-dashboard-service-imports | 1 | 3 min | 3 min |
 | 16-remove-window-exports | 1 | 3 min | 3 min |
-| 17-remove-legacy-files | 1 | 2 min | 2 min |
+| 17-remove-legacy-files | 2 | 4 min | 2 min |
 
 **Stats:**
-- 2 milestones shipped (v1.0, v1.1)
-- 16 phases complete
-- 33 plans executed
+- 3 milestones shipped (v1.0, v1.1, v1.2)
+- 17 phases complete
+- 35 plans executed
 - Alpine.js → Preact migration complete
 - App rebranded to "Ironlift Strength"
-- v1.2 legacy cleanup in progress
+- v1.2 legacy cleanup complete - all legacy JS removed
 
 ## Accumulated Context
 
@@ -68,6 +68,7 @@ None — all issues resolved.
 
 ### Roadmap Evolution
 
+- Milestone v1.3 created: UI Refinements, 2 phases (Phase 18-19)
 - Milestone v1.2 created: Legacy code cleanup, 4 phases (Phase 14-17)
 
 ### Blockers/Concerns
@@ -77,6 +78,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-14
-Stopped at: Completed 17-01-PLAN.md
+Stopped at: Milestone v1.3 initialization
 Resume file: None
-Next action: Check for more plans in Phase 17 or complete milestone
+Next action: /gsd:plan-phase 18

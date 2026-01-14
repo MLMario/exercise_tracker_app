@@ -706,6 +706,75 @@ input[type="checkbox"]:focus {
   color: var(--color-text-primary);
 }
 
+/* Chart Card Styles */
+.chart-card {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  transition: border-color var(--transition-fast);
+}
+
+.chart-card:hover {
+  border-color: var(--color-accent);
+}
+
+.chart-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.chart-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.chart-card-content {
+  position: relative;
+  min-height: 200px;
+}
+
+.chart-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--color-text-muted);
+}
+
+.chart-canvas {
+  width: 100%;
+}
+
+.chart-canvas.loading {
+  opacity: 0;
+}
+
+/* Chart Delete Button */
+.chart-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.chart-delete-btn:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  background-color: rgba(248, 113, 113, 0.1);
+}
+
 /* Modal / Overlay */
 .modal-overlay {
   position: fixed;
@@ -733,6 +802,26 @@ input[type="checkbox"]:focus {
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
   animation: slideUp var(--transition-normal);
+}
+
+/* Modal Content - matches .modal but used by some components */
+.modal-content {
+  background-color: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  max-width: var(--container-max-width);
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp var(--transition-normal);
+}
+
+/* Add Chart Modal - semi-transparent backdrop effect */
+.add-chart-modal {
+  background-color: rgba(26, 26, 26, 0.95);
+  backdrop-filter: blur(10px);
 }
 
 .modal-header {

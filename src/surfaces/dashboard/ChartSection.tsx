@@ -73,7 +73,7 @@ export function ChartSection({
         <h2>Progress Charts</h2>
         <button
           type="button"
-          class="btn btn-secondary btn-icon"
+          class="btn btn-secondary"
           onClick={onAddChart}
           aria-label="Add new chart"
         >

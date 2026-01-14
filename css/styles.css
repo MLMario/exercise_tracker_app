@@ -880,11 +880,11 @@ input[type="checkbox"]:focus {
   z-index: 100;
 }
 
-.dashboard-header h1 {
+.dashboard-header .brand-logo {
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
-  color: var(--color-accent);
+  letter-spacing: -0.01em;
 }
 
 /* Logout Button */

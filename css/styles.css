@@ -1722,12 +1722,35 @@ input[type="checkbox"]:focus {
   margin: 0;
 }
 
+/* IronFactor Brand Logo (split-color style) */
+.brand-logo {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--spacing-sm);
+}
+
+.brand-logo .iron {
+  color: var(--color-text-primary);
+}
+
+.brand-logo .factor {
+  color: var(--color-accent);
+}
+
+.brand-tagline {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
 /* Auth Card Container */
 .auth-card {
   background-color: var(--color-bg-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   width: 100%;
 }
@@ -1920,6 +1943,10 @@ input[type="checkbox"]:focus {
 
   .brand-title {
     font-size: 3rem;
+  }
+
+  .brand-logo {
+    font-size: 3.5rem;
   }
 
   .auth-surface {

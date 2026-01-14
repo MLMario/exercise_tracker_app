@@ -36,6 +36,8 @@ export type PasswordField =
 export interface AuthSurfaceProps {
   /** Whether app detected password recovery mode (from URL hash before Supabase clears it) */
   isRecoveryMode?: boolean;
+  /** Callback to notify parent when exiting password recovery mode */
+  onRecoveryModeExit?: () => void;
 }
 
 /**
@@ -44,7 +46,7 @@ export interface AuthSurfaceProps {
  * Manages auth form state and sub-surface routing.
  * Will render the appropriate auth form based on authSurface state.
  */
-export function AuthSurface({ isRecoveryMode = false }: AuthSurfaceProps) {
+export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: AuthSurfaceProps) {
   // ==================== AUTH STATE ====================
   // Mirrors js/app.js lines 6-24 state variables
 
@@ -305,7 +307,9 @@ export function AuthSurface({ isRecoveryMode = false }: AuthSurfaceProps) {
    */
   const goToLoginAfterPasswordUpdate = () => {
     setPasswordUpdateSuccess(false);
-    setIsPasswordRecoveryMode(false); // Clear flag so normal auth flow resumes
+    setIsPasswordRecoveryMode(false); // Clear local flag so normal auth flow resumes
+    // Notify parent to clear recovery mode - allows SIGNED_IN to navigate to dashboard
+    onRecoveryModeExit?.();
     // Clear URL hash to remove recovery tokens - prevents main.tsx from re-detecting recovery mode
     if (window.location.hash) {
       history.replaceState(null, '', window.location.pathname);

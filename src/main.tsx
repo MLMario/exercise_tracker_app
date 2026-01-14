@@ -219,6 +219,16 @@ function App() {
   };
 
   /**
+   * Handle exiting password recovery mode
+   * Called by AuthSurface when user returns to login after updating password
+   */
+  const handleRecoveryModeExit = () => {
+    console.log('[DEBUG main.tsx] Recovery mode exit - clearing flag');
+    setIsPasswordRecoveryMode(false);
+    isPasswordRecoveryModeRef.current = false;
+  };
+
+  /**
    * Handle edit template - navigate to template editor with existing template
    */
   const handleEditTemplate = (template: TemplateWithExercises) => {
@@ -291,7 +301,12 @@ function App() {
 
   // Render the appropriate surface based on state
   if (currentSurface === 'auth') {
-    return <AuthSurface isRecoveryMode={isPasswordRecoveryMode} />;
+    return (
+      <AuthSurface
+        isRecoveryMode={isPasswordRecoveryMode}
+        onRecoveryModeExit={handleRecoveryModeExit}
+      />
+    );
   }
 
   if (currentSurface === 'templateEditor') {

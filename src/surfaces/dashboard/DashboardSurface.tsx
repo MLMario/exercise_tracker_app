@@ -10,6 +10,7 @@
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 import type { Chart } from 'chart.js';
 import type { Exercise, TemplateWithExercises } from '@/types';
+import { exercises, templates, logging, charts } from '@/services';
 import { TemplateList } from './TemplateList';
 import { ChartSection } from './ChartSection';
 import { AddChartModal } from './AddChartModal';
@@ -59,7 +60,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   // Mirrors js/app.js lines 25-30 state variables
 
   // Templates list - fetched from templates service
-  const [templates, setTemplates] = useState<TemplateWithExercises[]>([]);
+  const [templatesList, setTemplatesList] = useState<TemplateWithExercises[]>([]);
 
   // User charts configuration - fetched from charts service
   const [userCharts, setUserCharts] = useState<UserChart[]>([]);
@@ -103,9 +104,9 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 361-369.
    */
   const loadTemplates = async (): Promise<void> => {
-    const { data, error } = await window.templates.getTemplates();
+    const { data, error } = await templates.getTemplates();
     if (error) throw new Error('Failed to load templates: ' + error.message);
-    setTemplates(data || []);
+    setTemplatesList(data || []);
   };
 
   /**
@@ -113,7 +114,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 371-379.
    */
   const loadExercises = async (): Promise<void> => {
-    const { data, error } = await window.exercises.getExercises();
+    const { data, error } = await exercises.getExercises();
     if (error) throw new Error('Failed to load exercises: ' + error.message);
     setAvailableExercises(data || []);
   };
@@ -128,20 +129,20 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   const loadUserCharts = async (): Promise<void> => {
     console.log('[DashboardSurface] loadUserCharts called');
     try {
-      const { data, error } = await window.charts.getUserCharts();
+      const { data, error } = await charts.getUserCharts();
       if (error) throw new Error(error.message);
 
-      const charts = data || [];
-      console.log('[DashboardSurface] Loaded charts:', charts.length, charts.map(c => c.id));
-      setUserCharts(charts);
+      const chartsData = data || [];
+      console.log('[DashboardSurface] Loaded charts:', chartsData.length, chartsData.map(c => c.id));
+      setUserCharts(chartsData);
 
       // Fetch chart data for each chart upfront
       const dataMap: Record<string, ChartData | null> = {};
 
-      for (const chart of charts) {
+      for (const chart of chartsData) {
         try {
           console.log(`[DashboardSurface] Fetching metrics for chart ${chart.id}...`);
-          const { data: metricsData, error: metricsError } = await window.logging.getExerciseMetrics(
+          const { data: metricsData, error: metricsError } = await logging.getExerciseMetrics(
             chart.exercise_id,
             { metric: chart.metric_type, mode: chart.x_axis_mode }
           );
@@ -268,7 +269,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
     setSuccessMessage('');
 
     try {
-      const { error } = await window.templates.deleteTemplate(id);
+      const { error } = await templates.deleteTemplate(id);
       if (error) throw new Error(error.message);
       setSuccessMessage('Template deleted successfully');
       // Reload templates after successful delete
@@ -341,7 +342,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
     }
 
     try {
-      const { error } = await window.charts.createChart({
+      const { error } = await charts.createChart({
         exercise_id: exerciseId,
         metric_type: metricType,
         x_axis_mode: xAxisMode
@@ -401,7 +402,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
         return updated;
       });
 
-      const { error } = await window.charts.deleteChart(id);
+      const { error } = await charts.deleteChart(id);
       if (error) throw new Error(error.message);
 
       await loadUserCharts();
@@ -469,7 +470,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
         <main class="dashboard-content">
           {/* Template list section */}
           <TemplateList
-            templates={templates}
+            templates={templatesList}
             onCreateNew={handleCreateNewTemplate}
             onEdit={handleEditTemplate}
             onDelete={handleDeleteTemplate}

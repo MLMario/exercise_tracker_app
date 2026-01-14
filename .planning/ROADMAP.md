@@ -17,7 +17,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 ### v1.1 Fixes & Polish (Phases 12-13)
 
 - [x] **Phase 12: Bug Fixes** (2/2 plans) - Workout visibility, password recovery routing, chart metric, console cleanup
-- [ ] **Phase 13: UI Polish** - Button styling, form backgrounds, app title rename
+- [x] **Phase 13: UI Polish** (1/1 plans) - Button styling, form backgrounds, app title rename
 
 <details>
 <summary>v1.0 Refactor (Phases 1-11) — SHIPPED 2026-01-13</summary>
@@ -69,7 +69,7 @@ See [v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md) for full phase details.
 | Milestone | Phases | Plans | Status | Completed |
 |-----------|--------|-------|--------|-----------|
 | v1.0 Refactor | 1-11 | 27 | Complete | 2026-01-13 |
-| v1.1 Fixes & Polish | 12-13 | TBD | In Progress | - |
+| v1.1 Fixes & Polish | 12-13 | 3 | Complete | 2026-01-13 |
 
 ---
 

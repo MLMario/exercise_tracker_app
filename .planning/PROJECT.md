@@ -1,8 +1,8 @@
-# Exercise Tracker Refactor
+# Ironlift Strength
 
 ## What This Is
 
-A fitness tracking app built with TypeScript, Preact, and Vite. Features workout templates, exercise tracking with rest timers, progress charts, and multi-tab sync. Originally migrated from Alpine.js to Preact in v1.0 refactor.
+A fitness tracking app built with TypeScript, Preact, and Vite. Features workout templates, exercise tracking with rest timers, progress charts, and multi-tab sync. Migrated from Alpine.js to Preact in v1.0 refactor, polished and rebranded in v1.1.
 
 ## Core Value
 
@@ -11,6 +11,15 @@ A fitness tracking app built with TypeScript, Preact, and Vite. Features workout
 ## Requirements
 
 ### Validated
+
+**v1.1 Fixes & Polish (shipped 2026-01-13):**
+- ✓ Workout visibility preserved on alt-tab — v1.1
+- ✓ Password recovery routing fixed — v1.1
+- ✓ Max Weight chart metric working — v1.1
+- ✓ Clean production console output (no debug logs) — v1.1
+- ✓ Chart card styling with hover effects — v1.1
+- ✓ Dashboard header with logout button — v1.1
+- ✓ App rebranded to "Ironlift Strength" — v1.1
 
 **v1.0 Refactor (shipped 2026-01-13):**
 - ✓ Vite build setup with TypeScript — v1.0
@@ -31,12 +40,7 @@ A fitness tracking app built with TypeScript, Preact, and Vite. Features workout
 
 ### Active
 
-**v1.1 Fixes & Polish:**
-- Workout visibility after alt-tab
-- Password recovery routing fix
-- Chart "Max Weight" metric fix
-- Auth console logging cleanup
-- UI polish: button styling, form backgrounds, title rename to "Ironlift Strength"
+None — project complete.
 
 ### Out of Scope
 
@@ -44,36 +48,38 @@ A fitness tracking app built with TypeScript, Preact, and Vite. Features workout
 - Test coverage — defer to separate project
 - Offline-first architecture — would require service workers, sync queue
 - Data export — useful but not part of this refactor
-- UI/UX changes — visual design stays the same
+- UI/UX redesign — visual design preserved from original
 
 ## Context
 
-**Current State (post v1.0):**
+**Current State (post v1.1):**
 - Vite + TypeScript build pipeline with strict mode
 - ~9,096 lines of TypeScript across services and surfaces
 - Preact-based surfaces: Auth, Dashboard, Template Editor, Workout, Charts
 - Service modules in `src/services/` with full TypeScript types
 - Legacy service modules (`js/*.js`) still provide window.* APIs for gradual migration
 - Supabase as backend (PostgreSQL + Auth)
-- Deployed to static hosting
+- App rebranded to "Ironlift Strength"
+- All UAT bugs fixed, production-ready
 
 **Architecture:**
 - Surface-based: Each major UI section is a self-contained Preact component
 - Services: TypeScript modules wrapping Supabase operations
 - Types: Full type coverage via `src/types/` with barrel exports
 
-**Previous Pain Points (resolved in v1.0):**
+**Previous Pain Points (resolved):**
 - ~~Workout surface complex and tangled~~ → Now modular WorkoutSurface with clean components
 - ~~Chart rendering messy~~ → Charts service properly typed and integrated
 - ~~Auth flow convoluted~~ → AuthSurface with clear sub-surface state machine
 - ~~1400-line monolith~~ → Archived to js/legacy/, replaced by modular surfaces
+- ~~Debug console.log in production~~ → All debug logging removed
 
 ## Constraints
 
 - **Backend**: Supabase — must continue using, not negotiable
-- **Framework**: Open to change — evaluate Alpine.js alternatives (Vue, React, Preact)
-- **Deployment**: Static hosting — Vite output must deploy same way
-- **Behavior**: Identical — app must work exactly the same post-refactor
+- **Framework**: Preact — selected in v1.0, proven to work well
+- **Deployment**: Static hosting — Vite output deploys to static host
+- **Behavior**: Identical — app works exactly the same post-refactor
 
 ## Key Decisions
 
@@ -87,7 +93,8 @@ A fitness tracking app built with TypeScript, Preact, and Vite. Features workout
 | Barrel exports | Clean imports via @/types, @/services | ✓ Good - improved DX |
 | ESM-only (type: module) | Modern module system, Vite-native | ✓ Good - no CJS interop issues |
 | userId-based localStorage | Workout backup per user, not per template | ✓ Good - proper multi-tab sync |
+| useRef for closures | Event listener callbacks capture state; use refs for current values | ✓ Good - fixed alt-tab visibility bug |
 
 ---
 
-*Last updated: 2026-01-13 after v1.0 milestone*
+*Last updated: 2026-01-13 after v1.1 milestone*

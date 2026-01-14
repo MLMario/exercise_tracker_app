@@ -6,12 +6,41 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
+- 🚧 **v1.4 IronFactor Rebrand** - Phases 19-20 (in progress)
 - ✅ [v1.3 UI Refinements](milestones/v1.3-ROADMAP.md) (Phase 18) — SHIPPED 2026-01-14
 - ✅ [v1.2 Legacy Code Cleanup](milestones/v1.2-ROADMAP.md) (Phases 14-17) — SHIPPED 2026-01-14
 - ✅ [v1.1 Fixes & Polish](milestones/v1.1-ROADMAP.md) (Phases 12-13) — SHIPPED 2026-01-13
 - ✅ [v1.0 Exercise Tracker Refactor](milestones/v1.0-ROADMAP.md) (Phases 1-11) — SHIPPED 2026-01-13
 
 ## Phases
+
+### 🚧 v1.4 IronFactor Rebrand (In Progress)
+
+**Milestone Goal:** Rebrand the app from "Ironlift Strength" to "IronFactor" with updated login UI and consistent dashboard branding.
+
+#### Phase 19: Auth Surface Rebrand
+
+**Goal**: Update login/register UI to match mockup design with new IronFactor branding
+**Depends on**: Previous milestone complete
+**Research**: Unlikely (internal UI patterns)
+**Plans**: TBD
+
+Reference: `.mockup/login-mockup-option-1.html`
+
+Plans:
+- [ ] 19-01: TBD (run /gsd:plan-phase 19 to break down)
+
+#### Phase 20: Dashboard Rebrand
+
+**Goal**: Update dashboard header with IronFactor branding and matching accent colors
+**Depends on**: Phase 19
+**Research**: Unlikely (internal UI patterns)
+**Plans**: TBD
+
+Plans:
+- [ ] 20-01: TBD (run /gsd:plan-phase 20 to break down)
+
+---
 
 <details>
 <summary>✅ v1.3 UI Refinements (Phase 18) — SHIPPED 2026-01-14</summary>
@@ -59,6 +88,8 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
+| 19. Auth Surface Rebrand | v1.4 | 0/? | Not started | - |
+| 20. Dashboard Rebrand | v1.4 | 0/? | Not started | - |
 | 18. Template List Redesign | v1.3 | 1/1 | Complete | 2026-01-14 |
 | 14. Workout Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
 | 15. Dashboard Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
@@ -67,7 +98,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 18 phases complete, 36 plans complete | All milestones shipped
+**Total:** 18 phases complete, 36 plans complete | v1.4 in progress
 
 ---
 

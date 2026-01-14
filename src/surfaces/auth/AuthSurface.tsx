@@ -412,57 +412,68 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
   console.log('[DEBUG AuthSurface] Rendering - authSurface:', authSurface, 'showTabs:', showTabs);
 
   return (
-    <div class="auth-surface-container">
-      {/* Tab Navigation - matches index.html lines 30-43 */}
-      {showTabs && (
-        <div class="auth-tabs">
-          <button
-            class={`auth-tab${authSurface === 'login' ? ' active' : ''}`}
-            onClick={() => switchAuthSurface('login')}
-          >
-            Login
-          </button>
-          <button
-            class={`auth-tab${authSurface === 'register' ? ' active' : ''}`}
-            onClick={() => switchAuthSurface('register')}
-          >
-            Register
-          </button>
-        </div>
-      )}
-
-      {/* Success message display */}
-      {successMessage && (
-        <div class="success-message" onClick={clearSuccessMessage}>
-          {successMessage}
-        </div>
-      )}
-
-      {/* Surfaces Container */}
-      <div class="surfaces-container">
-        {renderSubSurface()}
+    <div class="auth-wrapper">
+      {/* Brand Section */}
+      <div class="brand">
+        <h1 class="brand-logo">
+          <span class="iron">Iron</span><span class="factor">Factor</span>
+        </h1>
+        <p class="brand-tagline">Track. Train. Transform.</p>
       </div>
 
-      {/* Footer switch links */}
-      {showTabs && (
-        <div class="auth-footer">
-          {authSurface === 'login' ? (
-            <p>
-              Don't have an account?{' '}
-              <a href="#" onClick={(e) => { e.preventDefault(); switchAuthSurface('register'); }}>
-                Sign up
-              </a>
-            </p>
-          ) : (
-            <p>
-              Already have an account?{' '}
-              <a href="#" onClick={(e) => { e.preventDefault(); switchAuthSurface('login'); }}>
-                Log in
-              </a>
-            </p>
-          )}
+      {/* Auth Card */}
+      <div class="auth-card">
+        {/* Tab Navigation - matches index.html lines 30-43 */}
+        {showTabs && (
+          <div class="auth-tabs">
+            <button
+              class={`auth-tab${authSurface === 'login' ? ' active' : ''}`}
+              onClick={() => switchAuthSurface('login')}
+            >
+              Login
+            </button>
+            <button
+              class={`auth-tab${authSurface === 'register' ? ' active' : ''}`}
+              onClick={() => switchAuthSurface('register')}
+            >
+              Register
+            </button>
+          </div>
+        )}
+
+        {/* Success message display */}
+        {successMessage && (
+          <div class="success-message" onClick={clearSuccessMessage}>
+            {successMessage}
+          </div>
+        )}
+
+        {/* Surfaces Container */}
+        <div class="surfaces-container">
+          {renderSubSurface()}
         </div>
-      )}
+
+        {/* Footer switch links */}
+        {showTabs && (
+          <div class="auth-footer">
+            {authSurface === 'login' ? (
+              <p>
+                Don't have an account?{' '}
+                <a href="#" onClick={(e) => { e.preventDefault(); switchAuthSurface('register'); }}>
+                  Sign up
+                </a>
+              </p>
+            ) : (
+              <p>
+                Already have an account?{' '}
+                <a href="#" onClick={(e) => { e.preventDefault(); switchAuthSurface('login'); }}>
+                  Log in
+                </a>
+              </p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -10,6 +10,7 @@
 
 import { useRef, useEffect, useState } from 'preact/hooks';
 import type { Chart } from 'chart.js';
+import { charts } from '@/services';
 import type { UserChart } from './DashboardSurface';
 
 /**
@@ -141,7 +142,7 @@ export function ChartCard({
 
     try {
       console.log(`${logPrefix} Attempting to render chart...`);
-      const instance = window.charts.renderChart(
+      const instance = charts.renderChart(
         canvasId,
         chartData,
         {
@@ -172,7 +173,7 @@ export function ChartCard({
       if (chartInstanceRef.current) {
         try {
           // Pass the actual Chart instance, not the canvas ID string
-          window.charts.destroyChart(chartInstanceRef.current);
+          charts.destroyChart(chartInstanceRef.current);
           console.log(`${logPrefix} Chart destroyed successfully`);
         } catch (err) {
           console.warn(`${logPrefix} Error destroying chart:`, err);

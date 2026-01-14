@@ -432,7 +432,10 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
     <div class="dashboard-surface-container">
       {/* Header with logout button */}
       <header class="dashboard-header">
-        <h1>Ironlift Strength</h1>
+        <span class="brand-logo">
+          <span class="iron">Iron</span>
+          <span class="factor">Factor</span>
+        </span>
         {onLogout && (
           <button
             class="logout-btn"

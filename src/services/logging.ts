@@ -634,12 +634,3 @@ export const logging: LoggingService = {
   getExerciseMetrics,
   getRecentExerciseData,
 };
-
-// Backward compatibility: export to window for legacy JS code
-declare global {
-  interface Window {
-    logging: LoggingService;
-  }
-}
-
-window.logging = logging;

@@ -407,15 +407,3 @@ export const charts: ChartsService = {
 };
 
 // ============================================================================
-// Backward Compatibility
-// ============================================================================
-
-// Extend Window interface for backward compatibility
-declare global {
-  interface Window {
-    charts: ChartsService;
-  }
-}
-
-// Backward compatibility for legacy code
-window.charts = charts;

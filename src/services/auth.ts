@@ -284,12 +284,3 @@ export const auth: AuthService = {
   getSession,
   onAuthStateChange,
 };
-
-// Backward compatibility: export to window for legacy JS code
-declare global {
-  interface Window {
-    auth: AuthService;
-  }
-}
-
-window.auth = auth;

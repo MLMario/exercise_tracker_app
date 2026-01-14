@@ -727,12 +727,3 @@ export const templates: TemplatesService = {
   removeExerciseFromTemplate,
   updateTemplateExercise,
 };
-
-// Backward compatibility: export to window for legacy JS code
-declare global {
-  interface Window {
-    templates: TemplatesService;
-  }
-}
-
-window.templates = templates;

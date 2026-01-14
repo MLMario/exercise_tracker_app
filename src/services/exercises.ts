@@ -223,12 +223,3 @@ export const exercises: ExercisesService = {
   exerciseExists,
   getCategories,
 };
-
-// Backward compatibility: export to window for legacy JS code
-declare global {
-  interface Window {
-    exercises: ExercisesService;
-  }
-}
-
-window.exercises = exercises;

@@ -6,38 +6,19 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
-- 🚧 **v1.3 UI Refinements** - Phases 18-19 (in progress)
+- ✅ [v1.3 UI Refinements](milestones/v1.3-ROADMAP.md) (Phase 18) — SHIPPED 2026-01-14
 - ✅ [v1.2 Legacy Code Cleanup](milestones/v1.2-ROADMAP.md) (Phases 14-17) — SHIPPED 2026-01-14
 - ✅ [v1.1 Fixes & Polish](milestones/v1.1-ROADMAP.md) (Phases 12-13) — SHIPPED 2026-01-13
 - ✅ [v1.0 Exercise Tracker Refactor](milestones/v1.0-ROADMAP.md) (Phases 1-11) — SHIPPED 2026-01-13
 
 ## Phases
 
-### 🚧 v1.3 UI Refinements (In Progress)
+<details>
+<summary>✅ v1.3 UI Refinements (Phase 18) — SHIPPED 2026-01-14</summary>
 
-**Milestone Goal:** Improve dashboard UX with compact template grid layout and visual cleanup.
+- [x] **Phase 18: Template List Redesign** (1/1 plans) - 2-column mini-grid layout, compact cards, removed exercise count
 
-#### Phase 18: Template List Redesign
-
-**Goal**: Implement 2-column mini-grid layout for templates matching mockup design
-**Depends on**: Previous milestone complete
-**Research**: Unlikely (internal Preact patterns, CSS styling)
-**Plans**: TBD
-
-Plans:
-- [ ] 18-01: TBD (run /gsd:plan-phase 18 to break down)
-
-#### Phase 19: Dashboard Cleanup
-
-**Goal**: Remove exercise count text from dashboard bottom area
-**Depends on**: Phase 18
-**Research**: Unlikely (simple UI removal)
-**Plans**: TBD
-
-Plans:
-- [ ] 19-01: TBD (run /gsd:plan-phase 19 to break down)
-
----
+</details>
 
 <details>
 <summary>✅ v1.2 Legacy Code Cleanup (Phases 14-17) — SHIPPED 2026-01-14</summary>
@@ -78,8 +59,7 @@ Plans:
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
-| 18. Template List Redesign | v1.3 | 0/? | Not started | - |
-| 19. Dashboard Cleanup | v1.3 | 0/? | Not started | - |
+| 18. Template List Redesign | v1.3 | 1/1 | Complete | 2026-01-14 |
 | 14. Workout Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
 | 15. Dashboard Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
 | 16. Remove Window Exports | v1.2 | 1/1 | Complete | 2026-01-14 |
@@ -87,7 +67,7 @@ Plans:
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 17 phases complete, 35 plans complete | v1.3 in progress
+**Total:** 18 phases complete, 36 plans complete | All milestones shipped
 
 ---
 

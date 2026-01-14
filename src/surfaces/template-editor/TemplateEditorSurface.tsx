@@ -10,6 +10,7 @@
 
 import { useState, useEffect } from 'preact/hooks';
 import type { TemplateWithExercises, Exercise, ExerciseCategory } from '@/types';
+import { exercises, templates } from '@/services';
 import { ExerciseList } from './ExerciseList';
 import { ExercisePickerModal } from '@/components';
 
@@ -128,7 +129,7 @@ export function TemplateEditorSurface({
   useEffect(() => {
     const loadExercises = async (): Promise<void> => {
       try {
-        const { data, error } = await window.exercises.getExercises();
+        const { data, error } = await exercises.getExercises();
         if (error) {
           console.error('Failed to load exercises:', error.message);
           return;
@@ -183,7 +184,7 @@ export function TemplateEditorSurface({
     try {
       if (editingTemplate.id) {
         // Update existing template
-        const { error } = await window.templates.updateTemplate(
+        const { error } = await templates.updateTemplate(
           editingTemplate.id,
           editingTemplate.name,
           editingTemplate.exercises
@@ -192,7 +193,7 @@ export function TemplateEditorSurface({
         setSuccessMessage('Template updated successfully');
       } else {
         // Create new template
-        const { error } = await window.templates.createTemplate(
+        const { error } = await templates.createTemplate(
           editingTemplate.name,
           editingTemplate.exercises
         );
@@ -393,7 +394,7 @@ export function TemplateEditorSurface({
     category: string
   ): Promise<Exercise | null> => {
     try {
-      const { data: newExercise, error } = await window.exercises.createExercise(
+      const { data: newExercise, error } = await exercises.createExercise(
         name,
         category as ExerciseCategory
       );

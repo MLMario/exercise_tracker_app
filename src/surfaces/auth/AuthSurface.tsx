@@ -31,12 +31,20 @@ export type PasswordField =
   | 'updateConfirm';
 
 /**
+ * Props for AuthSurface component
+ */
+export interface AuthSurfaceProps {
+  /** Whether app detected password recovery mode (from URL hash before Supabase clears it) */
+  isRecoveryMode?: boolean;
+}
+
+/**
  * AuthSurface container component
  *
  * Manages auth form state and sub-surface routing.
  * Will render the appropriate auth form based on authSurface state.
  */
-export function AuthSurface() {
+export function AuthSurface({ isRecoveryMode = false }: AuthSurfaceProps) {
   // ==================== AUTH STATE ====================
   // Mirrors js/app.js lines 6-24 state variables
 
@@ -73,20 +81,33 @@ export function AuthSurface() {
   // ==================== INITIALIZATION ====================
 
   useEffect(() => {
-    // Check URL hash for password recovery tokens
-    // Supabase recovery links include type=recovery in the hash
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const hashType = hashParams.get('type');
+    // DEBUG: Log AuthSurface initialization
+    console.log('[DEBUG AuthSurface] useEffect start - isRecoveryMode prop:', isRecoveryMode, 'hash:', window.location.hash);
 
-    if (hashType === 'recovery') {
+    // Use recovery mode prop from parent (App detected it before Supabase cleared the hash)
+    if (isRecoveryMode) {
+      console.log('[DEBUG AuthSurface] Recovery mode from prop - switching to updatePassword');
       setIsPasswordRecoveryMode(true);
       setAuthSurface('updatePassword');
+    } else {
+      // Fallback: Check URL hash for password recovery tokens (in case hash wasn't cleared yet)
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const hashType = hashParams.get('type');
+      console.log('[DEBUG AuthSurface] Parsed hash type:', hashType);
+
+      if (hashType === 'recovery') {
+        console.log('[DEBUG AuthSurface] Recovery mode from hash - switching to updatePassword');
+        setIsPasswordRecoveryMode(true);
+        setAuthSurface('updatePassword');
+      }
     }
 
     // Listen for auth state changes
     const subscription = auth.onAuthStateChange((event, _session) => {
+      console.log('[DEBUG AuthSurface] Auth event:', event);
       // Handle PASSWORD_RECOVERY event (user clicked reset link in email)
       if (event === 'PASSWORD_RECOVERY') {
+        console.log('[DEBUG AuthSurface] PASSWORD_RECOVERY event - switching to updatePassword');
         setIsPasswordRecoveryMode(true);
         setAuthSurface('updatePassword');
         setError('');
@@ -98,7 +119,7 @@ export function AuthSurface() {
     return () => {
       subscription?.unsubscribe();
     };
-  }, []);
+  }, [isRecoveryMode]);
 
   // ==================== ACTIONS ====================
 
@@ -382,6 +403,9 @@ export function AuthSurface() {
 
   // Determine if tabs should be shown
   const showTabs = authSurface !== 'reset' && authSurface !== 'updatePassword';
+
+  // DEBUG: Log render
+  console.log('[DEBUG AuthSurface] Rendering - authSurface:', authSurface, 'showTabs:', showTabs);
 
   return (
     <div class="auth-surface-container">

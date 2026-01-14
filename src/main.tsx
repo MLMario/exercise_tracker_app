@@ -134,28 +134,43 @@ function App() {
 
   // ==================== AUTH LISTENER ====================
   useEffect(() => {
+    // DEBUG: Log initial state
+    console.log('[DEBUG main.tsx] useEffect start - hash:', window.location.hash);
+
     // Check URL hash for recovery mode before setting up listener
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    if (hashParams.get('type') === 'recovery') {
+    const hashType = hashParams.get('type');
+    console.log('[DEBUG main.tsx] Parsed hash type:', hashType);
+
+    if (hashType === 'recovery') {
+      console.log('[DEBUG main.tsx] Recovery mode detected from URL hash');
       setIsPasswordRecoveryMode(true);
+      isPasswordRecoveryModeRef.current = true; // Set ref immediately - state sync runs on next render
       setCurrentSurface('auth');
     }
 
     // Set up auth state change listener
     const subscription = auth.onAuthStateChange((event, session) => {
+      console.log('[DEBUG main.tsx] Auth event:', event, 'recoveryRef:', isPasswordRecoveryModeRef.current);
       if (event === 'PASSWORD_RECOVERY') {
+        console.log('[DEBUG main.tsx] PASSWORD_RECOVERY event received');
         setIsPasswordRecoveryMode(true);
+        isPasswordRecoveryModeRef.current = true; // Set ref immediately
         setCurrentSurface('auth');
       } else if (event === 'SIGNED_IN') {
+        console.log('[DEBUG main.tsx] SIGNED_IN event - recoveryRef:', isPasswordRecoveryModeRef.current);
         // Only navigate to dashboard if not in password recovery mode
         // Use refs for current values (closure captures initial state)
         if (!isPasswordRecoveryModeRef.current && session?.user) {
+          console.log('[DEBUG main.tsx] SIGNED_IN: navigating (not in recovery mode)');
           setUser(session.user);
           // Only navigate to dashboard if coming from auth surface
           // Don't interrupt workout or template editor surfaces (e.g., on alt-tab token refresh)
           if (currentSurfaceRef.current === 'auth') {
             setCurrentSurface('dashboard');
           }
+        } else {
+          console.log('[DEBUG main.tsx] SIGNED_IN: blocked by recovery mode');
         }
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
@@ -165,9 +180,13 @@ function App() {
 
     // Check initial session
     const checkInitialSession = async () => {
+      console.log('[DEBUG main.tsx] checkInitialSession - recoveryRef:', isPasswordRecoveryModeRef.current);
       const session = await auth.getSession();
+      console.log('[DEBUG main.tsx] Got session:', !!session?.user, 'recoveryRef:', isPasswordRecoveryModeRef.current);
       // Only set user and navigate if there's a session and not in recovery mode
-      if (session?.user && !isPasswordRecoveryMode) {
+      // Use ref for current value - closure captures initial state (false)
+      if (session?.user && !isPasswordRecoveryModeRef.current) {
+        console.log('[DEBUG main.tsx] checkInitialSession: navigating to dashboard/workout');
         setUser(session.user);
 
         // Check for saved workout before navigating to dashboard
@@ -272,7 +291,7 @@ function App() {
 
   // Render the appropriate surface based on state
   if (currentSurface === 'auth') {
-    return <AuthSurface />;
+    return <AuthSurface isRecoveryMode={isPasswordRecoveryMode} />;
   }
 
   if (currentSurface === 'templateEditor') {

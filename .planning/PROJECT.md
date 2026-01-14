@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A technical debt refactor of an existing fitness tracking app. Migrating from zero-build vanilla JavaScript to a modern TypeScript + Vite stack with modular, surface-based architecture. The goal is to make the codebase easier to work with so new features can be added without fighting a 1400-line monolith.
+A fitness tracking app built with TypeScript, Preact, and Vite. Features workout templates, exercise tracking with rest timers, progress charts, and multi-tab sync. Originally migrated from Alpine.js to Preact in v1.0 refactor.
 
 ## Core Value
 
@@ -12,26 +12,31 @@ A technical debt refactor of an existing fitness tracking app. Migrating from ze
 
 ### Validated
 
-<!-- Existing functionality that must be preserved -->
+**v1.0 Refactor (shipped 2026-01-13):**
+- ✓ Vite build setup with TypeScript — v1.0
+- ✓ Surface-based module structure (auth, dashboard, workout, templateEditor, charts) — v1.0
+- ✓ Preact as UI framework (4KB, React-compatible) — v1.0
+- ✓ Type definitions for all service modules — v1.0
+- ✓ Type definitions for Supabase schema — v1.0
 
-- ✓ User authentication (login, register, password reset, session persistence) — existing
-- ✓ Workout templates (create, edit, delete, reorder exercises) — existing
-- ✓ Exercise library (browse, filter, create custom exercises) — existing
-- ✓ Active workout tracking (start from template, add/remove sets, rest timer) — existing
-- ✓ Workout logging (save completed workouts to history) — existing
-- ✓ Progress charts (configurable charts per exercise, multiple metrics) — existing
-- ✓ Multi-tab sync (workout state synced across browser tabs) — existing
-- ✓ Offline backup (active workout persists in localStorage) — existing
+**Original functionality (preserved):**
+- ✓ User authentication (login, register, password reset, session persistence)
+- ✓ Workout templates (create, edit, delete, reorder exercises)
+- ✓ Exercise library (browse, filter, create custom exercises)
+- ✓ Active workout tracking (start from template, add/remove sets, rest timer)
+- ✓ Workout logging (save completed workouts to history)
+- ✓ Progress charts (configurable charts per exercise, multiple metrics)
+- ✓ Multi-tab sync (workout state synced across browser tabs)
+- ✓ Offline backup (active workout persists in localStorage)
 
 ### Active
 
-<!-- Current scope - building toward these -->
-
-- [ ] Vite build setup with TypeScript
-- [ ] Surface-based module structure (auth, dashboard, workout, templateEditor)
-- [x] Evaluate and select UI framework (Alpine.js, Vue, React, or Preact) — Preact selected
-- [ ] Type definitions for all service modules
-- [ ] Type definitions for Supabase schema
+**v1.1 Fixes & Polish:**
+- Workout visibility after alt-tab
+- Password recovery routing fix
+- Chart "Max Weight" metric fix
+- Auth console logging cleanup
+- UI polish: button styling, form backgrounds, title rename to "Ironlift Strength"
 
 ### Out of Scope
 
@@ -43,24 +48,25 @@ A technical debt refactor of an existing fitness tracking app. Migrating from ze
 
 ## Context
 
-**Current State:**
-- Single-page app with zero build step
-- All code in `js/*.js` files loaded via CDN
-- Main component `fitnessApp` in `js/app.js` is 1400+ lines
-- Service modules (`auth`, `exercises`, `templates`, `logging`, `charts`) exposed via `window.*`
+**Current State (post v1.0):**
+- Vite + TypeScript build pipeline with strict mode
+- ~9,096 lines of TypeScript across services and surfaces
+- Preact-based surfaces: Auth, Dashboard, Template Editor, Workout, Charts
+- Service modules in `src/services/` with full TypeScript types
+- Legacy service modules (`js/*.js`) still provide window.* APIs for gradual migration
 - Supabase as backend (PostgreSQL + Auth)
 - Deployed to static hosting
 
-**Pain Points:**
-- Workout surface (timer, sets, swipe gestures) is complex and tangled
-- Chart rendering (Chart.js integration) is messy
-- Auth flow (password recovery) logic is convoluted
-- Adding features requires understanding the entire monolith
+**Architecture:**
+- Surface-based: Each major UI section is a self-contained Preact component
+- Services: TypeScript modules wrapping Supabase operations
+- Types: Full type coverage via `src/types/` with barrel exports
 
-**Codebase Documentation:**
-- Full codebase map available in `.planning/codebase/`
-- See `ARCHITECTURE.md` for current patterns
-- See `CONCERNS.md` for tech debt details
+**Previous Pain Points (resolved in v1.0):**
+- ~~Workout surface complex and tangled~~ → Now modular WorkoutSurface with clean components
+- ~~Chart rendering messy~~ → Charts service properly typed and integrated
+- ~~Auth flow convoluted~~ → AuthSurface with clear sub-surface state machine
+- ~~1400-line monolith~~ → Archived to js/legacy/, replaced by modular surfaces
 
 ## Constraints
 
@@ -73,11 +79,15 @@ A technical debt refactor of an existing fitness tracking app. Migrating from ze
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Vite as bundler | Fast, modern, great DX, minimal config | — Pending |
-| TypeScript (full migration) | Type safety, better refactoring, IDE support | — Pending |
-| Surface-based modules | Matches existing `currentSurface` pattern, clear boundaries | — Pending |
-| Evaluate UI frameworks | Alpine.js may not be best fit for modular structure | Preact - best ecosystem for scaling, 4KB bundle |
+| Vite as bundler | Fast, modern, great DX, minimal config | ✓ Good - fast builds, HMR works great |
+| TypeScript (strict mode) | Type safety, better refactoring, IDE support | ✓ Good - caught many bugs during migration |
+| Surface-based modules | Matches existing `currentSurface` pattern, clear boundaries | ✓ Good - clean separation of concerns |
+| Preact over Alpine.js | React-compatible 4KB framework, better ecosystem for scaling | ✓ Good - smooth migration, familiar patterns |
+| ServiceResult<T> pattern | Consistent error handling across services | ✓ Good - type-safe success/error returns |
+| Barrel exports | Clean imports via @/types, @/services | ✓ Good - improved DX |
+| ESM-only (type: module) | Modern module system, Vite-native | ✓ Good - no CJS interop issues |
+| userId-based localStorage | Workout backup per user, not per template | ✓ Good - proper multi-tab sync |
 
 ---
 
-*Last updated: 2026-01-12 after initialization*
+*Last updated: 2026-01-13 after v1.0 milestone*

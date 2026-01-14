@@ -1,11 +1,15 @@
 # Environment files
 .env
 .env.local
+.env.example
 .env.*.local
+
 
 # IDE
 .vscode/
 .idea/
+.claude/
+tmpclaude-*
 
 # OS files
 .DS_Store
@@ -20,3 +24,8 @@ node_modules/
 
 # Build output
 dist/
+
+#planing and development files
+docs/
+.planning/
+screenshots/

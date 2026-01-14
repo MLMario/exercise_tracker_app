@@ -64,8 +64,6 @@ function TrashIcon() {
  */
 function formatMetricType(metricType: string): string {
   switch (metricType) {
-    case 'max_weight':
-      return 'Max Weight';
     case 'max_volume_set':
       return 'Max Volume';
     case 'total_sets':

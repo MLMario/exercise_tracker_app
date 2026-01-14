@@ -31,7 +31,6 @@ export interface AddChartModalProps {
  * Metric type options for chart configuration
  */
 const METRIC_TYPE_OPTIONS = [
-  { value: 'max_weight', label: 'Max Weight' },
   { value: 'max_volume_set', label: 'Max Volume (per set)' },
   { value: 'total_sets', label: 'Total Sets' },
 ];

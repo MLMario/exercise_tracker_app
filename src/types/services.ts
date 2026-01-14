@@ -464,7 +464,7 @@ export type ExerciseMetricType = 'total_sets' | 'max_volume_set';
  * Options for getExerciseMetrics.
  */
 export interface ExerciseMetricsOptions {
-  /** Metric to calculate: 'total_sets', 'max_volume_set', or 'max_weight' */
+  /** Metric to calculate: 'total_sets' or 'max_volume_set' */
   metric?: ExerciseMetricType;
   /** Grouping mode: 'date' or 'session' */
   mode?: ExerciseHistoryMode;

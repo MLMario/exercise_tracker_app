@@ -29,4 +29,5 @@ dist/
 docs/
 .planning/
 screenshots/
-.vercel
+.vercel/
+.mockups/

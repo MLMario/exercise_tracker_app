@@ -24,14 +24,14 @@ export interface TemplateCardProps {
 }
 
 /**
- * Edit (pencil) icon SVG
+ * Edit (pencil) icon SVG - 12x12 for mini cards
  */
 function EditIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
+      width="12"
+      height="12"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -45,14 +45,14 @@ function EditIcon() {
 }
 
 /**
- * Delete (trash) icon SVG
+ * Delete (trash) icon SVG - 12x12 for mini cards
  */
 function DeleteIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="18"
-      height="18"
+      width="12"
+      height="12"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -69,8 +69,8 @@ function DeleteIcon() {
 /**
  * TemplateCard Component
  *
- * Renders a single template card with name, exercise count,
- * and action buttons (start workout, edit, delete).
+ * Renders a compact mini-card with template name, edit/delete icons,
+ * and a full-width Start button. Uses mini-grid layout styling.
  */
 export function TemplateCard({
   template,
@@ -100,34 +100,35 @@ export function TemplateCard({
   };
 
   return (
-    <div class="card template-card">
-      <div class="template-header">
-        <h3 class="template-name">{template.name}</h3>
-        <span class="badge">{template.exercises.length} exercises</span>
+    <div class="template-mini-card">
+      <div class="template-mini-header">
+        <span class="template-mini-name">{template.name}</span>
+        <div class="template-mini-header-actions">
+          <button
+            type="button"
+            class="btn-icon-xs"
+            title="Edit"
+            onClick={handleEdit}
+          >
+            <EditIcon />
+          </button>
+          <button
+            type="button"
+            class="btn-icon-xs btn-danger"
+            title="Delete"
+            onClick={handleDelete}
+          >
+            <DeleteIcon />
+          </button>
+        </div>
       </div>
-      <div class="template-actions">
+      <div class="template-mini-actions">
         <button
           type="button"
-          class="btn btn-primary"
+          class="btn btn-primary btn-xs"
           onClick={handleStartWorkout}
         >
-          Start Workout
-        </button>
-        <button
-          type="button"
-          class="btn btn-icon"
-          title="Edit"
-          onClick={handleEdit}
-        >
-          <EditIcon />
-        </button>
-        <button
-          type="button"
-          class="btn btn-icon btn-danger"
-          title="Delete"
-          onClick={handleDelete}
-        >
-          <DeleteIcon />
+          Start
         </button>
       </div>
     </div>

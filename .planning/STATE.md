@@ -10,20 +10,20 @@ See: .planning/PROJECT.md (updated 2026-01-13)
 ## Current Position
 
 Milestone: v1.2 Legacy Code Cleanup
-Phase: 16 of 17 (Remove Window Exports)
-Plan: 1 of 1 complete
-Status: Phase complete
+Phase: 17 of 17 (Remove Legacy Files)
+Plan: 1 of ? in current phase
+Status: In progress
 Branch: `002-js-complete-service-migration` ✓
-Last activity: 2026-01-14 — Completed 16-01-PLAN.md
+Last activity: 2026-01-14 — Completed 17-01-PLAN.md
 
-Progress: ████████░░ 75%
+Progress: █████████░ 85%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 32
+- Total plans completed: 33
 - Average duration: ~4 min
-- Total execution time: ~126 min
+- Total execution time: ~128 min
 
 **By Phase:**
 
@@ -45,6 +45,7 @@ Progress: ████████░░ 75%
 | 14-workout-service-imports | 1 | 3 min | 3 min |
 | 15-dashboard-service-imports | 1 | 3 min | 3 min |
 | 16-remove-window-exports | 1 | 3 min | 3 min |
+| 17-remove-legacy-files | 1 | 2 min | 2 min |
 
 **Stats:**
 - 2 milestones shipped (v1.0, v1.1)
@@ -76,6 +77,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-14
-Stopped at: Completed 16-01-PLAN.md
+Stopped at: Completed 17-01-PLAN.md
 Resume file: None
-Next action: /gsd:plan-phase 17
+Next action: Check for more plans in Phase 17 or complete milestone

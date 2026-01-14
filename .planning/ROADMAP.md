@@ -66,7 +66,7 @@ Files to update:
 - Update: vite.config.ts (remove `{ src: 'js', dest: '.' }` from static-copy)
 
 Plans:
-- [ ] 17-01: TBD
+- [x] 17-01: Remove legacy JS references from HTML and build config
 
 <details>
 <summary>✅ v1.1 Fixes & Polish (Phases 12-13) — SHIPPED 2026-01-13</summary>
@@ -100,11 +100,11 @@ Plans:
 | 14. Workout Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
 | 15. Dashboard Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
 | 16. Remove Window Exports | v1.2 | 1/1 | Complete | 2026-01-14 |
-| 17. Remove Legacy Files | v1.2 | 0/? | Not started | - |
+| 17. Remove Legacy Files | v1.2 | 1/? | In progress | - |
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 16 phases complete, 33 plans complete | 1 phase remaining
+**Total:** 16 phases complete, 34 plans complete | 1 phase remaining
 
 ---
 

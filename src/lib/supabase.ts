@@ -35,12 +35,3 @@ if (!supabaseAnonKey || supabaseAnonKey === 'YOUR_SUPABASE_ANON_KEY') {
  * Use this for all database and auth operations.
  */
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
-
-// Backward compatibility: export to window for legacy JS code
-declare global {
-  interface Window {
-    supabaseClient: SupabaseClient;
-  }
-}
-
-window.supabaseClient = supabase;

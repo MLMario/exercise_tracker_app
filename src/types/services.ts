@@ -458,7 +458,7 @@ export type ExerciseHistoryData = ExerciseHistoryDateData | ExerciseHistorySessi
 /**
  * Metric type for exercise charts.
  */
-export type ExerciseMetricType = 'total_sets' | 'max_volume_set' | 'max_weight';
+export type ExerciseMetricType = 'total_sets' | 'max_volume_set';
 
 /**
  * Options for getExerciseMetrics.

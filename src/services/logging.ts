@@ -505,8 +505,6 @@ async function getExerciseMetrics(
           values.push(item.total_sets);
         } else if (metric === 'max_volume_set') {
           values.push(item.max_volume_set);
-        } else if (metric === 'max_weight') {
-          values.push(item.max_weight);
         }
       });
     } else {
@@ -520,8 +518,6 @@ async function getExerciseMetrics(
           values.push(item.total_sets);
         } else if (metric === 'max_volume_set') {
           values.push(item.max_volume_set);
-        } else if (metric === 'max_weight') {
-          values.push(item.max_weight);
         }
       });
     }

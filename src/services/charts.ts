@@ -15,7 +15,29 @@ import type {
   ChartData,
   ChartsService,
 } from '@/types';
-import { Chart } from 'chart.js';
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Legend,
+  Tooltip,
+  Filler,
+} from 'chart.js';
+
+// Register Chart.js components (required in Chart.js v3+)
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Legend,
+  Tooltip,
+  Filler
+);
 import type { PostgrestSingleResponse } from '@supabase/supabase-js';
 
 // ============================================================================

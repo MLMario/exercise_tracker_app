@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 import type { TemplateWithExercises, Exercise } from '@/types';
+import { exercises, logging, templates } from '@/services';
 import { WorkoutExerciseCard } from './WorkoutExerciseCard';
 import { ConfirmationModal, ExercisePickerModal } from '@/components';
 
@@ -261,7 +262,7 @@ export function WorkoutSurface({
 
   useEffect(() => {
     const loadExercises = async () => {
-      const { data } = await window.exercises.getExercises();
+      const { data } = await exercises.getExercises();
       setAvailableExercises(data || []);
     };
     loadExercises();
@@ -577,7 +578,7 @@ export function WorkoutSurface({
         exercises: activeWorkout.exercises
       };
 
-      const { error: saveError } = await window.logging.createWorkoutLog(workoutData);
+      const { error: saveError } = await logging.createWorkoutLog(workoutData);
       if (saveError) throw new Error(saveError.message);
 
       // Clear localStorage backup
@@ -610,7 +611,7 @@ export function WorkoutSurface({
         }))
       }));
 
-      const { error: updateError } = await window.templates.updateTemplate(
+      const { error: updateError } = await templates.updateTemplate(
         activeWorkout.template_id!,
         activeWorkout.template_name,
         templateExercises
@@ -809,7 +810,7 @@ export function WorkoutSurface({
    */
   const handleCreateExercise = async (name: string, category: string): Promise<Exercise | null> => {
     // Cast category to ExerciseCategory (picker provides valid values)
-    const { data, error: createError } = await window.exercises.createExercise(
+    const { data, error: createError } = await exercises.createExercise(
       name,
       category as Exercise['category']
     );
@@ -818,8 +819,8 @@ export function WorkoutSurface({
     }
     if (data) {
       // Refresh exercises list
-      const { data: exercises } = await window.exercises.getExercises();
-      setAvailableExercises(exercises || []);
+      const { data: allExercises } = await exercises.getExercises();
+      setAvailableExercises(allExercises || []);
       return data;
     }
     return null;

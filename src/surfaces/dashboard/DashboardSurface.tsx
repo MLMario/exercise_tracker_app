@@ -486,13 +486,6 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
             onChartRendered={handleChartRendered}
             onChartDestroyed={handleChartDestroyed}
           />
-
-          {/* Exercises info - placeholder */}
-          <section class="exercises-info">
-            <p class="placeholder-text">
-              {availableExercises.length} exercise(s) available
-            </p>
-          </section>
         </main>
       )}
 

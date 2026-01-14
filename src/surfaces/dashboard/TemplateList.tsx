@@ -45,16 +45,16 @@ export function TemplateList({
         <h2 class="section-title">My Templates</h2>
         <button
           type="button"
-          class="btn btn-primary"
+          class="btn btn-primary btn-sm"
           onClick={onCreateNew}
         >
-          Create Template
+          + Create
         </button>
       </div>
 
       {/* Template grid */}
       {templates.length > 0 && (
-        <div class="templates-grid">
+        <div class="templates-mini-grid">
           {templates.map((template) => (
             <TemplateCard
               key={template.id}

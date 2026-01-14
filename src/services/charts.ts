@@ -202,22 +202,35 @@ function renderChart(
   chartData: ChartData,
   options: RenderChartOptions
 ): Chart | null {
+  console.log(`[charts.renderChart] Called for ${canvasId}`, {
+    chartData,
+    options,
+  });
+
   try {
     const canvas = document.getElementById(canvasId) as HTMLCanvasElement | null;
     if (!canvas) {
-      console.error(`Canvas element with id '${canvasId}' not found`);
+      console.error(`[charts.renderChart] Canvas element with id '${canvasId}' not found`);
       return null;
     }
+
+    console.log(`[charts.renderChart] Canvas found for ${canvasId}:`, {
+      offsetWidth: canvas.offsetWidth,
+      offsetHeight: canvas.offsetHeight,
+      clientWidth: canvas.clientWidth,
+      clientHeight: canvas.clientHeight,
+    });
 
     // Check if there's an existing chart on this canvas and destroy it
     const existingChart = Chart.getChart(canvas);
     if (existingChart) {
+      console.log(`[charts.renderChart] Destroying existing chart on ${canvasId}`);
       existingChart.destroy();
     }
 
     const ctx = canvas.getContext('2d');
     if (!ctx) {
-      console.error('Could not get 2D context from canvas');
+      console.error('[charts.renderChart] Could not get 2D context from canvas');
       return null;
     }
 
@@ -311,9 +324,25 @@ function renderChart(
       },
     });
 
+    console.log(`[charts.renderChart] Chart created successfully for ${canvasId}`, {
+      chartInstance,
+      canvasAfterRender: {
+        width: canvas.width,
+        height: canvas.height,
+      },
+    });
+
+    // Force Chart.js to recalculate dimensions after browser layout completes
+    // This fixes visibility issues when canvas renders before DOM is fully laid out
+    requestAnimationFrame(() => {
+      if (chartInstance && typeof chartInstance.resize === 'function') {
+        chartInstance.resize();
+      }
+    });
+
     return chartInstance;
   } catch (err) {
-    console.error('Error rendering chart:', err);
+    console.error('[charts.renderChart] Error rendering chart:', err);
     return null;
   }
 }

@@ -735,7 +735,7 @@ input[type="checkbox"]:focus {
 
 .chart-card-content {
   position: relative;
-  min-height: 200px;
+  height: 200px;
 }
 
 .chart-loading {
@@ -748,6 +748,7 @@ input[type="checkbox"]:focus {
 
 .chart-canvas {
   width: 100%;
+  height: 100%;
 }
 
 .chart-canvas.loading {

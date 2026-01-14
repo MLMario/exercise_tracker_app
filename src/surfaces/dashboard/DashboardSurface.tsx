@@ -126,11 +126,13 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 381-392.
    */
   const loadUserCharts = async (): Promise<void> => {
+    console.log('[DashboardSurface] loadUserCharts called');
     try {
       const { data, error } = await window.charts.getUserCharts();
       if (error) throw new Error(error.message);
 
       const charts = data || [];
+      console.log('[DashboardSurface] Loaded charts:', charts.length, charts.map(c => c.id));
       setUserCharts(charts);
 
       // Fetch chart data for each chart upfront
@@ -138,23 +140,30 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
 
       for (const chart of charts) {
         try {
+          console.log(`[DashboardSurface] Fetching metrics for chart ${chart.id}...`);
           const { data: metricsData, error: metricsError } = await window.logging.getExerciseMetrics(
             chart.exercise_id,
             { metric: chart.metric_type, mode: chart.x_axis_mode }
           );
 
           if (metricsError) {
-            console.error(`Failed to get metrics for chart ${chart.id}:`, metricsError);
+            console.error(`[DashboardSurface] Failed to get metrics for chart ${chart.id}:`, metricsError);
             dataMap[chart.id] = null;
           } else {
+            console.log(`[DashboardSurface] Chart ${chart.id} metrics loaded:`, {
+              labels: metricsData?.labels?.length ?? 0,
+              values: metricsData?.values?.length ?? 0,
+              data: metricsData,
+            });
             dataMap[chart.id] = metricsData || null;
           }
         } catch (err) {
-          console.error(`Failed to fetch data for chart ${chart.id}:`, err);
+          console.error(`[DashboardSurface] Failed to fetch data for chart ${chart.id}:`, err);
           dataMap[chart.id] = null;
         }
       }
 
+      console.log('[DashboardSurface] Setting chartDataMap:', Object.keys(dataMap), dataMap);
       setChartDataMap(dataMap);
     } catch (err) {
       throw new Error('Failed to load charts: ' + (err instanceof Error ? err.message : String(err)));
@@ -195,6 +204,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 343-359.
    */
   const loadDashboard = async (): Promise<void> => {
+    console.log('[DashboardSurface] loadDashboard called');
     setError('');
     setSuccessMessage('');
     setIsLoading(true);
@@ -205,8 +215,10 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
         loadExercises(),
         loadUserCharts(),
       ]);
+      console.log('[DashboardSurface] loadDashboard completed successfully');
       setChartsNeedRefresh(false);
     } catch (err) {
+      console.error('[DashboardSurface] loadDashboard failed:', err);
       setError('Failed to load dashboard: ' + (err instanceof Error ? err.message : String(err)));
     } finally {
       setIsLoading(false);
@@ -401,11 +413,13 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   // ==================== INITIALIZATION ====================
 
   useEffect(() => {
+    console.log('[DashboardSurface] Mount useEffect triggered');
     // Load dashboard data on component mount
     loadDashboard();
 
     // Cleanup chart instances on unmount
     return () => {
+      console.log('[DashboardSurface] Cleanup - destroying all charts');
       destroyAllCharts();
     };
   }, []);

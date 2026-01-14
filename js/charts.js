@@ -291,6 +291,14 @@ function renderChart(canvasId, chartData, options) {
       }
     });
 
+    // Force Chart.js to recalculate dimensions after browser layout completes
+    // This fixes visibility issues when canvas renders before DOM is fully laid out
+    requestAnimationFrame(() => {
+      if (chartInstance && typeof chartInstance.resize === 'function') {
+        chartInstance.resize();
+      }
+    });
+
     return chartInstance;
   } catch (err) {
     console.error('Error rendering chart:', err);

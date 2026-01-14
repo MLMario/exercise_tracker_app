@@ -8,7 +8,7 @@
  * Matches behavior from js/app.js chart rendering.
  */
 
-import { useRef, useEffect } from 'preact/hooks';
+import { useRef, useEffect, useState } from 'preact/hooks';
 import type { Chart } from 'chart.js';
 import type { UserChart } from './DashboardSurface';
 
@@ -91,25 +91,56 @@ export function ChartCard({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // Ref for chart instance to track rendered state
   const chartInstanceRef = useRef<Chart | null>(null);
+  // State to track if chart is rendered (triggers re-render to remove loading class)
+  const [isRendered, setIsRendered] = useState(false);
 
   /**
    * Render chart when canvas mounts and chartData is available.
    * This ensures the canvas is in the DOM before Chart.js renders.
    */
   useEffect(() => {
+    const logPrefix = `[ChartCard ${chart.id}]`;
+
+    console.log(`${logPrefix} useEffect triggered`, {
+      hasCanvasRef: !!canvasRef.current,
+      hasChartData: !!chartData,
+      chartDataLabels: chartData?.labels?.length ?? 0,
+      chartDataValues: chartData?.values?.length ?? 0,
+      hasExistingInstance: !!chartInstanceRef.current,
+    });
+
     // Skip if no canvas or no chart data
     if (!canvasRef.current || !chartData) {
+      console.log(`${logPrefix} SKIPPING - missing canvas or chartData`, {
+        canvasRef: canvasRef.current,
+        chartData,
+      });
       return;
     }
 
     // Skip if already rendered for this data
     if (chartInstanceRef.current) {
+      console.log(`${logPrefix} SKIPPING - chart already rendered`);
       return;
     }
 
     const canvasId = `chart-${chart.id}`;
+    const canvas = canvasRef.current;
+
+    // Log canvas dimensions
+    console.log(`${logPrefix} Canvas dimensions before render:`, {
+      canvasId,
+      offsetWidth: canvas.offsetWidth,
+      offsetHeight: canvas.offsetHeight,
+      clientWidth: canvas.clientWidth,
+      clientHeight: canvas.clientHeight,
+      width: canvas.width,
+      height: canvas.height,
+      parentOffsetHeight: canvas.parentElement?.offsetHeight,
+    });
 
     try {
+      console.log(`${logPrefix} Attempting to render chart...`);
       const instance = window.charts.renderChart(
         canvasId,
         chartData,
@@ -120,24 +151,34 @@ export function ChartCard({
       );
 
       if (instance) {
+        console.log(`${logPrefix} Chart rendered successfully`, { instance });
         chartInstanceRef.current = instance;
+        setIsRendered(true);
         if (onChartRendered) {
           onChartRendered(chart.id, instance);
         }
+      } else {
+        console.warn(`${logPrefix} renderChart returned null/undefined`);
       }
     } catch (err) {
-      console.error(`Failed to render chart ${chart.id}:`, err);
+      console.error(`${logPrefix} Failed to render chart:`, err);
     }
 
     // Cleanup on unmount
     return () => {
+      console.log(`${logPrefix} Cleanup function called`, {
+        hasInstance: !!chartInstanceRef.current,
+      });
       if (chartInstanceRef.current) {
         try {
-          window.charts.destroyChart(`chart-${chart.id}`);
-        } catch {
-          // Chart may already be destroyed
+          // Pass the actual Chart instance, not the canvas ID string
+          window.charts.destroyChart(chartInstanceRef.current);
+          console.log(`${logPrefix} Chart destroyed successfully`);
+        } catch (err) {
+          console.warn(`${logPrefix} Error destroying chart:`, err);
         }
         chartInstanceRef.current = null;
+        setIsRendered(false);
         if (onChartDestroyed) {
           onChartDestroyed(chart.id);
         }
@@ -156,9 +197,6 @@ export function ChartCard({
   const exerciseName = chart.exercises?.name || 'Exercise';
   const metricLabel = formatMetricType(chart.metric_type);
   const chartTitle = `${exerciseName} - ${metricLabel}`;
-
-  // Determine if chart is rendered
-  const isRendered = chartInstanceRef.current !== null;
 
   return (
     <div class="chart-card">

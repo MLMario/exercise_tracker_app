@@ -303,6 +303,18 @@ function renderChart(
             borderWidth: 1,
             padding: 10,
             displayColors: false,
+            callbacks: {
+              title: () => '',
+              label: (context) => {
+                const value = context.parsed.y;
+                if (metricType === 'max_volume_set') {
+                  return `${value} lbs`;
+                } else if (metricType === 'total_sets') {
+                  return `${value} sets`;
+                }
+                return String(value);
+              },
+            },
           },
         },
         scales: {

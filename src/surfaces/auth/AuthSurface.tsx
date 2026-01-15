@@ -14,6 +14,7 @@ import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
 import { ResetPasswordForm } from './ResetPasswordForm';
 import { UpdatePasswordForm } from './UpdatePasswordForm';
+import { InfoModal } from '@/components/InfoModal';
 
 /**
  * Auth sub-surface type - controls which auth form is displayed
@@ -79,6 +80,9 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
   // Messages
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Email confirmation modal state (shown after successful registration)
+  const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false);
 
   // ==================== INITIALIZATION ====================
 
@@ -216,11 +220,13 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
         setAuthEmail('');
         setAuthPassword('');
         setAuthConfirmPassword('');
-        setSuccessMessage(
-          authSurface === 'login'
-            ? 'Logged in successfully'
-            : 'Account created successfully'
-        );
+
+        if (authSurface === 'login') {
+          setSuccessMessage('Logged in successfully');
+        } else {
+          // Registration success: show email confirmation modal instead of toast
+          setShowEmailConfirmModal(true);
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -474,6 +480,23 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
           </div>
         )}
       </div>
+
+      {/* Email Confirmation Modal - shown after successful registration */}
+      <InfoModal
+        isOpen={showEmailConfirmModal}
+        title="Check Your Email"
+        message={
+          <>
+            <p>We've sent a confirmation link to your email address.</p>
+            <p>Please click the link in the email to activate your account before logging in.</p>
+          </>
+        }
+        buttonLabel="Got it"
+        onClose={() => {
+          setShowEmailConfirmModal(false);
+          switchAuthSurface('login');
+        }}
+      />
     </div>
   );
 }

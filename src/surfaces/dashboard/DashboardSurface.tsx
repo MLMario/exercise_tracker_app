@@ -14,6 +14,7 @@ import { exercises, templates, logging, charts } from '@/services';
 import { TemplateList } from './TemplateList';
 import { ChartSection } from './ChartSection';
 import { AddChartModal } from './AddChartModal';
+import { ConfirmationModal } from '@/components';
 import type { ChartData } from './ChartCard';
 
 /**
@@ -83,6 +84,10 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   // Modal state for delete chart confirmation
   const [showDeleteChartModal, setShowDeleteChartModal] = useState(false);
   const [pendingDeleteChartId, setPendingDeleteChartId] = useState<string | null>(null);
+
+  // Modal state for delete template confirmation
+  const [showDeleteTemplateModal, setShowDeleteTemplateModal] = useState(false);
+  const [pendingDeleteTemplateId, setPendingDeleteTemplateId] = useState<string | null>(null);
 
   // Chart modal error
   const [chartError, setChartError] = useState('');
@@ -257,13 +262,31 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
 
   /**
    * Handle delete template action.
-   * Confirms deletion and calls templates service.
+   * Opens confirmation modal.
    * Matches js/app.js lines 511-527.
    */
-  const handleDeleteTemplate = async (id: string): Promise<void> => {
-    if (!window.confirm('Are you sure you want to delete this template?')) {
-      return;
-    }
+  const handleDeleteTemplate = (id: string): void => {
+    setPendingDeleteTemplateId(id);
+    setShowDeleteTemplateModal(true);
+  };
+
+  /**
+   * Dismiss the delete template confirmation modal.
+   */
+  const dismissDeleteTemplateModal = (): void => {
+    setShowDeleteTemplateModal(false);
+    setPendingDeleteTemplateId(null);
+  };
+
+  /**
+   * Confirm template deletion.
+   */
+  const confirmDeleteTemplate = async (): Promise<void> => {
+    const id = pendingDeleteTemplateId;
+    setShowDeleteTemplateModal(false);
+    setPendingDeleteTemplateId(null);
+
+    if (!id) return;
 
     setError('');
     setSuccessMessage('');
@@ -530,6 +553,18 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
           </div>
         </div>
       )}
+
+      {/* Delete Template Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteTemplateModal}
+        title="Delete Template"
+        message="Are you sure you want to delete this template?"
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        confirmVariant="danger"
+        onConfirm={confirmDeleteTemplate}
+        onCancel={dismissDeleteTemplateModal}
+      />
     </div>
   );
 }

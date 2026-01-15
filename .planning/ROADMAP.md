@@ -29,15 +29,15 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 Plans:
 - [x] 21-01: Customize tooltip callbacks (2 min)
 
-#### Phase 22: Account Confirmation Modal
+#### Phase 22: Account Confirmation Modal - Complete
 
 **Goal**: Replace green success toast with email confirmation modal after account creation
 **Depends on**: Phase 21
 **Research**: Unlikely (internal modal patterns exist)
-**Plans**: TBD
+**Plans**: 1/1 complete
 
 Plans:
-- [ ] 22-01: TBD (run /gsd:plan-phase 22 to break down)
+- [x] 22-01: Create InfoModal + integrate into registration flow (3 min)
 
 #### Phase 23: Chart Delete Modal
 
@@ -106,7 +106,7 @@ Plans:
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
 | 21. Chart Tooltip Simplification | v1.5 | 1/1 | Complete | 2026-01-14 |
-| 22. Account Confirmation Modal | v1.5 | 0/? | Not started | - |
+| 22. Account Confirmation Modal | v1.5 | 1/1 | Complete | 2026-01-14 |
 | 23. Chart Delete Modal | v1.5 | 0/? | Not started | - |
 | 19. Auth Surface Rebrand | v1.4 | 1/1 | Complete | 2026-01-14 |
 | 20. Dashboard Rebrand | v1.4 | 1/1 | Complete | 2026-01-14 |
@@ -118,7 +118,7 @@ Plans:
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 21 phases complete, 39 plans complete | v1.5 in progress
+**Total:** 22 phases complete, 40 plans complete | v1.5 in progress
 
 ---
 

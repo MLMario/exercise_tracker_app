@@ -2,11 +2,12 @@
 
 ## Overview
 
-Technical debt refactor migrating a fitness tracking app from zero-build vanilla JavaScript to TypeScript + Vite with surface-based architecture. App rebranded from "Exercise Tracker" to "Ironlift Strength" in v1.1.
+Technical debt refactor migrating a fitness tracking app from zero-build vanilla JavaScript to TypeScript + Vite with surface-based architecture. App rebranded to "IronFactor" in v1.4 (previously "Ironlift Strength" in v1.1, originally "Exercise Tracker").
 
 ## Milestones
 
-- 🚧 **v1.4 IronFactor Rebrand** - Phases 19-20 (in progress)
+- 🚧 **v1.5 UX Improvements** - Phases 21-23 (in progress)
+- ✅ [v1.4 IronFactor Rebrand](milestones/v1.4-ROADMAP.md) (Phases 19-20) — SHIPPED 2026-01-14
 - ✅ [v1.3 UI Refinements](milestones/v1.3-ROADMAP.md) (Phase 18) — SHIPPED 2026-01-14
 - ✅ [v1.2 Legacy Code Cleanup](milestones/v1.2-ROADMAP.md) (Phases 14-17) — SHIPPED 2026-01-14
 - ✅ [v1.1 Fixes & Polish](milestones/v1.1-ROADMAP.md) (Phases 12-13) — SHIPPED 2026-01-13
@@ -14,33 +15,49 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Phases
 
-### 🚧 v1.4 IronFactor Rebrand (In Progress)
+### 🚧 v1.5 UX Improvements (In Progress)
 
-**Milestone Goal:** Rebrand the app from "Ironlift Strength" to "IronFactor" with updated login UI and consistent dashboard branding.
+**Milestone Goal:** Improve user experience with cleaner chart tooltips, proper email confirmation modal, and consistent delete confirmation modals.
 
-#### Phase 19: Auth Surface Rebrand - COMPLETE
+#### Phase 21: Chart Tooltip Simplification
 
-**Goal**: Update login/register UI to match mockup design with new IronFactor branding
+**Goal**: Simplify chart tooltips to show only value with unit (e.g., "10 lbs", "5 sets")
 **Depends on**: Previous milestone complete
-**Research**: Unlikely (internal UI patterns)
-**Plans**: 1/1 complete
-
-Reference: `.mockup/login-mockup-option-1.html`
-
-Plans:
-- [x] 19-01: IronFactor branding CSS + AuthSurface update
-
-#### Phase 20: Dashboard Rebrand
-
-**Goal**: Update dashboard header with IronFactor branding and matching accent colors
-**Depends on**: Phase 19
-**Research**: Unlikely (internal UI patterns)
+**Research**: Unlikely (internal Chart.js patterns already established)
 **Plans**: TBD
 
 Plans:
-- [ ] 20-01: TBD (run /gsd:plan-phase 20 to break down)
+- [ ] 21-01: TBD (run /gsd:plan-phase 21 to break down)
+
+#### Phase 22: Account Confirmation Modal
+
+**Goal**: Replace green success toast with email confirmation modal after account creation
+**Depends on**: Phase 21
+**Research**: Unlikely (internal modal patterns exist)
+**Plans**: TBD
+
+Plans:
+- [ ] 22-01: TBD (run /gsd:plan-phase 22 to break down)
+
+#### Phase 23: Chart Delete Modal
+
+**Goal**: Replace browser confirm() with styled confirmation modal matching template delete modal
+**Depends on**: Phase 22
+**Research**: Unlikely (reusing existing modal component)
+**Plans**: TBD
+
+Plans:
+- [ ] 23-01: TBD (run /gsd:plan-phase 23 to break down)
 
 ---
+
+<details>
+<summary>✅ v1.4 IronFactor Rebrand (Phases 19-20) — SHIPPED 2026-01-14</summary>
+
+- [x] **Phase 19: Auth Surface Rebrand** (1/1 plans) - IronFactor split-color logo, tagline, auth card styling
+- [x] **Phase 20: Dashboard Rebrand** (1/1 plans) - Dashboard header with IronFactor branding
+
+</details>
 
 <details>
 <summary>✅ v1.3 UI Refinements (Phase 18) — SHIPPED 2026-01-14</summary>
@@ -88,8 +105,11 @@ Plans:
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
+| 21. Chart Tooltip Simplification | v1.5 | 0/? | Not started | - |
+| 22. Account Confirmation Modal | v1.5 | 0/? | Not started | - |
+| 23. Chart Delete Modal | v1.5 | 0/? | Not started | - |
 | 19. Auth Surface Rebrand | v1.4 | 1/1 | Complete | 2026-01-14 |
-| 20. Dashboard Rebrand | v1.4 | 0/? | Not started | - |
+| 20. Dashboard Rebrand | v1.4 | 1/1 | Complete | 2026-01-14 |
 | 18. Template List Redesign | v1.3 | 1/1 | Complete | 2026-01-14 |
 | 14. Workout Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
 | 15. Dashboard Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
@@ -98,7 +118,7 @@ Plans:
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 19 phases complete, 37 plans complete | v1.4 in progress
+**Total:** 20 phases complete, 38 plans complete | v1.5 in progress
 
 ---
 

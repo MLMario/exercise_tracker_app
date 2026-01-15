@@ -4,26 +4,26 @@
 
 See: .planning/PROJECT.md (updated 2026-01-14)
 
-**Core value:** The app must work exactly as before - this is a rebrand
-**Current focus:** Rebrand from Ironlift Strength to IronFactor with updated auth UI
+**Core value:** The app must work exactly as before - behavior preserved through all milestones
+**Current focus:** v1.5 UX Improvements — chart tooltips, confirmation modals
 
 ## Current Position
 
-Milestone: v1.4 IronFactor Rebrand
-Phase: 19 of 20 (Auth Surface Rebrand)
-Plan: 1 of 1 in current phase
-Status: Phase complete
+Milestone: v1.5 UX Improvements
+Phase: 21 of 23 (Chart Tooltip Simplification)
+Plan: Not started
+Status: Ready to plan
 Branch: `004-rebrand-name-IronFactor`
-Last activity: 2026-01-14 — Completed 19-01-PLAN.md
+Last activity: 2026-01-14 — Milestone v1.5 created
 
-Progress: █████░░░░░ 50%
+Progress: ░░░░░░░░░░ 0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 37
+- Total plans completed: 38
 - Average duration: ~4 min
-- Total execution time: ~138 min
+- Total execution time: ~140 min
 
 **By Phase:**
 
@@ -48,15 +48,17 @@ Progress: █████░░░░░ 50%
 | 17-remove-legacy-files | 2 | 4 min | 2 min |
 | 18-template-list-redesign | 1 | 4 min | 4 min |
 | 19-auth-surface-rebrand | 1 | 2 min | 2 min |
+| 20-dashboard-rebrand | 1 | 2 min | 2 min |
 
 **Stats:**
-- 4 milestones shipped (v1.0, v1.1, v1.2, v1.3)
-- 19 phases complete
-- 37 plans executed
+- 5 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4)
+- 20 phases complete
+- 38 plans executed
 - Alpine.js → Preact migration complete
-- App rebranded to "IronFactor" (auth surface)
+- App rebranded to "IronFactor" (auth + dashboard)
 - v1.2 legacy cleanup complete - all legacy JS removed
 - v1.3 UI refinements complete - compact template grid
+- v1.4 IronFactor rebrand SHIPPED
 
 ## Accumulated Context
 
@@ -71,7 +73,8 @@ None — all issues resolved.
 
 ### Roadmap Evolution
 
-- Milestone v1.4 created: IronFactor Rebrand, 2 phases (Phase 19-20)
+- Milestone v1.5 created: UX Improvements, 3 phases (Phase 21-23)
+- Milestone v1.4 shipped: IronFactor Rebrand, 2 phases (Phase 19-20)
 - Milestone v1.3 shipped: UI Refinements, 1 phase (Phase 18)
 - Milestone v1.2 shipped: Legacy code cleanup, 4 phases (Phase 14-17)
 - Milestone v1.1 shipped: Fixes & Polish, 2 phases (Phase 12-13)
@@ -84,6 +87,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-14
-Stopped at: Completed 19-01-PLAN.md (Phase 19 complete)
+Stopped at: Milestone v1.5 initialization
 Resume file: None
-Next action: Run `/gsd:plan-phase 20` to plan Dashboard Rebrand
+Next action: Run `/gsd:plan-phase 21` to plan first phase

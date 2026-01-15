@@ -1,8 +1,8 @@
-# Ironlift Strength
+# IronFactor
 
 ## What This Is
 
-A fitness tracking app built with TypeScript, Preact, and Vite. Features workout templates with compact mini-grid layout, exercise tracking with rest timers, progress charts, and multi-tab sync. Migrated from Alpine.js to Preact in v1.0 refactor, polished in v1.1, and refined UI in v1.3.
+A fitness tracking app built with TypeScript, Preact, and Vite. Features workout templates with compact mini-grid layout, exercise tracking with rest timers, progress charts, and multi-tab sync. Migrated from Alpine.js to Preact in v1.0 refactor, polished in v1.1, refined UI in v1.3, and rebranded to "IronFactor" in v1.4.
 
 ## Core Value
 
@@ -11,6 +11,18 @@ A fitness tracking app built with TypeScript, Preact, and Vite. Features workout
 ## Requirements
 
 ### Validated
+
+**v1.5 UX Improvements (shipped 2026-01-15):**
+- ✓ Simplified chart tooltips (value + unit only) — v1.5
+- ✓ InfoModal component for informational dialogs — v1.5
+- ✓ Email confirmation modal after registration — v1.5
+- ✓ Template delete uses styled ConfirmationModal — v1.5
+- ✓ All delete actions use modal-based confirmation — v1.5
+
+**v1.4 IronFactor Rebrand (shipped 2026-01-14):**
+- ✓ IronFactor split-color logo on auth page — v1.4
+- ✓ IronFactor branding on dashboard header — v1.4
+- ✓ Consistent brand pattern across surfaces — v1.4
 
 **v1.3 UI Refinements (shipped 2026-01-14):**
 - ✓ 2-column mini-grid template layout — v1.3
@@ -58,7 +70,7 @@ None — project complete.
 
 ## Context
 
-**Current State (post v1.3):**
+**Current State (post v1.5):**
 - Vite + TypeScript build pipeline with strict mode
 - 100% TypeScript codebase — all legacy JS deleted
 - Preact-based surfaces: Auth, Dashboard, Template Editor, Workout, Charts
@@ -66,8 +78,11 @@ None — project complete.
 - No window.* globals — all services use direct ES module imports
 - Supabase client initialized in `src/lib/supabase.ts` using `.env` variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
 - Supabase as backend (PostgreSQL + Auth)
-- App rebranded to "Ironlift Strength"
+- App rebranded to "IronFactor" with split-color logo (Iron=white, Factor=accent blue)
 - Dashboard template list uses compact 2-column mini-grid layout
+- Simplified chart tooltips showing value + unit only
+- Reusable InfoModal and ConfirmationModal components for dialogs
+- All delete actions use styled modal confirmation (no browser confirm())
 - All UAT bugs fixed, production build verified working
 
 **Architecture:**
@@ -107,7 +122,10 @@ None — project complete.
 | useRef for closures | Event listener callbacks capture state; use refs for current values | ✓ Good - fixed alt-tab visibility bug |
 | Chart.js explicit registration | Chart.js v4+ requires manual component registration | ✓ Good - fixed "category scale not registered" error |
 | Mini-grid template layout | More templates visible in viewport, cleaner aesthetic | ✓ Good - improved dashboard UX |
+| Tooltip closure pattern | Capture metricType in closure for Chart.js callbacks | ✓ Good - clean tooltip customization |
+| InfoModal component | Single-action modal for informational messages | ✓ Good - reusable, consistent UX |
+| Modal-based confirmations | Replace browser confirm() with styled modals | ✓ Good - consistent delete UX |
 
 ---
 
-*Last updated: 2026-01-14 after v1.3 milestone*
+*Last updated: 2026-01-15 after v1.5 milestone*

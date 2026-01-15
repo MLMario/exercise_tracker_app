@@ -1,4 +1,51 @@
-# Project Milestones: Ironlift Strength
+# Project Milestones: IronFactor
+
+## v1.5 UX Improvements (Shipped: 2026-01-15)
+
+**Delivered:** Improved user experience with simplified chart tooltips, email confirmation modal for registration, and styled delete confirmation modals.
+
+**Phases completed:** 21-23 (3 plans total)
+
+**Key accomplishments:**
+- Simplified chart tooltips to show only value + unit (e.g., "10 lbs", "5 sets")
+- Created reusable InfoModal component for informational dialogs
+- Registration success shows email confirmation modal instead of toast
+- Template delete uses styled ConfirmationModal instead of browser confirm()
+- Established pattern: all delete actions use modal-based confirmation
+
+**Stats:**
+- 3 phases, 3 plans, 6 tasks
+- 10 files modified, +451 net lines
+- 2 days (2026-01-14 → 2026-01-15)
+
+**Git range:** feat(21-01) → feat(23-01)
+
+**What's next:** Project feature-complete. Future work TBD based on user feedback.
+
+---
+
+## v1.4 IronFactor Rebrand (Shipped: 2026-01-14)
+
+**Delivered:** Rebranded app from "Ironlift Strength" to "IronFactor" with split-color logo and consistent branding across auth and dashboard surfaces.
+
+**Phases completed:** 19-20 (2 plans total)
+
+**Key accomplishments:**
+- IronFactor split-color logo on auth page (Iron=white, Factor=accent blue)
+- "Track. Train. Transform." tagline on auth surface
+- Dashboard header with IronFactor branding
+- Consistent brand pattern established across surfaces
+
+**Stats:**
+- 2 phases, 2 plans, 4 tasks
+- 6 files modified, +132 net lines
+- Same day completion
+
+**Git range:** feat(19-01) -> feat(20-01)
+
+**What's next:** Project feature-complete with rebrand. Future work TBD based on user feedback.
+
+---
 
 ## v1.3 UI Refinements (Shipped: 2026-01-14)
 

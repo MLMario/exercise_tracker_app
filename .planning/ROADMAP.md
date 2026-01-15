@@ -6,7 +6,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
-- 🚧 **v1.5 UX Improvements** - Phases 21-23 (in progress)
+- ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
 - ✅ [v1.4 IronFactor Rebrand](milestones/v1.4-ROADMAP.md) (Phases 19-20) — SHIPPED 2026-01-14
 - ✅ [v1.3 UI Refinements](milestones/v1.3-ROADMAP.md) (Phase 18) — SHIPPED 2026-01-14
 - ✅ [v1.2 Legacy Code Cleanup](milestones/v1.2-ROADMAP.md) (Phases 14-17) — SHIPPED 2026-01-14
@@ -15,41 +15,14 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Phases
 
-### 🚧 v1.5 UX Improvements (In Progress)
+<details>
+<summary>✅ v1.5 UX Improvements (Phases 21-23) — SHIPPED 2026-01-15</summary>
 
-**Milestone Goal:** Improve user experience with cleaner chart tooltips, proper email confirmation modal, and consistent delete confirmation modals.
+- [x] **Phase 21: Chart Tooltip Simplification** (1/1 plans) - Simplified tooltips showing value + unit
+- [x] **Phase 22: Account Confirmation Modal** (1/1 plans) - InfoModal for registration email confirmation
+- [x] **Phase 23: Chart Delete Modal** (1/1 plans) - ConfirmationModal for template delete
 
-#### Phase 21: Chart Tooltip Simplification - Complete
-
-**Goal**: Simplify chart tooltips to show only value with unit (e.g., "10 lbs", "5 sets")
-**Depends on**: Previous milestone complete
-**Research**: Unlikely (internal Chart.js patterns already established)
-**Plans**: 1/1 complete
-
-Plans:
-- [x] 21-01: Customize tooltip callbacks (2 min)
-
-#### Phase 22: Account Confirmation Modal - Complete
-
-**Goal**: Replace green success toast with email confirmation modal after account creation
-**Depends on**: Phase 21
-**Research**: Unlikely (internal modal patterns exist)
-**Plans**: 1/1 complete
-
-Plans:
-- [x] 22-01: Create InfoModal + integrate into registration flow (3 min)
-
-#### Phase 23: Chart Delete Modal - Complete
-
-**Goal**: Replace browser confirm() with styled confirmation modal matching template delete modal
-**Depends on**: Phase 22
-**Research**: Unlikely (reusing existing modal component)
-**Plans**: 1/1 complete
-
-Plans:
-- [x] 23-01: Replace template confirm() with ConfirmationModal (2 min)
-
----
+</details>
 
 <details>
 <summary>✅ v1.4 IronFactor Rebrand (Phases 19-20) — SHIPPED 2026-01-14</summary>

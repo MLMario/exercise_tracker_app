@@ -11,19 +11,19 @@ See: .planning/PROJECT.md (updated 2026-01-14)
 
 Milestone: v1.5 UX Improvements
 Phase: 21 of 23 (Chart Tooltip Simplification)
-Plan: Not started
-Status: Ready to plan
-Branch: `004-rebrand-name-IronFactor`
-Last activity: 2026-01-14 — Milestone v1.5 created
+Plan: 1 of 1 in current phase
+Status: Phase complete
+Branch: `005-ux-improvements`
+Last activity: 2026-01-14 — Completed 21-01-PLAN.md
 
-Progress: ░░░░░░░░░░ 0%
+Progress: ███░░░░░░░ 33%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 38
+- Total plans completed: 39
 - Average duration: ~4 min
-- Total execution time: ~140 min
+- Total execution time: ~142 min
 
 **By Phase:**
 
@@ -49,16 +49,18 @@ Progress: ░░░░░░░░░░ 0%
 | 18-template-list-redesign | 1 | 4 min | 4 min |
 | 19-auth-surface-rebrand | 1 | 2 min | 2 min |
 | 20-dashboard-rebrand | 1 | 2 min | 2 min |
+| 21-chart-tooltip-simplification | 1 | 2 min | 2 min |
 
 **Stats:**
 - 5 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4)
-- 20 phases complete
-- 38 plans executed
+- 21 phases complete
+- 39 plans executed
 - Alpine.js → Preact migration complete
 - App rebranded to "IronFactor" (auth + dashboard)
 - v1.2 legacy cleanup complete - all legacy JS removed
 - v1.3 UI refinements complete - compact template grid
 - v1.4 IronFactor rebrand SHIPPED
+- v1.5 in progress - chart tooltips simplified
 
 ## Accumulated Context
 
@@ -87,6 +89,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-14
-Stopped at: Milestone v1.5 initialization
+Stopped at: Completed Phase 21 (Chart Tooltip Simplification)
 Resume file: None
-Next action: Run `/gsd:plan-phase 21` to plan first phase
+Next action: Run `/gsd:plan-phase 22` to plan Account Confirmation Modal

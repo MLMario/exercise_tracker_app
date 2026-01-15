@@ -19,15 +19,15 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 **Milestone Goal:** Improve user experience with cleaner chart tooltips, proper email confirmation modal, and consistent delete confirmation modals.
 
-#### Phase 21: Chart Tooltip Simplification
+#### Phase 21: Chart Tooltip Simplification - Complete
 
 **Goal**: Simplify chart tooltips to show only value with unit (e.g., "10 lbs", "5 sets")
 **Depends on**: Previous milestone complete
 **Research**: Unlikely (internal Chart.js patterns already established)
-**Plans**: TBD
+**Plans**: 1/1 complete
 
 Plans:
-- [ ] 21-01: TBD (run /gsd:plan-phase 21 to break down)
+- [x] 21-01: Customize tooltip callbacks (2 min)
 
 #### Phase 22: Account Confirmation Modal
 
@@ -105,7 +105,7 @@ Plans:
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
-| 21. Chart Tooltip Simplification | v1.5 | 0/? | Not started | - |
+| 21. Chart Tooltip Simplification | v1.5 | 1/1 | Complete | 2026-01-14 |
 | 22. Account Confirmation Modal | v1.5 | 0/? | Not started | - |
 | 23. Chart Delete Modal | v1.5 | 0/? | Not started | - |
 | 19. Auth Surface Rebrand | v1.4 | 1/1 | Complete | 2026-01-14 |
@@ -118,7 +118,7 @@ Plans:
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 20 phases complete, 38 plans complete | v1.5 in progress
+**Total:** 21 phases complete, 39 plans complete | v1.5 in progress
 
 ---
 

@@ -10,3 +10,6 @@ export type { ExercisePickerModalProps } from './ExercisePickerModal';
 
 export { ConfirmationModal } from './ConfirmationModal';
 export type { ConfirmationModalProps } from './ConfirmationModal';
+
+export { InfoModal } from './InfoModal';
+export type { InfoModalProps } from './InfoModal';

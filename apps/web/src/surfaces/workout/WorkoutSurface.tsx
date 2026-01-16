@@ -8,8 +8,8 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
-import type { TemplateWithExercises, Exercise } from '@/types';
-import { exercises, logging, templates } from '@/services';
+import type { TemplateWithExercises, Exercise } from '@ironlift/shared';
+import { exercises, logging, templates } from '@ironlift/shared';
 import { WorkoutExerciseCard } from './WorkoutExerciseCard';
 import { ConfirmationModal, ExercisePickerModal } from '@/components';
 

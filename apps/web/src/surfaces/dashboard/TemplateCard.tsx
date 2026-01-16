@@ -7,7 +7,7 @@
  * Matches structure from index.html lines 344-365.
  */
 
-import type { TemplateWithExercises } from '@/types';
+import type { TemplateWithExercises } from '@ironlift/shared';
 
 /**
  * Props interface for TemplateCard component

@@ -7,7 +7,7 @@
  * Matches structure from index.html lines 335-372.
  */
 
-import type { TemplateWithExercises } from '@/types';
+import type { TemplateWithExercises } from '@ironlift/shared';
 import { TemplateCard } from './TemplateCard';
 
 /**

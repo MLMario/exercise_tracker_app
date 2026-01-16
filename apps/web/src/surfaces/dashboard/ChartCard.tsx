@@ -10,7 +10,7 @@
 
 import { useRef, useEffect, useState } from 'preact/hooks';
 import type { Chart } from 'chart.js';
-import { charts } from '@/services';
+import { charts } from '@ironlift/shared';
 import type { UserChart } from './DashboardSurface';
 
 /**

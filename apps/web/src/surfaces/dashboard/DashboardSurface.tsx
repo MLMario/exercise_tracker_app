@@ -9,8 +9,8 @@
 
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 import type { Chart } from 'chart.js';
-import type { Exercise, TemplateWithExercises } from '@/types';
-import { exercises, templates, logging, charts } from '@/services';
+import type { Exercise, TemplateWithExercises } from '@ironlift/shared';
+import { exercises, templates, logging, charts } from '@ironlift/shared';
 import { TemplateList } from './TemplateList';
 import { ChartSection } from './ChartSection';
 import { AddChartModal } from './AddChartModal';

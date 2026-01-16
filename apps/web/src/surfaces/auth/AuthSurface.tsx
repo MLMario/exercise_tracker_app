@@ -9,7 +9,7 @@
  */
 
 import { useState, useEffect } from 'preact/hooks';
-import { auth } from '@/services/auth';
+import { auth } from '@ironlift/shared';
 import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
 import { ResetPasswordForm } from './ResetPasswordForm';

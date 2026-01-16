@@ -9,8 +9,8 @@
  */
 
 import { useState, useEffect } from 'preact/hooks';
-import type { TemplateWithExercises, Exercise, ExerciseCategory } from '@/types';
-import { exercises, templates } from '@/services';
+import type { TemplateWithExercises, Exercise, ExerciseCategory } from '@ironlift/shared';
+import { exercises, templates } from '@ironlift/shared';
 import { ExerciseList } from './ExerciseList';
 import { ExercisePickerModal } from '@/components';
 

@@ -22,6 +22,9 @@ js/config.local.js
 # Dependencies
 node_modules/
 
+# pnpm
+pnpm-debug.log*
+
 # Build output
 dist/
 

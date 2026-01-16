@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-01-15)
 
 **Core value:** The app must work exactly as before - behavior preserved through all milestones
-**Current focus:** Project complete — all planned milestones shipped
+**Current focus:** Monorepo restructuring for multi-platform support (web + iOS)
 
 ## Current Position
 
-Milestone: v1.5 UX Improvements — SHIPPED
-Phase: 23 of 23 (all complete)
-Plan: All complete
-Status: Project feature-complete
+Milestone: v2.0 Monorepo Architecture
+Phase: 24 of 29 (Workspace Setup)
+Plan: 1 of 1 in current phase
+Status: Phase complete
 Branch: `master`
-Last activity: 2026-01-15 — v1.5 milestone archived
+Last activity: 2026-01-15 — Completed 24-01-PLAN.md
 
-Progress: ██████████ 100%
+Progress: █░░░░░░░░░ 17%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 41
+- Total plans completed: 42
 - Average duration: ~4 min
-- Total execution time: ~154 min
+- Total execution time: ~157 min
 
 **By Phase:**
 
@@ -52,17 +52,19 @@ Progress: ██████████ 100%
 | 21-chart-tooltip-simplification | 1 | 2 min | 2 min |
 | 22-account-confirmation-modal | 1 | 3 min | 3 min |
 | 23-chart-delete-modal | 1 | 2 min | 2 min |
+| 24-workspace-setup | 1 | 3 min | 3 min |
 
 **Stats:**
 - 6 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5)
-- 23 phases complete
-- 41 plans executed
+- 24 phases complete
+- 42 plans executed
 - Alpine.js → Preact migration complete
 - App rebranded to "IronFactor" (auth + dashboard)
 - v1.2 legacy cleanup complete - all legacy JS removed
 - v1.3 UI refinements complete - compact template grid
 - v1.4 IronFactor rebrand SHIPPED
 - v1.5 UX improvements SHIPPED - tooltips, modals
+- v2.0 Phase 24 complete - pnpm workspace configured
 
 ## Accumulated Context
 
@@ -77,6 +79,7 @@ None — all issues resolved.
 
 ### Roadmap Evolution
 
+- Milestone v2.0 created: Monorepo Architecture, 6 phases (Phase 24-29)
 - Milestone v1.5 shipped: UX Improvements, 3 phases (Phase 21-23)
 - Milestone v1.4 shipped: IronFactor Rebrand, 2 phases (Phase 19-20)
 - Milestone v1.3 shipped: UI Refinements, 1 phase (Phase 18)
@@ -91,6 +94,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-15
-Stopped at: v1.5 milestone archived
+Stopped at: Completed 24-01-PLAN.md (Phase 24 complete)
 Resume file: None
-Next action: Project complete. Future work TBD based on user feedback.
+Next action: Plan Phase 25 (Extract Shared Package)

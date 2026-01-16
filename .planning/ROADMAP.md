@@ -6,6 +6,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
+- 🚧 **v2.0 Monorepo Architecture** — Phases 24-29 (in progress)
 - ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
 - ✅ [v1.4 IronFactor Rebrand](milestones/v1.4-ROADMAP.md) (Phases 19-20) — SHIPPED 2026-01-14
 - ✅ [v1.3 UI Refinements](milestones/v1.3-ROADMAP.md) (Phase 18) — SHIPPED 2026-01-14
@@ -14,6 +15,73 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 - ✅ [v1.0 Exercise Tracker Refactor](milestones/v1.0-ROADMAP.md) (Phases 1-11) — SHIPPED 2026-01-13
 
 ## Phases
+
+### 🚧 v2.0 Monorepo Architecture (In Progress)
+
+**Milestone Goal:** Restructure the codebase into a pnpm monorepo with shared packages, enabling code reuse between web and future iOS app.
+
+#### Phase 24: Workspace Setup ✅
+
+**Goal**: Create root `package.json` + `pnpm-workspace.yaml`
+**Depends on**: Previous milestone complete
+**Status**: Complete
+**Completed**: 2026-01-15
+
+Plans:
+- [x] 24-01: Convert npm to pnpm, create workspace configuration
+
+#### Phase 25: Extract Shared Package
+
+**Goal**: Move `types/`, `services/`, `lib/` to `packages/shared/` with proper exports
+**Depends on**: Phase 24
+**Research**: Unlikely (file moves + barrel exports)
+**Plans**: TBD
+
+Plans:
+- [ ] 25-01: TBD
+
+#### Phase 26: Web App Migration
+
+**Goal**: Move `components/`, `surfaces/`, `main.tsx`, `css/`, `assets/`, configs to `apps/web/`
+**Depends on**: Phase 25
+**Research**: Unlikely (file moves)
+**Plans**: TBD
+
+Plans:
+- [ ] 26-01: TBD
+
+#### Phase 27: Update Imports
+
+**Goal**: Refactor all imports from `@/` to `@ironlift/shared`
+**Depends on**: Phase 26
+**Research**: Unlikely (find & replace patterns)
+**Plans**: TBD
+
+Plans:
+- [ ] 27-01: TBD
+
+#### Phase 28: Config Updates
+
+**Goal**: Update `vite.config.ts`, `tsconfig.json`, `vercel.json` for monorepo paths
+**Depends on**: Phase 27
+**Research**: Likely (Vite monorepo config, tsconfig references)
+**Research topics**: Vite workspace resolution, TypeScript project references, Vercel monorepo deployment
+**Plans**: TBD
+
+Plans:
+- [ ] 28-01: TBD
+
+#### Phase 29: iOS Scaffold
+
+**Goal**: Create empty `apps/ios/` structure with placeholder files for future React Native development
+**Depends on**: Phase 28
+**Research**: Unlikely (scaffolding only)
+**Plans**: TBD
+
+Plans:
+- [ ] 29-01: TBD
+
+---
 
 <details>
 <summary>✅ v1.5 UX Improvements (Phases 21-23) — SHIPPED 2026-01-15</summary>
@@ -78,6 +146,12 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
+| 24. Workspace Setup | v2.0 | 1/1 | Complete | 2026-01-15 |
+| 25. Extract Shared Package | v2.0 | 0/? | Not started | - |
+| 26. Web App Migration | v2.0 | 0/? | Not started | - |
+| 27. Update Imports | v2.0 | 0/? | Not started | - |
+| 28. Config Updates | v2.0 | 0/? | Not started | - |
+| 29. iOS Scaffold | v2.0 | 0/? | Not started | - |
 | 21. Chart Tooltip Simplification | v1.5 | 1/1 | Complete | 2026-01-14 |
 | 22. Account Confirmation Modal | v1.5 | 1/1 | Complete | 2026-01-14 |
 | 23. Chart Delete Modal | v1.5 | 1/1 | Complete | 2026-01-15 |
@@ -91,7 +165,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 23 phases complete, 41 plans complete | v1.5 complete
+**Total:** 24 phases complete, 42 plans complete | v2.0 in progress (1/6 phases)
 
 ---
 

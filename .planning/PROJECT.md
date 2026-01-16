@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A fitness tracking app built with TypeScript, Preact, and Vite. Features workout templates with compact mini-grid layout, exercise tracking with rest timers, progress charts, and multi-tab sync. Migrated from Alpine.js to Preact in v1.0 refactor, polished in v1.1, refined UI in v1.3, and rebranded to "IronFactor" in v1.4.
+A fitness tracking app built with TypeScript, Preact, and Vite in a pnpm monorepo architecture. Features workout templates with compact mini-grid layout, exercise tracking with rest timers, progress charts, and multi-tab sync. Migrated from Alpine.js to Preact in v1.0 refactor, polished through v1.5, and restructured as monorepo in v2.1 for multi-platform support (web + future iOS).
 
 ## Core Value
 
@@ -56,9 +56,18 @@ A fitness tracking app built with TypeScript, Preact, and Vite. Features workout
 - ✓ Multi-tab sync (workout state synced across browser tabs)
 - ✓ Offline backup (active workout persists in localStorage)
 
+**v2.1 Monorepo Architecture + Root Cleanup (shipped 2026-01-16):**
+- ✓ pnpm monorepo with workspace configuration — v2.1
+- ✓ @ironlift/shared package with types, services, lib — v2.1
+- ✓ Web app migrated to apps/web/ — v2.1
+- ✓ All imports updated to @ironlift/shared — v2.1
+- ✓ TypeScript composite projects for package-level type checking — v2.1
+- ✓ iOS app scaffold for future React Native — v2.1
+- ✓ Root directory cleaned (removed legacy js/, dist/) — v2.1
+
 ### Active
 
-None — project complete.
+None — project feature-complete. iOS development ready when needed.
 
 ### Out of Scope
 
@@ -70,13 +79,17 @@ None — project complete.
 
 ## Context
 
-**Current State (post v1.5):**
+**Current State (post v2.1):**
+- **Monorepo structure:**
+  - `packages/shared/` — @ironlift/shared with types, services, lib
+  - `apps/web/` — Web app with Preact surfaces
+  - `apps/ios/` — iOS scaffold (placeholder for React Native)
+- pnpm workspace with `workspace:*` protocol for internal dependencies
 - Vite + TypeScript build pipeline with strict mode
 - 100% TypeScript codebase — all legacy JS deleted
 - Preact-based surfaces: Auth, Dashboard, Template Editor, Workout, Charts
-- Service modules in `src/services/` with full TypeScript types and direct ES imports
-- No window.* globals — all services use direct ES module imports
-- Supabase client initialized in `src/lib/supabase.ts` using `.env` variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY)
+- Service modules in `packages/shared/src/services/` with full TypeScript types
+- Supabase client in `packages/shared/src/lib/supabase.ts` using `.env` variables
 - Supabase as backend (PostgreSQL + Auth)
 - App rebranded to "IronFactor" with split-color logo (Iron=white, Factor=accent blue)
 - Dashboard template list uses compact 2-column mini-grid layout
@@ -86,9 +99,10 @@ None — project complete.
 - All UAT bugs fixed, production build verified working
 
 **Architecture:**
-- Surface-based: Each major UI section is a self-contained Preact component
-- Services: TypeScript modules wrapping Supabase operations
-- Types: Full type coverage via `src/types/` with barrel exports
+- **Monorepo:** pnpm workspace with packages/* and apps/* structure
+- **Surface-based:** Each major UI section is a self-contained Preact component
+- **Services:** TypeScript modules wrapping Supabase operations (in @ironlift/shared)
+- **Types:** Full type coverage via `packages/shared/src/types/` with barrel exports
 
 **Previous Pain Points (resolved):**
 - ~~Workout surface complex and tangled~~ → Now modular WorkoutSurface with clean components
@@ -125,7 +139,12 @@ None — project complete.
 | Tooltip closure pattern | Capture metricType in closure for Chart.js callbacks | ✓ Good - clean tooltip customization |
 | InfoModal component | Single-action modal for informational messages | ✓ Good - reusable, consistent UX |
 | Modal-based confirmations | Replace browser confirm() with styled modals | ✓ Good - consistent delete UX |
+| pnpm monorepo | Workspace structure for code sharing between web and iOS | ✓ Good - clean separation, shared package works well |
+| Source-only shared package | No build step for shared, Vite handles transpilation | ✓ Good - simpler DX, no pre-build required |
+| Package-level type checking | Each package runs tsc --noEmit independently | ✓ Good - cleaner for different path aliases |
+| Ambient env types | ImportMetaEnv in shared package without vite devDep | ✓ Good - keeps shared package framework-agnostic |
+| workspace:* protocol | Auto-link local packages in monorepo | ✓ Good - seamless local development |
 
 ---
 
-*Last updated: 2026-01-15 after v1.5 milestone*
+*Last updated: 2026-01-16 after v2.1 milestone*

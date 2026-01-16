@@ -1,5 +1,31 @@
 # Project Milestones: IronFactor
 
+## v2.1 Monorepo Architecture + Root Cleanup (Shipped: 2026-01-16)
+
+**Delivered:** Restructured codebase into pnpm monorepo with @ironlift/shared package, web app in apps/web/, iOS scaffold, and cleaned up legacy folders.
+
+**Phases completed:** 24-30 (7 plans total)
+
+**Key accomplishments:**
+- Converted npm to pnpm monorepo with workspace configuration
+- Created @ironlift/shared package with types, services, and lib (git history preserved)
+- Migrated web app to apps/web/ directory structure
+- Updated all imports from @/ aliases to @ironlift/shared
+- Configured TypeScript composite projects for package-level type checking
+- Created iOS app scaffold for future React Native development
+- Cleaned up legacy js/ and dist/ folders from root
+
+**Stats:**
+- 7 phases, 7 plans
+- 72 files changed, 3321 insertions, 2392 deletions
+- 7 days (2026-01-09 → 2026-01-16)
+
+**Git range:** chore(24-01) → chore(30-01)
+
+**What's next:** iOS app development or additional web features based on user feedback.
+
+---
+
 ## v1.5 UX Improvements (Shipped: 2026-01-15)
 
 **Delivered:** Improved user experience with simplified chart tooltips, email confirmation modal for registration, and styled delete confirmation modals.

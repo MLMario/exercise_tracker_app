@@ -2,28 +2,28 @@
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-01-15)
+See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** The app must work exactly as before - behavior preserved through all milestones
-**Current focus:** Monorepo restructuring for multi-platform support (web + iOS)
+**Current focus:** Project complete — all milestones shipped
 
 ## Current Position
 
-Milestone: v2.0 Monorepo Architecture
-Phase: 29 of 29 (iOS Scaffold)
-Plan: 1 of 1 in current phase
-Status: Milestone complete
+Milestone: v2.1 Monorepo Architecture + Root Cleanup (SHIPPED)
+Phase: All 30 phases complete
+Plan: All 48 plans complete
+Status: Ready for next milestone or maintenance
 Branch: `master`
-Last activity: 2026-01-16 — Completed 29-01-PLAN.md
+Last activity: 2026-01-16 — v2.1 milestone archived
 
 Progress: ██████████ 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 47
+- Total plans completed: 48
 - Average duration: ~4 min
-- Total execution time: ~167 min
+- Total execution time: ~169 min
 
 **By Phase:**
 
@@ -58,11 +58,12 @@ Progress: ██████████ 100%
 | 27-update-imports | 1 | 4 min | 4 min |
 | 28-config-updates | 1 | 4 min | 4 min |
 | 29-ios-scaffold | 1 | 1 min | 1 min |
+| 30-root-cleanup | 1 | 2 min | 2 min |
 
 **Stats:**
-- 7 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5, v2.0)
-- 29 phases complete
-- 47 plans executed
+- 8 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5, v2.0, v2.1)
+- 30 phases complete
+- 48 plans executed
 - Alpine.js → Preact migration complete
 - App rebranded to "IronFactor" (auth + dashboard)
 - v1.2 legacy cleanup complete - all legacy JS removed
@@ -70,6 +71,7 @@ Progress: ██████████ 100%
 - v1.4 IronFactor rebrand SHIPPED
 - v1.5 UX improvements SHIPPED - tooltips, modals
 - v2.0 Monorepo Architecture SHIPPED - pnpm workspace, shared package, iOS scaffold
+- v2.1 Root Cleanup SHIPPED - removed legacy js/ and dist/ folders
 
 ## Accumulated Context
 
@@ -84,6 +86,7 @@ None — all issues resolved.
 
 ### Roadmap Evolution
 
+- Milestone v2.1 shipped: Root Cleanup, 1 phase (Phase 30)
 - Milestone v2.0 shipped: Monorepo Architecture, 6 phases (Phase 24-29)
 - Milestone v1.5 shipped: UX Improvements, 3 phases (Phase 21-23)
 - Milestone v1.4 shipped: IronFactor Rebrand, 2 phases (Phase 19-20)
@@ -99,6 +102,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 29-01-PLAN.md (v2.0 Milestone complete)
+Stopped at: v2.1 milestone archived
 Resume file: None
-Next action: /gsd:complete-milestone to archive v2.0
+Next action: /gsd:new-milestone (if planning new features) or /gsd:discuss-milestone (for iOS development)

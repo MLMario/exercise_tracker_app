@@ -6,7 +6,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
-- ✅ **v2.0 Monorepo Architecture** — Phases 24-29 (SHIPPED 2026-01-16)
+- ✅ [v2.1 Monorepo Architecture + Root Cleanup](milestones/v2.1-ROADMAP.md) (Phases 24-30) — SHIPPED 2026-01-16
 - ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
 - ✅ [v1.4 IronFactor Rebrand](milestones/v1.4-ROADMAP.md) (Phases 19-20) — SHIPPED 2026-01-14
 - ✅ [v1.3 UI Refinements](milestones/v1.3-ROADMAP.md) (Phase 18) — SHIPPED 2026-01-14
@@ -16,71 +16,18 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Phases
 
-### ✅ v2.0 Monorepo Architecture (SHIPPED 2026-01-16)
+<details>
+<summary>✅ v2.1 Monorepo Architecture + Root Cleanup (Phases 24-30) — SHIPPED 2026-01-16</summary>
 
-**Milestone Goal:** Restructure the codebase into a pnpm monorepo with shared packages, enabling code reuse between web and future iOS app.
+- [x] **Phase 24: Workspace Setup** (1/1 plans) - pnpm workspace with packages/apps structure
+- [x] **Phase 25: Extract Shared Package** (1/1 plans) - @ironlift/shared with types, services, lib
+- [x] **Phase 26: Web App Migration** (1/1 plans) - Moved web app to apps/web/
+- [x] **Phase 27: Update Imports** (1/1 plans) - Changed @/ to @ironlift/shared
+- [x] **Phase 28: Config Updates** (1/1 plans) - TypeScript composite, Vercel monorepo config
+- [x] **Phase 29: iOS Scaffold** (1/1 plans) - Placeholder for React Native app
+- [x] **Phase 30: Root Folder Cleanup** (1/1 plans) - Removed legacy js/, dist/
 
-#### Phase 24: Workspace Setup ✅
-
-**Goal**: Create root `package.json` + `pnpm-workspace.yaml`
-**Depends on**: Previous milestone complete
-**Status**: Complete
-**Completed**: 2026-01-15
-
-Plans:
-- [x] 24-01: Convert npm to pnpm, create workspace configuration
-
-#### Phase 25: Extract Shared Package ✅
-
-**Goal**: Move `types/`, `services/`, `lib/` to `packages/shared/` with proper exports
-**Depends on**: Phase 24
-**Status**: Complete
-**Completed**: 2026-01-16
-
-Plans:
-- [x] 25-01: Extract types, services, lib to @ironlift/shared package
-
-#### Phase 26: Web App Migration ✅
-
-**Goal**: Move `components/`, `surfaces/`, `main.tsx`, `css/`, `assets/`, configs to `apps/web/`
-**Depends on**: Phase 25
-**Status**: Complete
-**Completed**: 2026-01-16
-
-Plans:
-- [x] 26-01: Move web app files to apps/web/, update root configs
-
-#### Phase 27: Update Imports ✅
-
-**Goal**: Refactor all imports from `@/` to `@ironlift/shared`
-**Depends on**: Phase 26
-**Status**: Complete
-**Completed**: 2026-01-16
-
-Plans:
-- [x] 27-01: Update imports from @/ to @ironlift/shared
-
-#### Phase 28: Config Updates ✅
-
-**Goal**: Update `vite.config.ts`, `tsconfig.json`, `vercel.json` for monorepo paths
-**Depends on**: Phase 27
-**Status**: Complete
-**Completed**: 2026-01-16
-
-Plans:
-- [x] 28-01: TypeScript composite projects, ambient env types, Vercel monorepo config
-
-#### Phase 29: iOS Scaffold ✅
-
-**Goal**: Create empty `apps/ios/` structure with placeholder files for future React Native development
-**Depends on**: Phase 28
-**Status**: Complete
-**Completed**: 2026-01-16
-
-Plans:
-- [x] 29-01: Create iOS app scaffold with package.json, README, src placeholder
-
----
+</details>
 
 <details>
 <summary>✅ v1.5 UX Improvements (Phases 21-23) — SHIPPED 2026-01-15</summary>
@@ -143,28 +90,17 @@ Plans:
 
 ## Progress
 
-| Phase | Milestone | Plans | Status | Completed |
-|-------|-----------|-------|--------|-----------|
-| 24. Workspace Setup | v2.0 | 1/1 | Complete | 2026-01-15 |
-| 25. Extract Shared Package | v2.0 | 1/1 | Complete | 2026-01-16 |
-| 26. Web App Migration | v2.0 | 1/1 | Complete | 2026-01-16 |
-| 27. Update Imports | v2.0 | 1/1 | Complete | 2026-01-16 |
-| 28. Config Updates | v2.0 | 1/1 | Complete | 2026-01-16 |
-| 29. iOS Scaffold | v2.0 | 1/1 | Complete | 2026-01-16 |
-| 21. Chart Tooltip Simplification | v1.5 | 1/1 | Complete | 2026-01-14 |
-| 22. Account Confirmation Modal | v1.5 | 1/1 | Complete | 2026-01-14 |
-| 23. Chart Delete Modal | v1.5 | 1/1 | Complete | 2026-01-15 |
-| 19. Auth Surface Rebrand | v1.4 | 1/1 | Complete | 2026-01-14 |
-| 20. Dashboard Rebrand | v1.4 | 1/1 | Complete | 2026-01-14 |
-| 18. Template List Redesign | v1.3 | 1/1 | Complete | 2026-01-14 |
-| 14. Workout Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
-| 15. Dashboard Service Imports | v1.2 | 1/1 | Complete | 2026-01-14 |
-| 16. Remove Window Exports | v1.2 | 1/1 | Complete | 2026-01-14 |
-| 17. Remove Legacy Files | v1.2 | 2/2 | Complete | 2026-01-14 |
-| 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
-| 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
+| Milestone | Phases | Plans | Status | Shipped |
+|-----------|--------|-------|--------|---------|
+| v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
+| v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
+| v1.4 IronFactor Rebrand | 19-20 | 2/2 | Complete | 2026-01-14 |
+| v1.3 UI Refinements | 18 | 1/1 | Complete | 2026-01-14 |
+| v1.2 Legacy Code Cleanup | 14-17 | 5/5 | Complete | 2026-01-14 |
+| v1.1 Fixes & Polish | 12-13 | 3/3 | Complete | 2026-01-13 |
+| v1.0 Exercise Tracker Refactor | 1-11 | 27/27 | Complete | 2026-01-13 |
 
-**Total:** 29 phases complete, 47 plans complete | v2.0 SHIPPED (6/6 phases)
+**Total:** 8 milestones shipped, 30 phases complete, 48 plans complete
 
 ---
 

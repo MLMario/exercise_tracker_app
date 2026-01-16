@@ -5,7 +5,7 @@
  * Implements ChartsService interface with TypeScript type safety.
  */
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../lib/supabase';
 import type {
   ServiceResult,
   ServiceError,
@@ -14,7 +14,7 @@ import type {
   RenderChartOptions,
   ChartData,
   ChartsService,
-} from '@/types';
+} from '../types';
 import {
   Chart,
   CategoryScale,

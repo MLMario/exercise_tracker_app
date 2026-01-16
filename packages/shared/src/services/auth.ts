@@ -16,9 +16,9 @@ import type {
   ServiceError,
   AuthStateChangeCallback,
   AuthSubscription,
-} from '@/types/services';
+} from '../types/services';
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../lib/supabase';
 
 /**
  * Register a new user with email and password.

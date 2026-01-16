@@ -7,10 +7,10 @@
  * This module migrates js/exercises.js to TypeScript with full type safety.
  */
 
-import type { Exercise, ExerciseCategory } from '@/types/database';
-import type { ExercisesService, ServiceResult, ServiceError } from '@/types/services';
+import type { Exercise, ExerciseCategory } from '../types/database';
+import type { ExercisesService, ServiceResult, ServiceError } from '../types/services';
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../lib/supabase';
 
 /**
  * Get all exercises for the current user.

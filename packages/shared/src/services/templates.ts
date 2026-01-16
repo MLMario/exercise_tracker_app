@@ -13,7 +13,7 @@ import type {
   ServiceError,
   TemplateExerciseInput,
   TemplateExerciseDefaults,
-} from '@/types/services';
+} from '../types/services';
 
 import type {
   Template,
@@ -22,9 +22,9 @@ import type {
   TemplateExerciseWithSets,
   TemplateSetData,
   ExerciseCategory,
-} from '@/types/database';
+} from '../types/database';
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../lib/supabase';
 
 /**
  * Raw exercise data from Supabase nested query.

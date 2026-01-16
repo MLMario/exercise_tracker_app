@@ -19,15 +19,15 @@ import type {
   ExerciseMetricsOptions,
   ChartData,
   RecentExerciseData,
-} from '@/types/services';
+} from '../types/services';
 
 import type {
   WorkoutLog,
   WorkoutLogWithExercises,
   WorkoutLogExerciseWithSets,
-} from '@/types/database';
+} from '../types/database';
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../lib/supabase';
 
 /**
  * Internal helper to calculate metrics from workout log exercises with sets.

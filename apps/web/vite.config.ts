@@ -6,6 +6,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy'
 export default defineConfig({
   root: '.',
   publicDir: 'assets',
+  envDir: '../../',
   plugins: [
     preact(),
     viteStaticCopy({

@@ -1,5 +1,6 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "pnpm --filter @ironlift/web build",
+  "outputDirectory": "apps/web/dist",
+  "installCommand": "pnpm install",
   "framework": "vite"
 }

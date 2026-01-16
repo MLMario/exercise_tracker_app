@@ -60,16 +60,15 @@ Plans:
 Plans:
 - [x] 27-01: Update imports from @/ to @ironlift/shared
 
-#### Phase 28: Config Updates
+#### Phase 28: Config Updates ✅
 
 **Goal**: Update `vite.config.ts`, `tsconfig.json`, `vercel.json` for monorepo paths
 **Depends on**: Phase 27
-**Research**: Likely (Vite monorepo config, tsconfig references)
-**Research topics**: Vite workspace resolution, TypeScript project references, Vercel monorepo deployment
-**Plans**: TBD
+**Status**: Complete
+**Completed**: 2026-01-16
 
 Plans:
-- [ ] 28-01: TBD
+- [x] 28-01: TypeScript composite projects, ambient env types, Vercel monorepo config
 
 #### Phase 29: iOS Scaffold
 
@@ -150,7 +149,7 @@ Plans:
 | 25. Extract Shared Package | v2.0 | 1/1 | Complete | 2026-01-16 |
 | 26. Web App Migration | v2.0 | 1/1 | Complete | 2026-01-16 |
 | 27. Update Imports | v2.0 | 1/1 | Complete | 2026-01-16 |
-| 28. Config Updates | v2.0 | 0/? | Not started | - |
+| 28. Config Updates | v2.0 | 1/1 | Complete | 2026-01-16 |
 | 29. iOS Scaffold | v2.0 | 0/? | Not started | - |
 | 21. Chart Tooltip Simplification | v1.5 | 1/1 | Complete | 2026-01-14 |
 | 22. Account Confirmation Modal | v1.5 | 1/1 | Complete | 2026-01-14 |
@@ -165,7 +164,7 @@ Plans:
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 27 phases complete, 45 plans complete | v2.0 in progress (4/6 phases)
+**Total:** 28 phases complete, 46 plans complete | v2.0 in progress (5/6 phases)
 
 ---
 

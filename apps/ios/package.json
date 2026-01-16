@@ -1,0 +1,9 @@
+{
+  "name": "@ironlift/ios",
+  "version": "0.0.1",
+  "private": true,
+  "description": "IronFactor iOS app (React Native - coming soon)",
+  "dependencies": {
+    "@ironlift/shared": "workspace:*"
+  }
+}

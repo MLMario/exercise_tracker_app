@@ -8,8 +8,8 @@
 import { render } from 'preact';
 import { useState, useEffect, useRef } from 'preact/hooks';
 import { AuthSurface, DashboardSurface, TemplateEditorSurface, WorkoutSurface } from '@/surfaces';
-import { auth } from '@/services/auth';
-import type { TemplateWithExercises } from '@/types';
+import { auth } from '@ironlift/shared';
+import type { TemplateWithExercises } from '@ironlift/shared';
 import type { User } from '@supabase/supabase-js';
 
 // ==================== SAVED WORKOUT TYPES ====================

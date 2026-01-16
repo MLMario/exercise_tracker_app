@@ -11,7 +11,7 @@
 
 import { useState, useMemo, useEffect } from 'preact/hooks';
 import type { JSX } from 'preact';
-import type { Exercise } from '@/types';
+import type { Exercise } from '@ironlift/shared';
 
 /**
  * Category options for new exercise creation.

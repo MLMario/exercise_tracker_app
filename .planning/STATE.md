@@ -10,20 +10,20 @@ See: .planning/PROJECT.md (updated 2026-01-15)
 ## Current Position
 
 Milestone: v2.0 Monorepo Architecture
-Phase: 28 of 29 (Config Updates)
+Phase: 29 of 29 (iOS Scaffold)
 Plan: 1 of 1 in current phase
-Status: Phase complete
+Status: Milestone complete
 Branch: `master`
-Last activity: 2026-01-16 — Completed 28-01-PLAN.md
+Last activity: 2026-01-16 — Completed 29-01-PLAN.md
 
-Progress: █████░░░░░ 83%
+Progress: ██████████ 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 46
+- Total plans completed: 47
 - Average duration: ~4 min
-- Total execution time: ~166 min
+- Total execution time: ~167 min
 
 **By Phase:**
 
@@ -57,18 +57,19 @@ Progress: █████░░░░░ 83%
 | 26-web-app-migration | 1 | 3 min | 3 min |
 | 27-update-imports | 1 | 4 min | 4 min |
 | 28-config-updates | 1 | 4 min | 4 min |
+| 29-ios-scaffold | 1 | 1 min | 1 min |
 
 **Stats:**
-- 6 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5)
-- 28 phases complete
-- 46 plans executed
+- 7 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5, v2.0)
+- 29 phases complete
+- 47 plans executed
 - Alpine.js → Preact migration complete
 - App rebranded to "IronFactor" (auth + dashboard)
 - v1.2 legacy cleanup complete - all legacy JS removed
 - v1.3 UI refinements complete - compact template grid
 - v1.4 IronFactor rebrand SHIPPED
 - v1.5 UX improvements SHIPPED - tooltips, modals
-- v2.0 Phases 24-28 complete - workspace, shared package, web migration, imports, configs
+- v2.0 Monorepo Architecture SHIPPED - pnpm workspace, shared package, iOS scaffold
 
 ## Accumulated Context
 
@@ -83,7 +84,7 @@ None — all issues resolved.
 
 ### Roadmap Evolution
 
-- Milestone v2.0 created: Monorepo Architecture, 6 phases (Phase 24-29)
+- Milestone v2.0 shipped: Monorepo Architecture, 6 phases (Phase 24-29)
 - Milestone v1.5 shipped: UX Improvements, 3 phases (Phase 21-23)
 - Milestone v1.4 shipped: IronFactor Rebrand, 2 phases (Phase 19-20)
 - Milestone v1.3 shipped: UI Refinements, 1 phase (Phase 18)
@@ -98,6 +99,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 28-01-PLAN.md (Phase 28 complete)
+Stopped at: Completed 29-01-PLAN.md (v2.0 Milestone complete)
 Resume file: None
-Next action: Plan Phase 29 (iOS Scaffold)
+Next action: /gsd:complete-milestone to archive v2.0

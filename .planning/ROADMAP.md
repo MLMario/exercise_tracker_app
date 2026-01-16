@@ -6,7 +6,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
-- 🚧 **v2.0 Monorepo Architecture** — Phases 24-29 (in progress)
+- ✅ **v2.0 Monorepo Architecture** — Phases 24-29 (SHIPPED 2026-01-16)
 - ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
 - ✅ [v1.4 IronFactor Rebrand](milestones/v1.4-ROADMAP.md) (Phases 19-20) — SHIPPED 2026-01-14
 - ✅ [v1.3 UI Refinements](milestones/v1.3-ROADMAP.md) (Phase 18) — SHIPPED 2026-01-14
@@ -16,7 +16,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Phases
 
-### 🚧 v2.0 Monorepo Architecture (In Progress)
+### ✅ v2.0 Monorepo Architecture (SHIPPED 2026-01-16)
 
 **Milestone Goal:** Restructure the codebase into a pnpm monorepo with shared packages, enabling code reuse between web and future iOS app.
 
@@ -70,15 +70,15 @@ Plans:
 Plans:
 - [x] 28-01: TypeScript composite projects, ambient env types, Vercel monorepo config
 
-#### Phase 29: iOS Scaffold
+#### Phase 29: iOS Scaffold ✅
 
 **Goal**: Create empty `apps/ios/` structure with placeholder files for future React Native development
 **Depends on**: Phase 28
-**Research**: Unlikely (scaffolding only)
-**Plans**: TBD
+**Status**: Complete
+**Completed**: 2026-01-16
 
 Plans:
-- [ ] 29-01: TBD
+- [x] 29-01: Create iOS app scaffold with package.json, README, src placeholder
 
 ---
 
@@ -150,7 +150,7 @@ Plans:
 | 26. Web App Migration | v2.0 | 1/1 | Complete | 2026-01-16 |
 | 27. Update Imports | v2.0 | 1/1 | Complete | 2026-01-16 |
 | 28. Config Updates | v2.0 | 1/1 | Complete | 2026-01-16 |
-| 29. iOS Scaffold | v2.0 | 0/? | Not started | - |
+| 29. iOS Scaffold | v2.0 | 1/1 | Complete | 2026-01-16 |
 | 21. Chart Tooltip Simplification | v1.5 | 1/1 | Complete | 2026-01-14 |
 | 22. Account Confirmation Modal | v1.5 | 1/1 | Complete | 2026-01-14 |
 | 23. Chart Delete Modal | v1.5 | 1/1 | Complete | 2026-01-15 |
@@ -164,7 +164,7 @@ Plans:
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 28 phases complete, 46 plans complete | v2.0 in progress (5/6 phases)
+**Total:** 29 phases complete, 47 plans complete | v2.0 SHIPPED (6/6 phases)
 
 ---
 

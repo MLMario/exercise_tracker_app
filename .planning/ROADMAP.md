@@ -40,15 +40,15 @@ Plans:
 Plans:
 - [x] 25-01: Extract types, services, lib to @ironlift/shared package
 
-#### Phase 26: Web App Migration
+#### Phase 26: Web App Migration ✅
 
 **Goal**: Move `components/`, `surfaces/`, `main.tsx`, `css/`, `assets/`, configs to `apps/web/`
 **Depends on**: Phase 25
-**Research**: Unlikely (file moves)
-**Plans**: TBD
+**Status**: Complete
+**Completed**: 2026-01-16
 
 Plans:
-- [ ] 26-01: TBD
+- [x] 26-01: Move web app files to apps/web/, update root configs
 
 #### Phase 27: Update Imports
 
@@ -148,7 +148,7 @@ Plans:
 |-------|-----------|-------|--------|-----------|
 | 24. Workspace Setup | v2.0 | 1/1 | Complete | 2026-01-15 |
 | 25. Extract Shared Package | v2.0 | 1/1 | Complete | 2026-01-16 |
-| 26. Web App Migration | v2.0 | 0/? | Not started | - |
+| 26. Web App Migration | v2.0 | 1/1 | Complete | 2026-01-16 |
 | 27. Update Imports | v2.0 | 0/? | Not started | - |
 | 28. Config Updates | v2.0 | 0/? | Not started | - |
 | 29. iOS Scaffold | v2.0 | 0/? | Not started | - |
@@ -165,7 +165,7 @@ Plans:
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 25 phases complete, 43 plans complete | v2.0 in progress (2/6 phases)
+**Total:** 26 phases complete, 44 plans complete | v2.0 in progress (3/6 phases)
 
 ---
 

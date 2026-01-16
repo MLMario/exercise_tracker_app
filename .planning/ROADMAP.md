@@ -30,15 +30,15 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 Plans:
 - [x] 24-01: Convert npm to pnpm, create workspace configuration
 
-#### Phase 25: Extract Shared Package
+#### Phase 25: Extract Shared Package ✅
 
 **Goal**: Move `types/`, `services/`, `lib/` to `packages/shared/` with proper exports
 **Depends on**: Phase 24
-**Research**: Unlikely (file moves + barrel exports)
-**Plans**: TBD
+**Status**: Complete
+**Completed**: 2026-01-16
 
 Plans:
-- [ ] 25-01: TBD
+- [x] 25-01: Extract types, services, lib to @ironlift/shared package
 
 #### Phase 26: Web App Migration
 
@@ -147,7 +147,7 @@ Plans:
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
 | 24. Workspace Setup | v2.0 | 1/1 | Complete | 2026-01-15 |
-| 25. Extract Shared Package | v2.0 | 0/? | Not started | - |
+| 25. Extract Shared Package | v2.0 | 1/1 | Complete | 2026-01-16 |
 | 26. Web App Migration | v2.0 | 0/? | Not started | - |
 | 27. Update Imports | v2.0 | 0/? | Not started | - |
 | 28. Config Updates | v2.0 | 0/? | Not started | - |
@@ -165,7 +165,7 @@ Plans:
 | 1-11 | v1.0 | 27/27 | Complete | 2026-01-13 |
 | 12-13 | v1.1 | 3/3 | Complete | 2026-01-13 |
 
-**Total:** 24 phases complete, 42 plans complete | v2.0 in progress (1/6 phases)
+**Total:** 25 phases complete, 43 plans complete | v2.0 in progress (2/6 phases)
 
 ---
 

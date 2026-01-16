@@ -8,12 +8,22 @@ importers:
 
   .:
     dependencies:
-      '@preact/preset-vite':
-        specifier: ^2.10.2
-        version: 2.10.2(@babel/core@7.28.6)(preact@10.28.2)(vite@7.3.1(@types/node@25.0.9))
       '@supabase/supabase-js':
         specifier: ^2.90.1
         version: 2.90.1
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  apps/web:
+    dependencies:
+      '@ironlift/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+      '@preact/preset-vite':
+        specifier: ^2.10.2
+        version: 2.10.2(@babel/core@7.28.6)(preact@10.28.2)(vite@7.3.1(@types/node@25.0.9))
       alpinejs:
         specifier: ^3.15.3
         version: 3.15.4
@@ -33,6 +43,15 @@ importers:
       vite-plugin-static-copy:
         specifier: ^3.1.4
         version: 3.1.4(vite@7.3.1(@types/node@25.0.9))
+
+  packages/shared:
+    dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.90.1
+        version: 2.90.1
+      chart.js:
+        specifier: ^4.5.1
+        version: 4.5.1
 
 packages:
 

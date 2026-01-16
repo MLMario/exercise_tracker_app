@@ -24,5 +24,11 @@ export default defineConfig({
     alias: {
       '@': resolve(__dirname, './src'),
     },
+    // Enable resolving dependencies from root node_modules for workspace packages
+    preserveSymlinks: false,
+  },
+  optimizeDeps: {
+    // Include chart.js to ensure it's bundled correctly when used by @ironlift/shared
+    include: ['chart.js'],
   },
 })

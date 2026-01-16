@@ -1,5 +1,6 @@
 {
-  "name": "exercise-tracker-app",
+  "name": "ironlift",
+  "private": true,
   "version": "1.0.0",
   "description": "Fitness tracking app - TypeScript/Vite refactor",
   "type": "module",

@@ -12,6 +12,12 @@ A fitness tracking app built with TypeScript, Preact, and Vite in a pnpm monorep
 
 ### Validated
 
+**v2.2 Exercise Card Redesign (shipped 2026-01-16):**
+- ✓ Accordion-style WorkoutExerciseCard with progress ring — v2.2
+- ✓ Collapsible card body with ~70% space savings — v2.2
+- ✓ Horizontal inline rest timer bar layout — v2.2
+- ✓ Slim gradient progress bar (8px, blue-to-cyan) — v2.2
+
 **v1.5 UX Improvements (shipped 2026-01-15):**
 - ✓ Simplified chart tooltips (value + unit only) — v1.5
 - ✓ InfoModal component for informational dialogs — v1.5
@@ -145,6 +151,10 @@ None — project feature-complete. iOS development ready when needed.
 | Ambient env types | ImportMetaEnv in shared package without vite devDep | ✓ Good - keeps shared package framework-agnostic |
 | workspace:* protocol | Auto-link local packages in monorepo | ✓ Good - seamless local development |
 
+| Accordion pattern | Collapsible cards with independent expand state | ✓ Good - ~70% space savings achieved |
+| Progress ring SVG | 40x40 SVG with stroke-dashoffset animation | ✓ Good - clear visual feedback |
+| Inline flex layout | Horizontal timer bar with flex: 1 for bar | ✓ Good - clean compact design |
+
 ---
 
-*Last updated: 2026-01-16 after v2.1 milestone*
+*Last updated: 2026-01-16 after v2.2 milestone*

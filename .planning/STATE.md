@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** The app must work exactly as before - behavior preserved through all milestones
-**Current focus:** v2.2 Exercise Card Redesign — Phase 32 complete, milestone ready for completion
+**Current focus:** v2.2 Exercise Card Redesign SHIPPED — planning next milestone
 
 ## Current Position
 
-Milestone: v2.2 Exercise Card Redesign
-Phase: 32 of 32 (Rest Timer Bar Redesign)
-Plan: 1 of 1 complete
-Status: Phase complete, milestone ready for completion
-Branch: `006-exercise-set-UI-change`
-Last activity: 2026-01-16 — Completed 32-01-PLAN.md
+Milestone: v2.2 Exercise Card Redesign — SHIPPED
+Phase: 32 of 32 complete
+Plan: All complete
+Status: Milestone shipped, ready for next
+Branch: `master`
+Last activity: 2026-01-16 — v2.2 milestone complete
 
 Progress: ██████████ 100%
 
@@ -63,7 +63,7 @@ Progress: ██████████ 100%
 | 32-rest-timer-bar-redesign | 1 | 4 min | 4 min |
 
 **Stats:**
-- 8 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5, v2.0, v2.1)
+- 9 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5, v2.0, v2.1, v2.2)
 - 32 phases complete
 - 50 plans executed
 - Alpine.js → Preact migration complete
@@ -74,7 +74,7 @@ Progress: ██████████ 100%
 - v1.5 UX improvements SHIPPED - tooltips, modals
 - v2.0 Monorepo Architecture SHIPPED - pnpm workspace, shared package, iOS scaffold
 - v2.1 Root Cleanup SHIPPED - removed legacy js/ and dist/ folders
-- v2.2 Exercise Card Redesign - Phase 32 complete (accordion + timer bar), ready for milestone completion
+- v2.2 Exercise Card Redesign SHIPPED - accordion layout, progress ring, horizontal timer bar
 
 ## Accumulated Context
 
@@ -89,8 +89,7 @@ None — all issues resolved.
 
 ### Roadmap Evolution
 
-- Phase 32 complete: Rest Timer Bar Redesign (horizontal inline layout)
-- Milestone v2.2 complete: Exercise Card Redesign, 2 phases (Phase 31-32)
+- Milestone v2.2 shipped: Exercise Card Redesign, 2 phases (Phase 31-32)
 - Milestone v2.1 shipped: Root Cleanup, 1 phase (Phase 30)
 - Milestone v2.0 shipped: Monorepo Architecture, 6 phases (Phase 24-29)
 - Milestone v1.5 shipped: UX Improvements, 3 phases (Phase 21-23)
@@ -107,6 +106,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: Completed 32-01-PLAN.md
+Stopped at: v2.2 milestone complete
 Resume file: None
-Next action: /gsd:complete-milestone
+Next action: /gsd:discuss-milestone (plan next milestone)

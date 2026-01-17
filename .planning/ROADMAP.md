@@ -6,7 +6,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
-- ✅ **v2.2 Exercise Card Redesign** - Phase 31 — SHIPPED 2026-01-17
+- ✅ [v2.2 Exercise Card Redesign](milestones/v2.2-ROADMAP.md) (Phases 31-32) — SHIPPED 2026-01-16
 - ✅ [v2.1 Monorepo Architecture + Root Cleanup](milestones/v2.1-ROADMAP.md) (Phases 24-30) — SHIPPED 2026-01-16
 - ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
 - ✅ [v1.4 IronFactor Rebrand](milestones/v1.4-ROADMAP.md) (Phases 19-20) — SHIPPED 2026-01-14
@@ -17,40 +17,13 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Phases
 
-### v2.2 Exercise Card Redesign (In Progress)
+<details>
+<summary>✅ v2.2 Exercise Card Redesign (Phases 31-32) — SHIPPED 2026-01-16</summary>
 
-**Milestone Goal:** Redesign WorkoutExerciseCard to accordion-style collapsible layout with ~70% space savings when collapsed.
+- [x] **Phase 31: Exercise Card Accordion** (1/1 plans) - Accordion layout with progress ring, ~70% space savings
+- [x] **Phase 32: Rest Timer Bar Redesign** (1/1 plans) - Horizontal inline layout with gradient bar
 
-#### ✅ Phase 31: Exercise Card Accordion — Complete
-
-**Goal**: Refactor WorkoutExerciseCard to accordion/collapsible pattern per mockup design
-**Shipped**: 2026-01-17
-
-Plans:
-- [x] 31-01: Exercise Card Accordion (accordion layout, progress ring, collapse/expand)
-
-**Delivered:**
-- Accordion-style WorkoutExerciseCard with progress ring
-- Collapsed state: Progress ring + exercise name + Add Set + remove + chevron
-- Expanded state: Set table + timer bar (revealed on tap)
-- ~70% vertical space savings in collapsed state
-- Multiple cards can be expanded simultaneously
-- Smooth max-height transition animation
-
-#### ✅ Phase 32: Rest Timer Bar Redesign — Complete
-
-**Goal**: Redesign RestTimerBar to match mockup's horizontal inline layout
-**Shipped**: 2026-01-16
-
-Plans:
-- [x] 32-01: Rest Timer Bar Horizontal Layout (JSX + CSS redesign)
-
-**Delivered:**
-- Horizontal inline layout: [-10s] [bar] [time] [+10s]
-- Slim 8px bar height (6px on mobile)
-- Gradient fill: `linear-gradient(90deg, accent, #67e8f9)`
-- Time display as separate inline element
-- Compact button styling for inline layout
+</details>
 
 <details>
 <summary>✅ v2.1 Monorepo Architecture + Root Cleanup (Phases 24-30) — SHIPPED 2026-01-16</summary>

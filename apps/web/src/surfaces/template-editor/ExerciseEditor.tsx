@@ -85,6 +85,45 @@ export function ExerciseEditor({
     onUpdateRestTime(exercise.default_rest_seconds + 10);
   };
 
+  /**
+   * Parse time input string to seconds.
+   * Accepts MM:SS format (e.g., "1:30") or plain seconds (e.g., "90").
+   */
+  const parseTimeInput = (value: string): number => {
+    const trimmed = value.trim();
+    if (trimmed.includes(':')) {
+      const [mins, secs] = trimmed.split(':').map(s => parseInt(s, 10) || 0);
+      return Math.max(0, mins * 60 + secs);
+    }
+    return Math.max(0, parseInt(trimmed, 10) || 0);
+  };
+
+  /**
+   * Handle rest time input change on blur.
+   */
+  const handleTimeInputBlur = (e: FocusEvent): void => {
+    const target = e.target as HTMLInputElement;
+    const seconds = parseTimeInput(target.value);
+    onUpdateRestTime(seconds);
+    target.value = formatTime(seconds);
+  };
+
+  /**
+   * Handle rest time input keydown (Enter to commit).
+   */
+  const handleTimeInputKeyDown = (e: KeyboardEvent): void => {
+    if (e.key === 'Enter') {
+      (e.target as HTMLInputElement).blur();
+    }
+  };
+
+  /**
+   * Select all text on focus for easy editing.
+   */
+  const handleTimeInputFocus = (e: FocusEvent): void => {
+    (e.target as HTMLInputElement).select();
+  };
+
   return (
     <div class="exercise-editor-card">
       {/* Card Header */}
@@ -165,7 +204,15 @@ export function ExerciseEditor({
           <div class="rest-timer-bar">
             <div class="rest-timer-bar-fill idle"></div>
           </div>
-          <span class="rest-timer-time">{formatTime(exercise.default_rest_seconds)}</span>
+          <input
+            type="text"
+            class="rest-timer-input"
+            value={formatTime(exercise.default_rest_seconds)}
+            onBlur={handleTimeInputBlur}
+            onKeyDown={handleTimeInputKeyDown}
+            onFocus={handleTimeInputFocus}
+            title="Rest time (MM:SS or seconds)"
+          />
           <button type="button" class="btn-timer-adjust" onClick={handleIncreaseTime}>+10s</button>
         </div>
       </div>

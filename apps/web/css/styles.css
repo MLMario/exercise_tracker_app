@@ -2101,13 +2101,31 @@ input[type="checkbox"]:focus {
 }
 
 /* Time display as separate inline element */
-.rest-timer-time {
+.rest-timer-input {
   font-size: 0.875rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: white;
-  min-width: 48px;
+  width: 52px;
   text-align: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.rest-timer-input:hover {
+  border-color: var(--color-border);
+  background: var(--color-bg-secondary);
+}
+
+.rest-timer-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: var(--color-bg-secondary);
+  cursor: text;
 }
 
 /* Compact timer adjustment buttons for inline layout */
@@ -2135,9 +2153,9 @@ input[type="checkbox"]:focus {
     height: 6px;
   }
 
-  .rest-timer-time {
+  .rest-timer-input {
     font-size: 0.75rem;
-    min-width: 40px;
+    width: 44px;
   }
 
   .btn-timer-adjust {

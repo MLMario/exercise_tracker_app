@@ -6,7 +6,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
-- 🚧 **v2.2 Exercise Card Redesign** - Phase 31 (in progress)
+- ✅ **v2.2 Exercise Card Redesign** - Phase 31 — SHIPPED 2026-01-17
 - ✅ [v2.1 Monorepo Architecture + Root Cleanup](milestones/v2.1-ROADMAP.md) (Phases 24-30) — SHIPPED 2026-01-16
 - ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
 - ✅ [v1.4 IronFactor Rebrand](milestones/v1.4-ROADMAP.md) (Phases 19-20) — SHIPPED 2026-01-14
@@ -17,29 +17,25 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Phases
 
-### 🚧 v2.2 Exercise Card Redesign (In Progress)
+### ✅ v2.2 Exercise Card Redesign (Complete)
 
 **Milestone Goal:** Redesign WorkoutExerciseCard to accordion-style collapsible layout with ~70% space savings when collapsed.
 
-#### Phase 31: Exercise Card Accordion
+#### Phase 31: Exercise Card Accordion — Complete
 
 **Goal**: Refactor WorkoutExerciseCard to accordion/collapsible pattern per mockup design
-**Depends on**: Previous milestone complete
-**Research**: Unlikely (internal patterns, existing Preact components)
-**Plans**: TBD
+**Shipped**: 2026-01-17
 
 Plans:
-- [ ] 31-01: TBD (run /gsd:plan-phase 31 to break down)
+- [x] 31-01: Exercise Card Accordion (accordion layout, progress ring, collapse/expand)
 
-**Key Changes:**
-- Collapsed state: Progress ring + exercise name + Add Set button + remove button + chevron
+**Delivered:**
+- Accordion-style WorkoutExerciseCard with progress ring
+- Collapsed state: Progress ring + exercise name + Add Set + remove + chevron
 - Expanded state: Set table + timer bar (revealed on tap)
-- Remove category badge from header
+- ~70% vertical space savings in collapsed state
 - Multiple cards can be expanded simultaneously
-- All cards start collapsed
-- Header tap toggles expand/collapse (except action buttons)
-- Keep swipe-to-delete on set rows
-- Timer only visible when expanded
+- Smooth max-height transition animation
 
 <details>
 <summary>✅ v2.1 Monorepo Architecture + Root Cleanup (Phases 24-30) — SHIPPED 2026-01-16</summary>
@@ -117,7 +113,7 @@ Plans:
 
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
-| v2.2 Exercise Card Redesign | 31 | 0/? | In progress | - |
+| v2.2 Exercise Card Redesign | 31 | 1/1 | Complete | 2026-01-17 |
 | v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
 | v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
 | v1.4 IronFactor Rebrand | 19-20 | 2/2 | Complete | 2026-01-14 |
@@ -126,7 +122,7 @@ Plans:
 | v1.1 Fixes & Polish | 12-13 | 3/3 | Complete | 2026-01-13 |
 | v1.0 Exercise Tracker Refactor | 1-11 | 27/27 | Complete | 2026-01-13 |
 
-**Total:** 8 milestones shipped, 30 phases complete, 48 plans complete
+**Total:** 9 milestones shipped, 31 phases complete, 49 plans complete
 
 ---
 

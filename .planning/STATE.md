@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-01-16)
 
 **Core value:** The app must work exactly as before - behavior preserved through all milestones
-**Current focus:** Project complete — all milestones shipped
+**Current focus:** v2.2 Exercise Card Redesign — Phase 31 complete
 
 ## Current Position
 
 Milestone: v2.2 Exercise Card Redesign
 Phase: 31 of 31 (Exercise Card Accordion)
-Plan: Not started
-Status: Ready to plan
+Plan: 1 of 1 complete
+Status: Phase complete, ready for milestone completion
 Branch: `006-exercise-set-UI-change`
-Last activity: 2026-01-16 — Milestone v2.2 created
+Last activity: 2026-01-17 — Completed 31-01-PLAN.md
 
-Progress: ░░░░░░░░░░ 0%
+Progress: ██████████ 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 48
+- Total plans completed: 49
 - Average duration: ~4 min
-- Total execution time: ~169 min
+- Total execution time: ~176 min
 
 **By Phase:**
 
@@ -59,11 +59,12 @@ Progress: ░░░░░░░░░░ 0%
 | 28-config-updates | 1 | 4 min | 4 min |
 | 29-ios-scaffold | 1 | 1 min | 1 min |
 | 30-root-cleanup | 1 | 2 min | 2 min |
+| 31-exercise-card-accordion | 1 | 7 min | 7 min |
 
 **Stats:**
 - 8 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5, v2.0, v2.1)
-- 30 phases complete
-- 48 plans executed
+- 31 phases complete
+- 49 plans executed
 - Alpine.js → Preact migration complete
 - App rebranded to "IronFactor" (auth + dashboard)
 - v1.2 legacy cleanup complete - all legacy JS removed
@@ -72,6 +73,7 @@ Progress: ░░░░░░░░░░ 0%
 - v1.5 UX improvements SHIPPED - tooltips, modals
 - v2.0 Monorepo Architecture SHIPPED - pnpm workspace, shared package, iOS scaffold
 - v2.1 Root Cleanup SHIPPED - removed legacy js/ and dist/ folders
+- v2.2 Exercise Card Redesign - Phase 31 complete (accordion layout)
 
 ## Accumulated Context
 
@@ -102,7 +104,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-16
-Stopped at: Milestone v2.2 initialization
+Last session: 2026-01-17
+Stopped at: Completed 31-01-PLAN.md
 Resume file: None
-Next action: /gsd:plan-phase 31
+Next action: /gsd:complete-milestone

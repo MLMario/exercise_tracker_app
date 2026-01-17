@@ -62,12 +62,27 @@ export function ExerciseEditor({
   };
 
   /**
-   * Handle rest time input change.
+   * Format seconds to MM:SS display.
    */
-  const handleRestTimeChange = (e: Event): void => {
-    const target = e.target as HTMLInputElement;
-    const value = parseInt(target.value, 10) || 0;
-    onUpdateRestTime(value);
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  /**
+   * Decrease rest time by 10 seconds (minimum 0).
+   */
+  const handleDecreaseTime = (): void => {
+    const newTime = Math.max(0, exercise.default_rest_seconds - 10);
+    onUpdateRestTime(newTime);
+  };
+
+  /**
+   * Increase rest time by 10 seconds.
+   */
+  const handleIncreaseTime = (): void => {
+    onUpdateRestTime(exercise.default_rest_seconds + 10);
   };
 
   return (
@@ -144,18 +159,14 @@ export function ExerciseEditor({
         ))}
         </div>
 
-        {/* Rest Time (shared for all sets) */}
-        <div class="rest-time-row">
-          <label>Rest between sets:</label>
-          <input
-            type="number"
-            class="input input-small"
-            value={exercise.default_rest_seconds}
-            onInput={handleRestTimeChange}
-            min={0}
-            placeholder="60"
-          />
-          <span class="input-suffix">seconds</span>
+        {/* Rest Timer Inline */}
+        <div class="rest-timer-inline">
+          <button type="button" class="btn-timer-adjust" onClick={handleDecreaseTime}>-10s</button>
+          <div class="rest-timer-bar">
+            <div class="rest-timer-bar-fill idle"></div>
+          </div>
+          <span class="rest-timer-time">{formatTime(exercise.default_rest_seconds)}</span>
+          <button type="button" class="btn-timer-adjust" onClick={handleIncreaseTime}>+10s</button>
         </div>
       </div>
     </div>

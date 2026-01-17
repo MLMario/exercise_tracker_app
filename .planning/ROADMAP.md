@@ -22,15 +22,15 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 **Milestone Goal:** Redesign TemplateEditorSurface to match mock-2-dense-grid.html design with improved exercise card layout, MM:SS time input, and consistent styling.
 
-#### Phase 33: Exercise Card Layout
+#### Phase 33: Exercise Card Layout ✓
 
 **Goal**: Restructure ExerciseEditor card: Add Set in header, remove category badge, remove move buttons, remove section header
 **Depends on**: Phase 32
 **Research**: Unlikely (internal patterns)
-**Plans**: TBD
+**Plans**: 1/1 complete
 
 Plans:
-- [ ] 33-01: Exercise card header restructure (Add Set in header, remove badge/move buttons, hover-reveal remove)
+- [x] 33-01: Exercise card header restructure (Add Set in header, remove badge/move buttons, hover-reveal remove)
 
 #### Phase 34: Set Table Grid Redesign
 
@@ -156,7 +156,7 @@ Plans:
 
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
-| v2.3 Template Editor Redesign | 33-37 | 0/? | In progress | - |
+| v2.3 Template Editor Redesign | 33-37 | 1/? | In progress | - |
 | v2.2 Exercise Card Redesign | 31-32 | 2/2 | Complete | 2026-01-17 |
 | v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
 | v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
@@ -166,7 +166,7 @@ Plans:
 | v1.1 Fixes & Polish | 12-13 | 3/3 | Complete | 2026-01-13 |
 | v1.0 Exercise Tracker Refactor | 1-11 | 27/27 | Complete | 2026-01-13 |
 
-**Total:** 9 milestones shipped, 32 phases complete, 50 plans complete
+**Total:** 9 milestones shipped, 33 phases complete, 51 plans complete
 
 ---
 

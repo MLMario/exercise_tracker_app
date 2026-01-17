@@ -9,14 +9,14 @@ See: .planning/PROJECT.md (updated 2026-01-16)
 
 ## Current Position
 
-Milestone: v2.1 Monorepo Architecture + Root Cleanup (SHIPPED)
-Phase: All 30 phases complete
-Plan: All 48 plans complete
-Status: Ready for next milestone or maintenance
-Branch: `master`
-Last activity: 2026-01-16 — v2.1 milestone archived
+Milestone: v2.2 Exercise Card Redesign
+Phase: 31 of 31 (Exercise Card Accordion)
+Plan: Not started
+Status: Ready to plan
+Branch: `006-exercise-set-UI-change`
+Last activity: 2026-01-16 — Milestone v2.2 created
 
-Progress: ██████████ 100%
+Progress: ░░░░░░░░░░ 0%
 
 ## Performance Metrics
 
@@ -86,6 +86,7 @@ None — all issues resolved.
 
 ### Roadmap Evolution
 
+- Milestone v2.2 created: Exercise Card Redesign, 1 phase (Phase 31)
 - Milestone v2.1 shipped: Root Cleanup, 1 phase (Phase 30)
 - Milestone v2.0 shipped: Monorepo Architecture, 6 phases (Phase 24-29)
 - Milestone v1.5 shipped: UX Improvements, 3 phases (Phase 21-23)
@@ -102,6 +103,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-16
-Stopped at: v2.1 milestone archived
+Stopped at: Milestone v2.2 initialization
 Resume file: None
-Next action: /gsd:new-milestone (if planning new features) or /gsd:discuss-milestone (for iOS development)
+Next action: /gsd:plan-phase 31

@@ -6,6 +6,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
+- 🚧 **v2.2 Exercise Card Redesign** - Phase 31 (in progress)
 - ✅ [v2.1 Monorepo Architecture + Root Cleanup](milestones/v2.1-ROADMAP.md) (Phases 24-30) — SHIPPED 2026-01-16
 - ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
 - ✅ [v1.4 IronFactor Rebrand](milestones/v1.4-ROADMAP.md) (Phases 19-20) — SHIPPED 2026-01-14
@@ -15,6 +16,30 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 - ✅ [v1.0 Exercise Tracker Refactor](milestones/v1.0-ROADMAP.md) (Phases 1-11) — SHIPPED 2026-01-13
 
 ## Phases
+
+### 🚧 v2.2 Exercise Card Redesign (In Progress)
+
+**Milestone Goal:** Redesign WorkoutExerciseCard to accordion-style collapsible layout with ~70% space savings when collapsed.
+
+#### Phase 31: Exercise Card Accordion
+
+**Goal**: Refactor WorkoutExerciseCard to accordion/collapsible pattern per mockup design
+**Depends on**: Previous milestone complete
+**Research**: Unlikely (internal patterns, existing Preact components)
+**Plans**: TBD
+
+Plans:
+- [ ] 31-01: TBD (run /gsd:plan-phase 31 to break down)
+
+**Key Changes:**
+- Collapsed state: Progress ring + exercise name + Add Set button + remove button + chevron
+- Expanded state: Set table + timer bar (revealed on tap)
+- Remove category badge from header
+- Multiple cards can be expanded simultaneously
+- All cards start collapsed
+- Header tap toggles expand/collapse (except action buttons)
+- Keep swipe-to-delete on set rows
+- Timer only visible when expanded
 
 <details>
 <summary>✅ v2.1 Monorepo Architecture + Root Cleanup (Phases 24-30) — SHIPPED 2026-01-16</summary>
@@ -92,6 +117,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
+| v2.2 Exercise Card Redesign | 31 | 0/? | In progress | - |
 | v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
 | v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
 | v1.4 IronFactor Rebrand | 19-20 | 2/2 | Complete | 2026-01-14 |

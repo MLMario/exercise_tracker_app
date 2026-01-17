@@ -2,9 +2,7 @@
  * RestTimerBar Component
  *
  * Presentational component for the rest timer display.
- * Shows a progress bar with countdown time and +/-10s adjustment controls.
- *
- * Structure matches index.html lines 619-636.
+ * Horizontal inline layout: [-10s] [bar] [time] [+10s]
  */
 
 // ============================================================================
@@ -51,17 +49,12 @@ function formatTime(seconds: number): string {
 /**
  * RestTimerBar component
  *
- * Renders the rest timer display with:
- * - Progress bar that fills/empties based on timer state
- * - Time display in MM:SS format
- * - +10s and -10s adjustment buttons
+ * Renders horizontal inline rest timer: [-10s] [bar] [time] [+10s]
  *
  * CSS states:
  * - idle: Timer not running, full bar
  * - running: Timer counting down, bar shrinking
  * - complete: Timer finished (0 seconds), bar empty
- *
- * Matches index.html lines 619-636.
  */
 export function RestTimerBar({
   displaySeconds,
@@ -78,30 +71,28 @@ export function RestTimerBar({
   };
 
   return (
-    <div class="rest-timer-bar-container">
-      <div class="rest-timer-bar-wrapper">
+    <div class="rest-timer-inline">
+      <button
+        type="button"
+        class="btn-timer-adjust"
+        onClick={() => onAdjust(-10)}
+      >
+        -10s
+      </button>
+      <div class="rest-timer-bar">
         <div
           class={`rest-timer-bar-fill ${getTimerBarClass()}`}
           style={{ width: `${progress}%` }}
         />
-        <span class="rest-timer-bar-time">{formatTime(displaySeconds)}</span>
       </div>
-      <div class="rest-timer-controls">
-        <button
-          type="button"
-          class="btn-timer-adjust"
-          onClick={() => onAdjust(-10)}
-        >
-          -10s
-        </button>
-        <button
-          type="button"
-          class="btn-timer-adjust"
-          onClick={() => onAdjust(10)}
-        >
-          +10s
-        </button>
-      </div>
+      <span class="rest-timer-time">{formatTime(displaySeconds)}</span>
+      <button
+        type="button"
+        class="btn-timer-adjust"
+        onClick={() => onAdjust(10)}
+      >
+        +10s
+      </button>
     </div>
   );
 }

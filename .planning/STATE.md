@@ -92,8 +92,7 @@ None — all issues resolved.
 
 ### Pending Todos
 
-1 todo in `.planning/todos/pending/`:
-- Make rest timer editable by user input (ui)
+0 todos in `.planning/todos/pending/`.
 
 ### Roadmap Evolution
 

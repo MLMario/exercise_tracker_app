@@ -99,7 +99,7 @@ export function ExerciseEditor({
         {/* Set Table */}
         <div class="set-table">
         <div class="set-header">
-          <span>Set</span>
+          <span>#</span>
           <span>lbs</span>
           <span>Reps</span>
           <span></span>
@@ -125,15 +125,20 @@ export function ExerciseEditor({
               min={0}
               placeholder="10"
             />
-            {exercise.sets.length > 1 && (
+            {exercise.sets.length > 1 ? (
               <button
                 type="button"
-                class="btn btn-icon btn-danger btn-small"
+                class="btn-delete-set"
                 onClick={() => onRemoveSet(setIndex)}
                 title="Remove Set"
               >
-                <span>✕</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
               </button>
+            ) : (
+              <span></span>
             )}
           </div>
         ))}

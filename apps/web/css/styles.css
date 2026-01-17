@@ -1780,45 +1780,127 @@ input[type="checkbox"]:focus {
 }
 
 /* ==========================================================================
-   14. Template Editor Per-Set UI
+   14. Template Editor Per-Set UI - Exercise Editor Card
    ========================================================================== */
 
-/* Exercise Editor Card */
+/* Card Container - matches workout-surface .exercise-workout-card */
 .exercise-editor-card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-dim);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
   margin-bottom: var(--spacing-md);
 }
 
-.exercise-editor-card .exercise-header {
+/* Card Header - flex layout with exercise info, actions, remove button */
+.exercise-editor-card .card-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--spacing-md);
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--color-border);
+  gap: 0.75rem;
+  padding: 0.75rem;
+  transition: background var(--transition-fast);
 }
 
-.exercise-editor-card .exercise-title-row {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
+.exercise-editor-card .card-header:hover {
+  background: var(--color-bg-elevated);
+}
+
+/* Exercise Info */
+.exercise-editor-card .exercise-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .exercise-editor-card .exercise-name {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--color-accent);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Exercise Header Actions */
-.exercise-header-actions {
+/* Header Actions - Add Set button */
+.exercise-editor-card .header-actions {
   display: flex;
+  align-items: center;
   gap: var(--spacing-xs);
+  flex-shrink: 0;
 }
 
-.exercise-header-actions .btn-icon {
-  width: 36px;
-  height: 36px;
-  font-size: 1rem;
+/* Add Set Button - matches workout-surface style */
+.exercise-editor-card .btn-add-set {
+  padding: 6px 10px;
+  background: rgba(74, 222, 128, 0.15);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: var(--radius-sm);
+  color: var(--color-success);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.625rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.exercise-editor-card .btn-add-set:hover {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+}
+
+.exercise-editor-card .btn-add-set svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Remove Button - hover reveal */
+.exercise-editor-card .btn-remove {
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.exercise-editor-card .card-header:hover .btn-remove {
+  opacity: 1;
+}
+
+.exercise-editor-card .btn-remove:hover {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--color-danger);
+}
+
+.exercise-editor-card .btn-remove svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Card Body - contains set table and rest timer */
+.exercise-editor-card .card-body {
+  padding: 0 0.75rem 0.75rem;
+  border-top: 1px solid var(--color-border-dim);
+}
+
+/* Footer Actions - Add Exercise button */
+.footer-actions {
+  margin-top: var(--spacing-lg);
+}
+
+.btn-block {
+  width: 100%;
 }
 
 /* Rest Time Row */

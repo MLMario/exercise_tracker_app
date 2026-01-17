@@ -6,7 +6,8 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
-- ✅ [v2.2 Exercise Card Redesign](milestones/v2.2-ROADMAP.md) (Phases 31-32) — SHIPPED 2026-01-16
+- 🚧 **v2.3 Template Editor Redesign** - Phases 33-37 (in progress)
+- ✅ [v2.2 Exercise Card Redesign](milestones/v2.2-ROADMAP.md) (Phases 31-32) — SHIPPED 2026-01-17
 - ✅ [v2.1 Monorepo Architecture + Root Cleanup](milestones/v2.1-ROADMAP.md) (Phases 24-30) — SHIPPED 2026-01-16
 - ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
 - ✅ [v1.4 IronFactor Rebrand](milestones/v1.4-ROADMAP.md) (Phases 19-20) — SHIPPED 2026-01-14
@@ -17,8 +18,62 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Phases
 
+### 🚧 v2.3 Template Editor Redesign (In Progress)
+
+**Milestone Goal:** Redesign TemplateEditorSurface to match mock-2-dense-grid.html design with improved exercise card layout, MM:SS time input, and consistent styling.
+
+#### Phase 33: Exercise Card Layout
+
+**Goal**: Restructure ExerciseEditor card: Add Set in header, remove category badge, remove move buttons, remove section header
+**Depends on**: Phase 32
+**Research**: Unlikely (internal patterns)
+**Plans**: TBD
+
+Plans:
+- [ ] 33-01: TBD (run /gsd:plan-phase 33 to break down)
+
+#### Phase 34: Set Table Grid Redesign
+
+**Goal**: Update set table to mockup grid (32px|1fr|1fr|36px), style inputs and set number badge
+**Depends on**: Phase 33
+**Research**: Unlikely (CSS patterns)
+**Plans**: TBD
+
+Plans:
+- [ ] 34-01: TBD
+
+#### Phase 35: Rest Time MM:SS Input
+
+**Goal**: Create MM:SS time input with auto-formatting (e.g., "90" → "1:30") and ±10s adjustment buttons
+**Depends on**: Phase 34
+**Research**: Unlikely (input handling)
+**Plans**: TBD
+
+Plans:
+- [ ] 35-01: TBD
+
+#### Phase 36: Remove Button & Footer
+
+**Goal**: Hover-reveal remove button, full-width "Add Exercise" footer button
+**Depends on**: Phase 35
+**Research**: Unlikely (CSS hover states)
+**Plans**: TBD
+
+Plans:
+- [ ] 36-01: TBD
+
+#### Phase 37: CSS & Polish
+
+**Goal**: Final CSS consolidation, responsive behavior verification, visual polish
+**Depends on**: Phase 36
+**Research**: Unlikely (internal patterns)
+**Plans**: TBD
+
+Plans:
+- [ ] 37-01: TBD
+
 <details>
-<summary>✅ v2.2 Exercise Card Redesign (Phases 31-32) — SHIPPED 2026-01-16</summary>
+<summary>✅ v2.2 Exercise Card Redesign (Phases 31-32) — SHIPPED 2026-01-17</summary>
 
 - [x] **Phase 31: Exercise Card Accordion** (1/1 plans) - Accordion layout with progress ring, ~70% space savings
 - [x] **Phase 32: Rest Timer Bar Redesign** (1/1 plans) - Horizontal inline layout with gradient bar
@@ -101,7 +156,8 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
-| v2.2 Exercise Card Redesign | 31-32 | 2/2 | Complete | 2026-01-16 |
+| v2.3 Template Editor Redesign | 33-37 | 0/? | In progress | - |
+| v2.2 Exercise Card Redesign | 31-32 | 2/2 | Complete | 2026-01-17 |
 | v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
 | v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
 | v1.4 IronFactor Rebrand | 19-20 | 2/2 | Complete | 2026-01-14 |

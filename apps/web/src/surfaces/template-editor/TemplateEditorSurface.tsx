@@ -432,18 +432,20 @@ export function TemplateEditorSurface({
       <header class="app-header">
         <button
           type="button"
-          class="btn btn-secondary"
+          class="btn btn-secondary btn-sm"
           onClick={handleCancel}
           disabled={isSubmitting}
         >
           Cancel
         </button>
-        <h1 class="app-title">
-          {isEditing ? 'Edit Template' : 'New Template'}
-        </h1>
+        <div class="header-info">
+          <h1 class="app-title">
+            {isEditing ? 'Edit Template' : 'New Template'}
+          </h1>
+        </div>
         <button
           type="button"
-          class="btn btn-primary"
+          class="btn btn-primary btn-sm"
           onClick={handleSave}
           disabled={!canSave || isSubmitting}
         >

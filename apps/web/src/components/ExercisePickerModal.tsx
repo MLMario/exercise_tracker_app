@@ -256,7 +256,7 @@ export function ExercisePickerModal({
                   >
                     <div class="exercise-item-info">
                       <span class="exercise-item-name">{exercise.name}</span>
-                      <span class="badge badge-small">{exercise.category}</span>
+                      <span class="badge badge-small"> ({exercise.category})</span>
                     </div>
                   </div>
                 );

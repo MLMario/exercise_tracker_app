@@ -30,7 +30,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 **Plans**: TBD
 
 Plans:
-- [ ] 33-01: TBD (run /gsd:plan-phase 33 to break down)
+- [ ] 33-01: Exercise card header restructure (Add Set in header, remove badge/move buttons, hover-reveal remove)
 
 #### Phase 34: Set Table Grid Redesign
 

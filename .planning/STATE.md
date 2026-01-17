@@ -90,6 +90,11 @@ All decisions have been validated through shipping v1.0 through v1.5.
 
 None — all issues resolved.
 
+### Pending Todos
+
+1 todo in `.planning/todos/pending/`:
+- Make rest timer editable by user input (ui)
+
 ### Roadmap Evolution
 
 - Milestone v2.3 created: Template Editor Redesign, 5 phases (Phase 33-37)

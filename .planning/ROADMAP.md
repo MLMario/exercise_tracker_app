@@ -32,15 +32,15 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 Plans:
 - [x] 33-01: Exercise card header restructure (Add Set in header, remove badge/move buttons, hover-reveal remove)
 
-#### Phase 34: Set Table Grid Redesign
+#### Phase 34: Set Table Grid Redesign ✓
 
 **Goal**: Update set table to mockup grid (32px|1fr|1fr|36px), style inputs and set number badge
 **Depends on**: Phase 33
 **Research**: Unlikely (CSS patterns)
-**Plans**: TBD
+**Plans**: 1/1 complete
 
 Plans:
-- [ ] 34-01: TBD
+- [x] 34-01: Set table grid redesign (dense grid layout, styled badges, checkbox-style delete)
 
 #### Phase 35: Rest Time MM:SS Input
 
@@ -156,7 +156,7 @@ Plans:
 
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
-| v2.3 Template Editor Redesign | 33-37 | 1/? | In progress | - |
+| v2.3 Template Editor Redesign | 33-37 | 2/? | In progress | - |
 | v2.2 Exercise Card Redesign | 31-32 | 2/2 | Complete | 2026-01-17 |
 | v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
 | v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
@@ -166,7 +166,7 @@ Plans:
 | v1.1 Fixes & Polish | 12-13 | 3/3 | Complete | 2026-01-13 |
 | v1.0 Exercise Tracker Refactor | 1-11 | 27/27 | Complete | 2026-01-13 |
 
-**Total:** 9 milestones shipped, 33 phases complete, 51 plans complete
+**Total:** 9 milestones shipped, 34 phases complete, 52 plans complete
 
 ---
 

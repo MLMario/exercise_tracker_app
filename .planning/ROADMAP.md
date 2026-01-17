@@ -52,15 +52,15 @@ Plans:
 Plans:
 - [x] 35-01: MM:SS rest timer with ±10s adjustment buttons
 
-#### Phase 36: Remove Button & Footer
+#### Phase 36: Remove Button & Footer ✓
 
 **Goal**: Hover-reveal remove button, full-width "Add Exercise" footer button
 **Depends on**: Phase 35
 **Research**: Unlikely (CSS hover states)
-**Plans**: TBD
+**Plans**: 1/1 complete
 
 Plans:
-- [ ] 36-01: TBD
+- [x] 36-01: Verify remove button & footer implementation (already complete from prior phases)
 
 #### Phase 37: CSS & Polish
 
@@ -156,7 +156,7 @@ Plans:
 
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
-| v2.3 Template Editor Redesign | 33-37 | 3/? | In progress | - |
+| v2.3 Template Editor Redesign | 33-37 | 4/? | In progress | - |
 | v2.2 Exercise Card Redesign | 31-32 | 2/2 | Complete | 2026-01-17 |
 | v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
 | v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
@@ -166,7 +166,7 @@ Plans:
 | v1.1 Fixes & Polish | 12-13 | 3/3 | Complete | 2026-01-13 |
 | v1.0 Exercise Tracker Refactor | 1-11 | 27/27 | Complete | 2026-01-13 |
 
-**Total:** 9 milestones shipped, 35 phases complete, 53 plans complete
+**Total:** 9 milestones shipped, 36 phases complete, 54 plans complete
 
 ---
 

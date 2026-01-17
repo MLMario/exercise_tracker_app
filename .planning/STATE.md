@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-17)
 ## Current Position
 
 Milestone: v2.3 Template Editor Redesign
-Phase: 35 of 37 (Rest Time MM:SS Input)
+Phase: 36 of 37 (Remove Button & Footer)
 Plan: 1 of 1 in current phase
 Status: Phase complete
 Branch: `007-template-surface-redesign`
-Last activity: 2026-01-17 — Completed 35-01-PLAN.md
+Last activity: 2026-01-17 — Completed 36-01-PLAN.md
 
-Progress: █████░░░░░ 60%
+Progress: ██████░░░░ 70%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 50
+- Total plans completed: 51
 - Average duration: ~4 min
 - Total execution time: ~180 min
 
@@ -64,11 +64,12 @@ Progress: █████░░░░░ 60%
 | 33-exercise-card-layout | 1 | 4 min | 4 min |
 | 34-set-table-grid-redesign | 1 | 4 min | 4 min |
 | 35-rest-time-mmss-input | 1 | 1 min | 1 min |
+| 36-remove-button-footer | 1 | 1 min | 1 min |
 
 **Stats:**
 - 9 milestones shipped (v1.0, v1.1, v1.2, v1.3, v1.4, v1.5, v2.0, v2.1, v2.2)
-- 35 phases complete
-- 53 plans executed
+- 36 phases complete
+- 54 plans executed
 - Alpine.js → Preact migration complete
 - App rebranded to "IronFactor" (auth + dashboard)
 - v1.2 legacy cleanup complete - all legacy JS removed
@@ -114,6 +115,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-17
-Stopped at: Completed 35-01-PLAN.md (Phase 35 complete)
+Stopped at: Completed 36-01-PLAN.md (Phase 36 complete)
 Resume file: None
-Next action: /gsd:plan-phase 36
+Next action: /gsd:plan-phase 37

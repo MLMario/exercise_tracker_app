@@ -6,7 +6,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
-- 🚧 **v2.3 Template Editor Redesign** - Phases 33-37 (in progress)
+- ✅ **v2.3 Template Editor Redesign** - Phases 33-37 — SHIPPED 2026-01-17
 - ✅ [v2.2 Exercise Card Redesign](milestones/v2.2-ROADMAP.md) (Phases 31-32) — SHIPPED 2026-01-17
 - ✅ [v2.1 Monorepo Architecture + Root Cleanup](milestones/v2.1-ROADMAP.md) (Phases 24-30) — SHIPPED 2026-01-16
 - ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
@@ -18,7 +18,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Phases
 
-### 🚧 v2.3 Template Editor Redesign (In Progress)
+### ✅ v2.3 Template Editor Redesign (SHIPPED 2026-01-17)
 
 **Milestone Goal:** Redesign TemplateEditorSurface to match mock-2-dense-grid.html design with improved exercise card layout, MM:SS time input, and consistent styling.
 
@@ -62,15 +62,15 @@ Plans:
 Plans:
 - [x] 36-01: Verify remove button & footer implementation (already complete from prior phases)
 
-#### Phase 37: CSS & Polish
+#### Phase 37: CSS & Polish ✓
 
 **Goal**: Final CSS consolidation, responsive behavior verification, visual polish
 **Depends on**: Phase 36
 **Research**: Unlikely (internal patterns)
-**Plans**: TBD
+**Plans**: 1/1 complete
 
 Plans:
-- [ ] 37-01: TBD
+- [x] 37-01: Add --font-mono CSS variable, visual verification
 
 <details>
 <summary>✅ v2.2 Exercise Card Redesign (Phases 31-32) — SHIPPED 2026-01-17</summary>
@@ -156,7 +156,7 @@ Plans:
 
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
-| v2.3 Template Editor Redesign | 33-37 | 4/? | In progress | - |
+| v2.3 Template Editor Redesign | 33-37 | 5/5 | Complete | 2026-01-17 |
 | v2.2 Exercise Card Redesign | 31-32 | 2/2 | Complete | 2026-01-17 |
 | v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
 | v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
@@ -166,7 +166,7 @@ Plans:
 | v1.1 Fixes & Polish | 12-13 | 3/3 | Complete | 2026-01-13 |
 | v1.0 Exercise Tracker Refactor | 1-11 | 27/27 | Complete | 2026-01-13 |
 
-**Total:** 9 milestones shipped, 36 phases complete, 54 plans complete
+**Total:** 10 milestones shipped, 37 phases complete, 55 plans complete
 
 ---
 

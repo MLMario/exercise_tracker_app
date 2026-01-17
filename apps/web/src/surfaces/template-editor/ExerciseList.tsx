@@ -18,10 +18,6 @@ export interface ExerciseListProps {
   exercises: EditingExercise[];
   /** Callback to open exercise picker */
   onAddExercise: () => void;
-  /** Callback to move an exercise up in the list */
-  onMoveUp: (index: number) => void;
-  /** Callback to move an exercise down in the list */
-  onMoveDown: (index: number) => void;
   /** Callback to remove an exercise */
   onRemove: (index: number) => void;
   /** Callback to add a set to an exercise */
@@ -40,17 +36,13 @@ export interface ExerciseListProps {
  * ExerciseList component
  *
  * Renders the exercises section of the template editor:
- * - Section header with "Exercises" title and "Add Exercise" button
  * - List of ExerciseEditor components for each exercise
  * - Empty state when no exercises
- *
- * Matches index.html lines 439-517.
+ * - Footer with Add Exercise button
  */
 export function ExerciseList({
   exercises,
   onAddExercise,
-  onMoveUp,
-  onMoveDown,
   onRemove,
   onAddSet,
   onRemoveSet,
@@ -60,19 +52,6 @@ export function ExerciseList({
 }: ExerciseListProps) {
   return (
     <div class="form-section">
-      {/* Section Header */}
-      <div class="section-header">
-        <h3>Exercises</h3>
-        <button
-          type="button"
-          class="btn btn-primary"
-          onClick={onAddExercise}
-          disabled={isSubmitting}
-        >
-          Add Exercise
-        </button>
-      </div>
-
       {/* Exercises List */}
       <div class="exercises-list">
         {exercises.map((exercise, index) => (
@@ -80,10 +59,6 @@ export function ExerciseList({
             key={exercise.exercise_id || index}
             exercise={exercise}
             index={index}
-            isFirst={index === 0}
-            isLast={index === exercises.length - 1}
-            onMoveUp={() => onMoveUp(index)}
-            onMoveDown={() => onMoveDown(index)}
             onRemove={() => onRemove(index)}
             onAddSet={() => onAddSet(index)}
             onRemoveSet={(setIndex) => onRemoveSet(index, setIndex)}
@@ -99,6 +74,18 @@ export function ExerciseList({
           <p>No exercises added yet. Click "Add Exercise" to start building your template.</p>
         </div>
       )}
+
+      {/* Footer - Add Exercise button */}
+      <div class="footer-actions">
+        <button
+          type="button"
+          class="btn btn-primary btn-block"
+          onClick={onAddExercise}
+          disabled={isSubmitting}
+        >
+          Add Exercise
+        </button>
+      </div>
     </div>
   );
 }

@@ -486,8 +486,6 @@ export function TemplateEditorSurface({
           <ExerciseList
             exercises={editingTemplate.exercises}
             onAddExercise={handleOpenExercisePicker}
-            onMoveUp={handleMoveExerciseUp}
-            onMoveDown={handleMoveExerciseDown}
             onRemove={handleRemoveExercise}
             onAddSet={handleAddSet}
             onRemoveSet={handleRemoveSet}

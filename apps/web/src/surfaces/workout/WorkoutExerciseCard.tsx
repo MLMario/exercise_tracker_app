@@ -213,16 +213,13 @@ export function WorkoutExerciseCard({
             ))}
           </div>
 
-          {/* Timer Section */}
-          <div class="timer-section">
-            <RestTimerBar
-              displaySeconds={timerSeconds}
-              progress={timerProgress}
-              isActive={isTimerActive}
-              isComplete={isTimerActive && timerSeconds === 0}
-              onAdjust={onAdjustTimer}
-            />
-          </div>
+          <RestTimerBar
+            displaySeconds={timerSeconds}
+            progress={timerProgress}
+            isActive={isTimerActive}
+            isComplete={isTimerActive && timerSeconds === 0}
+            onAdjust={onAdjustTimer}
+          />
         </div>
       </div>
     </div>

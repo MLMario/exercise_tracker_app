@@ -7,14 +7,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ==========================================================================
-       Option 3: Accordion/Collapsible Style
+       Option 3: Accordion/Collapsible Style (Refined)
 
        Design Philosophy:
        - Ultra-compact collapsed state showing just header + progress
        - Expandable to reveal sets on tap
        - Progress ring shows completion at a glance
-       - Collapsed card takes minimal vertical space
-       - Timer moves to header area when collapsed
+       - + Add Set in header for quick access
+       - Timer with full-width controls in expanded body
 
        Space Savings: ~70% when collapsed, ~30% when expanded
        ========================================================================== */
@@ -198,20 +198,44 @@
       color: var(--color-text-muted);
     }
 
-    .meta-timer {
+    .exercise-meta .complete-label {
+      color: var(--color-success);
+    }
+
+    /* Header Actions */
+    .header-actions {
       display: flex;
       align-items: center;
-      gap: 3px;
-      color: var(--color-accent);
+      gap: var(--spacing-xs);
+      flex-shrink: 0;
     }
 
-    .meta-timer.running {
-      color: var(--color-warning);
+    .btn-add-set {
+      padding: 6px 10px;
+      background: var(--color-success-glow);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: var(--radius-sm);
+      color: var(--color-success);
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .meta-timer svg {
-      width: 10px;
-      height: 10px;
+    .btn-add-set:hover {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: white;
+    }
+
+    .btn-add-set svg {
+      width: 12px;
+      height: 12px;
     }
 
     /* Chevron */
@@ -376,21 +400,18 @@
       color: white;
     }
 
-    /* ========== TIMER & ACTIONS ========== */
-    .card-actions {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
+    /* ========== TIMER SECTION (Full Width) ========== */
+    .timer-section {
       margin-top: var(--spacing-md);
-      padding-top: var(--spacing-sm);
+      padding-top: var(--spacing-md);
       border-top: 1px solid var(--color-border-dim);
     }
 
-    .timer-inline {
+    .timer-row {
       display: flex;
       align-items: center;
-      gap: var(--spacing-xs);
-      flex: 1;
+      gap: var(--spacing-sm);
+      width: 100%;
     }
 
     .timer-bar-wrapper {
@@ -411,26 +432,26 @@
 
     .timer-time {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
+      font-size: 0.8125rem;
       font-weight: 600;
       color: var(--color-text-primary);
-      min-width: 38px;
-      text-align: right;
+      min-width: 42px;
+      text-align: center;
     }
 
     .timer-controls {
       display: flex;
-      gap: 2px;
+      gap: 4px;
     }
 
     .btn-timer {
-      padding: 4px 8px;
+      padding: 6px 10px;
       background: var(--color-bg-elevated);
       border: 1px solid var(--color-border-dim);
-      border-radius: 4px;
-      color: var(--color-text-muted);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-secondary);
       font-family: var(--font-mono);
-      font-size: 0.5625rem;
+      font-size: 0.625rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -440,25 +461,6 @@
       background: var(--color-accent);
       border-color: var(--color-accent);
       color: var(--color-bg-primary);
-    }
-
-    .btn-add-set {
-      padding: var(--spacing-xs) var(--spacing-md);
-      background: var(--color-success-glow);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      border-radius: var(--radius-sm);
-      color: var(--color-success);
-      font-size: 0.6875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-
-    .btn-add-set:hover {
-      background: var(--color-success);
-      border-color: var(--color-success);
-      color: white;
     }
 
     /* ========== COMPARISON ========== */
@@ -490,7 +492,7 @@
   </style>
 </head>
 <body>
-  <div class="mockup-title">Option 3: Accordion / Collapsible Style</div>
+  <div class="mockup-title">Option 3: Accordion / Collapsible Style (Refined)</div>
 
   <div class="comparison">
     <!-- COLLAPSED STATE -->
@@ -512,17 +514,15 @@
               <span class="exercise-name">Bench Press</span>
               <span class="badge">Chest</span>
             </div>
-            <div class="exercise-meta">
-              <span>135-175 lbs</span>
-              <span>•</span>
-              <span class="meta-timer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                1:30
-              </span>
-            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-add-set">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Set
+            </button>
           </div>
           <button class="btn-remove">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -540,9 +540,9 @@
       </div>
     </div>
 
-    <!-- COLLAPSED - Running Timer -->
+    <!-- COLLAPSED - Different Exercise -->
     <div>
-      <div class="comparison-label">Collapsed with Active Timer</div>
+      <div class="comparison-label">Collapsed - Different Exercise</div>
       <div class="exercise-workout-card">
         <div class="card-header">
           <div class="progress-ring">
@@ -559,17 +559,15 @@
               <span class="exercise-name">Deadlift</span>
               <span class="badge">Back</span>
             </div>
-            <div class="exercise-meta">
-              <span>225-315 lbs</span>
-              <span>•</span>
-              <span class="meta-timer running">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                0:45 left
-              </span>
-            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-add-set">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Set
+            </button>
           </div>
           <button class="btn-remove">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -604,17 +602,15 @@
               <span class="exercise-name">Bench Press</span>
               <span class="badge">Chest</span>
             </div>
-            <div class="exercise-meta">
-              <span>135-175 lbs</span>
-              <span>•</span>
-              <span class="meta-timer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                1:30
-              </span>
-            </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-add-set">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Set
+            </button>
           </div>
           <button class="btn-remove">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -655,18 +651,15 @@
               </div>
             </div>
 
-            <div class="card-actions">
-              <div class="timer-inline">
+            <div class="timer-section">
+              <div class="timer-row">
+                <button class="btn-timer">-10s</button>
                 <div class="timer-bar-wrapper">
                   <div class="timer-bar-fill"></div>
                 </div>
                 <span class="timer-time">1:30</span>
-                <div class="timer-controls">
-                  <button class="btn-timer">-10s</button>
-                  <button class="btn-timer">+10s</button>
-                </div>
+                <button class="btn-timer">+10s</button>
               </div>
-              <button class="btn-add-set">+ Add Set</button>
             </div>
           </div>
         </div>
@@ -693,10 +686,17 @@
               <span class="badge">Back</span>
             </div>
             <div class="exercise-meta">
-              <span>120-140 lbs</span>
-              <span>•</span>
-              <span style="color: var(--color-success);">Complete</span>
+              <span class="complete-label">Complete</span>
             </div>
+          </div>
+          <div class="header-actions">
+            <button class="btn-add-set">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              Add Set
+            </button>
           </div>
           <button class="btn-remove">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">

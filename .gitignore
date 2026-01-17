@@ -29,7 +29,6 @@ dist/
 
 #planing and development files
 docs/
-.planning/
 screenshots/
 .vercel/
 .mockups/

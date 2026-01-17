@@ -1453,13 +1453,6 @@ input[type="checkbox"]:focus {
   border-top: 1px solid var(--color-border-dim);
 }
 
-/* Timer Section */
-.exercise-workout-card .timer-section {
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--color-border-dim);
-}
-
 /* Set table adjustments for accordion */
 .exercise-workout-card .set-table {
   margin-top: var(--spacing-md);

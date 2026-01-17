@@ -17,11 +17,11 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Phases
 
-### ✅ v2.2 Exercise Card Redesign (Complete)
+### v2.2 Exercise Card Redesign (In Progress)
 
 **Milestone Goal:** Redesign WorkoutExerciseCard to accordion-style collapsible layout with ~70% space savings when collapsed.
 
-#### Phase 31: Exercise Card Accordion — Complete
+#### ✅ Phase 31: Exercise Card Accordion — Complete
 
 **Goal**: Refactor WorkoutExerciseCard to accordion/collapsible pattern per mockup design
 **Shipped**: 2026-01-17
@@ -36,6 +36,21 @@ Plans:
 - ~70% vertical space savings in collapsed state
 - Multiple cards can be expanded simultaneously
 - Smooth max-height transition animation
+
+#### ✅ Phase 32: Rest Timer Bar Redesign — Complete
+
+**Goal**: Redesign RestTimerBar to match mockup's horizontal inline layout
+**Shipped**: 2026-01-16
+
+Plans:
+- [x] 32-01: Rest Timer Bar Horizontal Layout (JSX + CSS redesign)
+
+**Delivered:**
+- Horizontal inline layout: [-10s] [bar] [time] [+10s]
+- Slim 8px bar height (6px on mobile)
+- Gradient fill: `linear-gradient(90deg, accent, #67e8f9)`
+- Time display as separate inline element
+- Compact button styling for inline layout
 
 <details>
 <summary>✅ v2.1 Monorepo Architecture + Root Cleanup (Phases 24-30) — SHIPPED 2026-01-16</summary>
@@ -113,7 +128,7 @@ Plans:
 
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
-| v2.2 Exercise Card Redesign | 31 | 1/1 | Complete | 2026-01-17 |
+| v2.2 Exercise Card Redesign | 31-32 | 2/2 | Complete | 2026-01-16 |
 | v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
 | v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
 | v1.4 IronFactor Rebrand | 19-20 | 2/2 | Complete | 2026-01-14 |
@@ -122,7 +137,7 @@ Plans:
 | v1.1 Fixes & Polish | 12-13 | 3/3 | Complete | 2026-01-13 |
 | v1.0 Exercise Tracker Refactor | 1-11 | 27/27 | Complete | 2026-01-13 |
 
-**Total:** 9 milestones shipped, 31 phases complete, 49 plans complete
+**Total:** 9 milestones shipped, 32 phases complete, 50 plans complete
 
 ---
 

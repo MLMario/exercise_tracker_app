@@ -6,7 +6,7 @@ Technical debt refactor migrating a fitness tracking app from zero-build vanilla
 
 ## Milestones
 
-- ✅ **v2.3 Template Editor Redesign** - Phases 33-37 — SHIPPED 2026-01-17
+- ✅ **v2.3 Template Editor Redesign** - Phases 33-38 — SHIPPED 2026-01-17
 - ✅ [v2.2 Exercise Card Redesign](milestones/v2.2-ROADMAP.md) (Phases 31-32) — SHIPPED 2026-01-17
 - ✅ [v2.1 Monorepo Architecture + Root Cleanup](milestones/v2.1-ROADMAP.md) (Phases 24-30) — SHIPPED 2026-01-16
 - ✅ [v1.5 UX Improvements](milestones/v1.5-ROADMAP.md) (Phases 21-23) — SHIPPED 2026-01-15
@@ -71,6 +71,16 @@ Plans:
 
 Plans:
 - [x] 37-01: Add --font-mono CSS variable, visual verification
+
+#### Phase 38: Header & Button Refinements ✓
+
+**Goal**: Match TemplateEditorSurface header to WorkoutSurface: btn-sm buttons, header-info wrapper
+**Depends on**: Phase 37
+**Research**: Unlikely (internal patterns)
+**Plans**: 1/1 complete
+
+Plans:
+- [x] 38-01: Header layout refinements (btn-sm buttons, header-info wrapper)
 
 <details>
 <summary>✅ v2.2 Exercise Card Redesign (Phases 31-32) — SHIPPED 2026-01-17</summary>
@@ -156,7 +166,7 @@ Plans:
 
 | Milestone | Phases | Plans | Status | Shipped |
 |-----------|--------|-------|--------|---------|
-| v2.3 Template Editor Redesign | 33-37 | 5/5 | Complete | 2026-01-17 |
+| v2.3 Template Editor Redesign | 33-38 | 6/6 | Complete | 2026-01-17 |
 | v2.2 Exercise Card Redesign | 31-32 | 2/2 | Complete | 2026-01-17 |
 | v2.1 Monorepo + Cleanup | 24-30 | 7/7 | Complete | 2026-01-16 |
 | v1.5 UX Improvements | 21-23 | 3/3 | Complete | 2026-01-15 |
@@ -166,7 +176,7 @@ Plans:
 | v1.1 Fixes & Polish | 12-13 | 3/3 | Complete | 2026-01-13 |
 | v1.0 Exercise Tracker Refactor | 1-11 | 27/27 | Complete | 2026-01-13 |
 
-**Total:** 10 milestones shipped, 37 phases complete, 55 plans complete
+**Total:** 10 milestones shipped, 38 phases complete, 56 plans complete
 
 ---
 

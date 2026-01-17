@@ -28,6 +28,7 @@
 
   /* Typography */
   --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
   --font-size-base: 16px;
   --line-height-base: 1.5;
 
@@ -1313,7 +1314,7 @@ input[type="checkbox"]:focus {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.625rem;
   font-weight: 700;
   color: var(--color-text-primary);
@@ -1345,7 +1346,7 @@ input[type="checkbox"]:focus {
   align-items: center;
   gap: var(--spacing-sm);
   margin-top: 2px;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.625rem;
   color: var(--color-text-muted);
 }
@@ -1369,7 +1370,7 @@ input[type="checkbox"]:focus {
   border: 1px solid rgba(74, 222, 128, 0.3);
   border-radius: var(--radius-sm);
   color: var(--color-success);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.625rem;
   font-weight: 600;
   cursor: pointer;
@@ -1463,7 +1464,7 @@ input[type="checkbox"]:focus {
   grid-template-columns: 32px 1fr 1fr 36px;
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) 0;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.5625rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -1490,7 +1491,7 @@ input[type="checkbox"]:focus {
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border-dim);
   border-radius: var(--radius-sm);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
   display: flex;
@@ -1513,7 +1514,7 @@ input[type="checkbox"]:focus {
   border: 1px solid var(--color-border-dim);
   border-radius: var(--radius-sm);
   color: var(--color-text-primary);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.875rem;
   font-weight: 500;
   text-align: center;
@@ -1835,7 +1836,7 @@ input[type="checkbox"]:focus {
   border: 1px solid rgba(74, 222, 128, 0.3);
   border-radius: var(--radius-sm);
   color: var(--color-success);
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.625rem;
   font-weight: 600;
   cursor: pointer;

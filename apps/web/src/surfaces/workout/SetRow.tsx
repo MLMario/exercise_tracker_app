@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
+import { useDrag } from '@use-gesture/react';
 import type { WorkoutSet } from './WorkoutSurface';
 
 // ============================================================================

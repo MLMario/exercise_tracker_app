@@ -20,6 +20,7 @@ Simple, effective workout tracking with clean visual feedback on progress.
 - ✓ Exercise name truncates with ellipsis when text is too long — v2.3
 - ✓ Truncated exercise names show full name in tooltip on hover — v2.3
 - ✓ Production code free of DEBUG console.log statements — v2.4
+- ✓ Exercise card action buttons in footer (cleaner header) — v2.5
 
 ### Active
 
@@ -42,9 +43,11 @@ Simple, effective workout tracking with clean visual feedback on progress.
 **Current State:**
 - v2.3 shipped with header layout fix and exercise name truncation
 - v2.4 shipped with debug logging cleanup (39 statements removed)
+- v2.5 shipped with exercise card action footer redesign
 - Template editor header matches dashboard-surface pattern
 - Native browser tooltips used for truncated exercise names
 - Production codebase clean of debug logging
+- Exercise card header now cleaner (progress ring, name, chevron only)
 
 ## Constraints
 
@@ -61,6 +64,8 @@ Simple, effective workout tracking with clean visual feedback on progress.
 | Native browser title attribute | Simplest tooltip solution, works across all browsers | ✓ Good |
 | Remove all DEBUG console.log | Production code should not have debug logging | ✓ Good |
 | Keep console.error statements | Error logging remains useful for production debugging | ✓ Good |
+| Move buttons to card-action-footer | Cleaner header, better UX for action visibility | ✓ Good |
+| Remove button always visible | No hover-reveal needed in footer, improves discoverability | ✓ Good |
 
 ---
-*Last updated: 2026-01-17 after v2.4 milestone*
+*Last updated: 2026-01-18 after v2.5 milestone*

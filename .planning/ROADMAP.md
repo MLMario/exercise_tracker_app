@@ -12,7 +12,7 @@ None
 
 - ✅ [v2.3 Template Editor UI Cleanup](milestones/v2.3-ROADMAP.md) (Phases 1-2) — SHIPPED 2026-01-17
 - ✅ [v2.4 Debug Cleanup](milestones/v2.4-ROADMAP.md) (Phase 3) — SHIPPED 2026-01-17
-- ✅ **v2.5 Exercise Card Design Modifications** — Phase 4 (complete)
+- ✅ [v2.5 Exercise Card Design Modifications](milestones/v2.5-ROADMAP.md) (Phase 4) — SHIPPED 2026-01-18
 
 ## Completed Milestones
 
@@ -28,6 +28,13 @@ None
 <summary>✅ v2.4 Debug Cleanup (Phase 3) — SHIPPED 2026-01-17</summary>
 
 - [x] Phase 3: Remove Debug Logging (1/1 plans) — completed 2026-01-17
+
+</details>
+
+<details>
+<summary>✅ v2.5 Exercise Card Design Modifications (Phase 4) — SHIPPED 2026-01-18</summary>
+
+- [x] Phase 4: Workout Card Action Footer (1/1 plans) — completed 2026-01-18
 
 </details>
 

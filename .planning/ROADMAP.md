@@ -15,7 +15,7 @@ None
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Header Layout** - Fix Cancel/Title/Save alignment in single row
-- [ ] **Phase 2: Exercise Name Truncation** - Add ellipsis overflow and hover tooltip
+- [x] **Phase 2: Exercise Name Truncation** - Add ellipsis overflow and hover tooltip
 
 ## Phase Details
 
@@ -35,7 +35,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 02-01: CSS truncation and tooltip implementation
+- [x] 02-01: CSS truncation and tooltip implementation
 
 ## Progress
 
@@ -45,4 +45,4 @@ Phases execute in numeric order: 1 → 2
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Header Layout | 1/1 | Complete | 2026-01-18 |
-| 2. Exercise Name Truncation | 0/1 | Not started | - |
+| 2. Exercise Name Truncation | 1/1 | Complete | 2026-01-17 |

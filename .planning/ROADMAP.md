@@ -54,15 +54,14 @@ None
 Plans:
 - [x] 05-01: Install and verify Preact compatibility — completed 2026-01-18
 
-#### Phase 6: setrow-swipe-refactor
+#### Phase 6: setrow-swipe-refactor ✓
 
 **Goal**: Replace manual pointer handlers in SetRow with useDrag hook
 **Depends on**: Phase 5
-**Research**: Unlikely (applying library patterns)
-**Plans**: TBD
+**Status**: Complete
 
 Plans:
-- [ ] 06-01: TBD
+- [x] 06-01: Replace manual swipe handlers with useDrag hook — completed 2026-01-18
 
 #### Phase 7: swipe-polish
 
@@ -86,5 +85,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 3. Remove Debug Logging | v2.4 | 1/1 | Complete | 2026-01-17 |
 | 4. Workout Card Action Footer | v2.5 | 1/1 | Complete | 2026-01-18 |
 | 5. use-gesture-setup | v2.6 | 1/1 | Complete | 2026-01-18 |
-| 6. setrow-swipe-refactor | v2.6 | 0/? | Not started | - |
+| 6. setrow-swipe-refactor | v2.6 | 1/1 | Complete | 2026-01-18 |
 | 7. swipe-polish | v2.6 | 0/? | Not started | - |

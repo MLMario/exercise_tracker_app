@@ -12,7 +12,7 @@ None
 
 - ✅ [v2.3 Template Editor UI Cleanup](milestones/v2.3-ROADMAP.md) (Phases 1-2) — SHIPPED 2026-01-17
 - ✅ [v2.4 Debug Cleanup](milestones/v2.4-ROADMAP.md) (Phase 3) — SHIPPED 2026-01-17
-- 🚧 **v2.5 Exercise Card Design Modifications** — Phase 4 (in progress)
+- ✅ **v2.5 Exercise Card Design Modifications** — Phase 4 (complete)
 
 ## Completed Milestones
 
@@ -33,19 +33,7 @@ None
 
 ## Current Milestone
 
-### 🚧 v2.5 Exercise Card Design Modifications (In Progress)
-
-**Milestone Goal:** Redesign exercise-workout-card layout by moving action buttons from header to a new footer section
-
-#### Phase 4: Workout Card Action Footer
-
-**Goal**: Move "+ Add Set" and "Remove" buttons from card header to new `workout-card-action` footer section at bottom of exercise-workout-card
-**Depends on**: Previous milestone complete
-**Research**: Unlikely (internal CSS/component patterns)
-**Plans**: TBD
-
-Plans:
-- [ ] 04-01: Move action buttons to card footer
+None - all milestones complete.
 
 ## Progress
 
@@ -57,4 +45,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Header Layout | v2.3 | 1/1 | Complete | 2026-01-18 |
 | 2. Exercise Name Truncation | v2.3 | 1/1 | Complete | 2026-01-17 |
 | 3. Remove Debug Logging | v2.4 | 1/1 | Complete | 2026-01-17 |
-| 4. Workout Card Action Footer | v2.5 | 0/? | Not started | - |
+| 4. Workout Card Action Footer | v2.5 | 1/1 | Complete | 2026-01-18 |

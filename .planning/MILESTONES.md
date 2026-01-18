@@ -1,4 +1,29 @@
-# Project Milestones: Template Editor UI Cleanup
+# Project Milestones: Exercise Tracker App
+
+## v2.4 Debug Cleanup (Shipped: 2026-01-17)
+
+**Delivered:** Removed 39 DEBUG console.log statements from 4 files for production-ready codebase.
+
+**Phases completed:** 3 (1 plan total)
+
+**Key accomplishments:**
+
+- Removed 13 debug statements from main.tsx (auth flow and recovery mode)
+- Removed 9 debug statements from AuthSurface.tsx (initialization and rendering)
+- Removed 8 debug statements from ChartCard.tsx (chart rendering)
+- Removed 9 debug statements from DashboardSurface.tsx (data loading)
+
+**Stats:**
+
+- 4 files modified
+- 1 phase, 1 plan, 3 tasks
+- Same day completion
+
+**Git range:** `111b1f9` → `95f088a`
+
+**What's next:** Clean codebase ready for next feature work or polish.
+
+---
 
 ## v2.3 Template Editor UI Cleanup (Shipped: 2026-01-17)
 

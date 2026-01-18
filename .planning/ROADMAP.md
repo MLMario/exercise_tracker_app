@@ -10,34 +10,29 @@ None
 
 ## Milestones
 
-- [v2.3 Template Editor UI Cleanup](milestones/v2.3-ROADMAP.md) (Phases 1-2) — SHIPPED 2026-01-17
-- 🚧 **v2.4 Debug Cleanup** — Phase 3 (in progress)
+- ✅ [v2.3 Template Editor UI Cleanup](milestones/v2.3-ROADMAP.md) (Phases 1-2) — SHIPPED 2026-01-17
+- ✅ [v2.4 Debug Cleanup](milestones/v2.4-ROADMAP.md) (Phase 3) — SHIPPED 2026-01-17
 
 ## Completed Milestones
 
 <details>
-<summary>v2.3 Template Editor UI Cleanup (Phases 1-2) — SHIPPED 2026-01-17</summary>
+<summary>✅ v2.3 Template Editor UI Cleanup (Phases 1-2) — SHIPPED 2026-01-17</summary>
 
 - [x] Phase 1: Header Layout (1/1 plans) — completed 2026-01-18
 - [x] Phase 2: Exercise Name Truncation (1/1 plans) — completed 2026-01-17
 
 </details>
 
+<details>
+<summary>✅ v2.4 Debug Cleanup (Phase 3) — SHIPPED 2026-01-17</summary>
+
+- [x] Phase 3: Remove Debug Logging (1/1 plans) — completed 2026-01-17
+
+</details>
+
 ## Current Milestone
 
-### ✅ v2.4 Debug Cleanup (Complete)
-
-**Milestone Goal:** Remove excessive DEBUG console.log statements from codebase for cleaner production code.
-
-#### Phase 3: Remove Debug Logging
-
-**Goal**: Remove 30+ DEBUG console.log statements from main.tsx, AuthSurface.tsx, and ChartCard.tsx
-**Depends on**: Previous milestone complete
-**Research**: Unlikely (internal cleanup)
-**Plans**: 1
-
-Plans:
-- [x] 03-01: Remove Debug Logging — completed 2026-01-17
+None active. Ready for next milestone.
 
 ## Progress
 

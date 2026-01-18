@@ -15,6 +15,7 @@ import { TemplateList } from './TemplateList';
 import { ChartSection } from './ChartSection';
 import { AddChartModal } from './AddChartModal';
 import { ConfirmationModal } from '@/components';
+import { useAsyncOperation } from '@/hooks';
 import type { ChartData } from './ChartCard';
 
 /**
@@ -89,17 +90,19 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   const [showDeleteTemplateModal, setShowDeleteTemplateModal] = useState(false);
   const [pendingDeleteTemplateId, setPendingDeleteTemplateId] = useState<string | null>(null);
 
-  // Chart modal error
+  // Chart modal error (kept separate - modal-scoped)
   const [chartError, setChartError] = useState('');
 
-  // Loading state for initial data fetch
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Error message display
-  const [error, setError] = useState('');
-
-  // Success message display
-  const [successMessage, setSuccessMessage] = useState('');
+  // Async operation state for dashboard operations
+  const {
+    error,
+    successMessage,
+    isLoading,
+    setError,
+    setSuccess: setSuccessMessage,
+    clearMessages,
+    execute
+  } = useAsyncOperation({ initialLoading: true });
 
   // ==================== DATA LOADING ====================
   // Matches js/app.js lines 341-391
@@ -211,11 +214,8 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    */
   const loadDashboard = async (): Promise<void> => {
     console.log('[DashboardSurface] loadDashboard called');
-    setError('');
-    setSuccessMessage('');
-    setIsLoading(true);
 
-    try {
+    await execute(async () => {
       await Promise.all([
         loadTemplates(),
         loadExercises(),
@@ -223,12 +223,8 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
       ]);
       console.log('[DashboardSurface] loadDashboard completed successfully');
       setChartsNeedRefresh(false);
-    } catch (err) {
-      console.error('[DashboardSurface] loadDashboard failed:', err);
-      setError('Failed to load dashboard: ' + (err instanceof Error ? err.message : String(err)));
-    } finally {
-      setIsLoading(false);
-    }
+      return true;
+    });
   };
 
   // ==================== TEMPLATE ACTIONS ====================
@@ -240,8 +236,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 444-453.
    */
   const handleCreateNewTemplate = (): void => {
-    setError('');
-    setSuccessMessage('');
+    clearMessages();
     if (onCreateNewTemplate) {
       onCreateNewTemplate();
     }
@@ -253,8 +248,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 455-467.
    */
   const handleEditTemplate = (template: TemplateWithExercises): void => {
-    setError('');
-    setSuccessMessage('');
+    clearMessages();
     if (onEditTemplate) {
       onEditTemplate(template);
     }
@@ -288,18 +282,15 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
 
     if (!id) return;
 
-    setError('');
-    setSuccessMessage('');
-
-    try {
-      const { error } = await templates.deleteTemplate(id);
-      if (error) throw new Error(error.message);
-      setSuccessMessage('Template deleted successfully');
+    await execute(async () => {
+      const { error: deleteError } = await templates.deleteTemplate(id);
+      if (deleteError) throw new Error(deleteError.message);
       // Reload templates after successful delete
       await loadTemplates();
-    } catch (err) {
-      setError('Failed to delete template: ' + (err instanceof Error ? err.message : String(err)));
-    }
+      return true;
+    }, {
+      successMessage: 'Template deleted successfully'
+    });
   };
 
   /**
@@ -308,8 +299,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 695-730.
    */
   const handleStartWorkout = (template: TemplateWithExercises): void => {
-    setError('');
-    setSuccessMessage('');
+    clearMessages();
     if (onStartWorkout) {
       onStartWorkout(template);
     }
@@ -325,8 +315,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   const openAddChartModal = (): void => {
     setShowAddChartModal(true);
     setChartError('');
-    setError('');
-    setSuccessMessage('');
+    clearMessages();
   };
 
   /**
@@ -410,8 +399,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
 
     if (!id) return;
 
-    setError('');
-    try {
+    await execute(async () => {
       // Destroy chart instance
       if (chartInstancesRef.current[id]) {
         chartInstancesRef.current[id].destroy();
@@ -425,13 +413,12 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
         return updated;
       });
 
-      const { error } = await charts.deleteChart(id);
-      if (error) throw new Error(error.message);
+      const { error: deleteError } = await charts.deleteChart(id);
+      if (deleteError) throw new Error(deleteError.message);
 
       await loadUserCharts();
-    } catch (err) {
-      setError('Failed to remove chart: ' + (err instanceof Error ? err.message : String(err)));
-    }
+      return true;
+    });
   };
 
   // ==================== INITIALIZATION ====================

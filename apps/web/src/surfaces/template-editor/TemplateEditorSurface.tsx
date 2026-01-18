@@ -13,6 +13,7 @@ import type { TemplateWithExercises, Exercise, ExerciseCategory } from '@ironlif
 import { exercises, templates } from '@ironlift/shared';
 import { ExerciseList } from './ExerciseList';
 import { ExercisePickerModal } from '@/components';
+import { useAsyncOperation } from '@/hooks';
 
 /**
  * Set configuration within an editing exercise.
@@ -107,14 +108,16 @@ export function TemplateEditorSurface({
     template ? templateToEditing(template) : createEmptyTemplate()
   );
 
-  // Form submission state
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Error message display
-  const [error, setError] = useState('');
-
-  // Success message display
-  const [successMessage, setSuccessMessage] = useState('');
+  // Async operation state for form submission
+  const {
+    error,
+    successMessage,
+    isLoading: isSubmitting,
+    setError,
+    setSuccess: setSuccessMessage,
+    clearMessages,
+    execute
+  } = useAsyncOperation();
 
   // Exercise picker state
   const [showExercisePicker, setShowExercisePicker] = useState(false);
@@ -164,8 +167,7 @@ export function TemplateEditorSurface({
    * Matches js/app.js lines 469-509.
    */
   const handleSave = async (): Promise<void> => {
-    setError('');
-    setSuccessMessage('');
+    clearMessages();
 
     // Validate template name
     if (!editingTemplate.name || editingTemplate.name.trim() === '') {
@@ -179,34 +181,32 @@ export function TemplateEditorSurface({
       return;
     }
 
-    setIsSubmitting(true);
-
-    try {
+    const result = await execute(async () => {
       if (editingTemplate.id) {
         // Update existing template
-        const { error } = await templates.updateTemplate(
+        const { error: updateError } = await templates.updateTemplate(
           editingTemplate.id,
           editingTemplate.name,
           editingTemplate.exercises
         );
-        if (error) throw new Error(error.message);
-        setSuccessMessage('Template updated successfully');
+        if (updateError) throw new Error(updateError.message);
+        return 'updated';
       } else {
         // Create new template
-        const { error } = await templates.createTemplate(
+        const { error: createError } = await templates.createTemplate(
           editingTemplate.name,
           editingTemplate.exercises
         );
-        if (error) throw new Error(error.message);
-        setSuccessMessage('Template created successfully');
+        if (createError) throw new Error(createError.message);
+        return 'created';
       }
+    }, {
+      successMessage: editingTemplate.id ? 'Template updated successfully' : 'Template created successfully'
+    });
 
+    if (result) {
       // Navigate back to dashboard
       onSave();
-    } catch (err) {
-      setError('Failed to save template: ' + (err instanceof Error ? err.message : String(err)));
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

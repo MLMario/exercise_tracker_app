@@ -12,6 +12,7 @@
 import { useState, useMemo, useEffect } from 'preact/hooks';
 import type { JSX } from 'preact';
 import type { Exercise } from '@ironlift/shared';
+import { useAsyncOperation } from '@/hooks';
 
 /**
  * Category options for new exercise creation.
@@ -71,8 +72,9 @@ export function ExercisePickerModal({
   const [showNewExerciseForm, setShowNewExerciseForm] = useState(false);
   const [newExerciseName, setNewExerciseName] = useState('');
   const [newExerciseCategory, setNewExerciseCategory] = useState('');
-  const [isCreating, setIsCreating] = useState(false);
-  const [error, setError] = useState('');
+
+  // Async operation state for exercise creation
+  const { error, isLoading: isCreating, setError, reset: resetAsync, execute } = useAsyncOperation({ trackSuccess: false });
 
   // ==================== EFFECTS ====================
   /**
@@ -85,10 +87,9 @@ export function ExercisePickerModal({
       setShowNewExerciseForm(false);
       setNewExerciseName('');
       setNewExerciseCategory('');
-      setIsCreating(false);
-      setError('');
+      resetAsync();
     }
-  }, [isOpen]);
+  }, [isOpen, resetAsync]);
 
   // ==================== COMPUTED ====================
   /**
@@ -166,29 +167,21 @@ export function ExercisePickerModal({
       return;
     }
 
-    setIsCreating(true);
-    setError('');
-
-    try {
-      const newExercise = await onCreateExercise(
+    const newExercise = await execute(async () => {
+      const result = await onCreateExercise(
         newExerciseName.trim(),
         newExerciseCategory
       );
-
-      if (newExercise) {
-        // Auto-select the new exercise
-        onSelect(newExercise);
-        onClose();
-      } else {
-        setError('Failed to create exercise');
+      if (!result) {
+        throw new Error('Failed to create exercise');
       }
-    } catch (err) {
-      setError(
-        'Failed to create exercise: ' +
-          (err instanceof Error ? err.message : String(err))
-      );
-    } finally {
-      setIsCreating(false);
+      return result;
+    });
+
+    if (newExercise) {
+      // Auto-select the new exercise
+      onSelect(newExercise);
+      onClose();
     }
   };
 

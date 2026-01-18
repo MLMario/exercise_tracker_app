@@ -15,6 +15,7 @@ import { RegisterForm } from './RegisterForm';
 import { ResetPasswordForm } from './ResetPasswordForm';
 import { UpdatePasswordForm } from './UpdatePasswordForm';
 import { InfoModal } from '@/components/InfoModal';
+import { useAsyncOperation } from '@/hooks';
 
 /**
  * Auth sub-surface type - controls which auth form is displayed
@@ -59,8 +60,16 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
   const [authPassword, setAuthPassword] = useState('');
   const [authConfirmPassword, setAuthConfirmPassword] = useState('');
 
-  // Loading state for async operations
-  const [authLoading, setAuthLoading] = useState(false);
+  // Async operation state for auth actions
+  const {
+    error,
+    successMessage,
+    isLoading: authLoading,
+    setError,
+    setSuccess: setSuccessMessage,
+    clearMessages,
+    execute
+  } = useAsyncOperation();
 
   // Password visibility toggles (per field)
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -76,10 +85,6 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
   // Password recovery mode flag
   // Prevents SIGNED_IN from overriding PASSWORD_RECOVERY navigation
   const [isPasswordRecoveryMode, setIsPasswordRecoveryMode] = useState(false);
-
-  // Messages
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
 
   // Email confirmation modal state (shown after successful registration)
   const [showEmailConfirmModal, setShowEmailConfirmModal] = useState(false);
@@ -116,8 +121,7 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
         console.log('[DEBUG AuthSurface] PASSWORD_RECOVERY event - switching to updatePassword');
         setIsPasswordRecoveryMode(true);
         setAuthSurface('updatePassword');
-        setError('');
-        setSuccessMessage('');
+        clearMessages();
       }
     });
 
@@ -136,8 +140,7 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
    */
   const switchAuthSurface = (surface: AuthSubSurface) => {
     setAuthSurface(surface);
-    setError('');
-    setSuccessMessage('');
+    clearMessages();
 
     // Reset status flags when switching surfaces
     if (surface !== 'reset') {
@@ -189,50 +192,45 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
    * Matches js/app.js lines 168-206
    */
   const handleAuth = async () => {
-    setError('');
-    setAuthLoading(true);
-
     // Validate inputs
     if (!authEmail || !authPassword) {
       setError('Email and password are required');
-      setAuthLoading(false);
       return;
     }
 
-    try {
+    // Validate password confirmation for register mode
+    if (authSurface === 'register' && !validatePasswords()) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    await execute(async () => {
       let result;
       if (authSurface === 'login') {
         result = await auth.login(authEmail, authPassword);
       } else {
-        // Validate password confirmation for register mode
-        if (!validatePasswords()) {
-          setError('Passwords do not match');
-          setAuthLoading(false);
-          return;
-        }
         result = await auth.register(authEmail, authPassword);
       }
 
       if (result.error) {
-        setError(result.error.message);
-      } else {
-        // Clear form fields on success
-        setAuthEmail('');
-        setAuthPassword('');
-        setAuthConfirmPassword('');
-
-        if (authSurface === 'login') {
-          setSuccessMessage('Logged in successfully');
-        } else {
-          // Registration success: show email confirmation modal instead of toast
-          setShowEmailConfirmModal(true);
-        }
+        throw new Error(result.error.message);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setAuthLoading(false);
-    }
+
+      // Clear form fields on success
+      setAuthEmail('');
+      setAuthPassword('');
+      setAuthConfirmPassword('');
+
+      if (authSurface === 'login') {
+        return 'login';
+      } else {
+        // Registration success: show email confirmation modal instead of toast
+        setShowEmailConfirmModal(true);
+        return 'register';
+      }
+    }, {
+      successMessage: authSurface === 'login' ? 'Logged in successfully' : undefined
+    });
   };
 
   /**
@@ -240,30 +238,23 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
    * Matches js/app.js lines 242-267
    */
   const handlePasswordReset = async () => {
-    setError('');
-    setSuccessMessage('');
-
     if (!authEmail) {
       setError('Email is required');
       return;
     }
 
-    setAuthLoading(true);
-
-    try {
+    await execute(async () => {
       const result = await auth.resetPassword(authEmail);
 
       if (result.error) {
-        setError(result.error.message);
-      } else {
-        setResetEmailSent(true);
-        setSuccessMessage('Password reset email sent. Check your inbox.');
+        throw new Error(result.error.message);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setAuthLoading(false);
-    }
+
+      setResetEmailSent(true);
+      return 'reset';
+    }, {
+      successMessage: 'Password reset email sent. Check your inbox.'
+    });
   };
 
   /**
@@ -271,9 +262,6 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
    * Matches js/app.js lines 273-308
    */
   const handlePasswordUpdate = async () => {
-    setError('');
-    setSuccessMessage('');
-
     // Validate passwords match
     if (authPassword !== authConfirmPassword) {
       setError('Passwords do not match');
@@ -286,25 +274,21 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
       return;
     }
 
-    setAuthLoading(true);
-
-    try {
+    await execute(async () => {
       const result = await auth.updateUser(authPassword);
 
       if (result.error) {
-        setError(result.error.message);
-      } else {
-        setPasswordUpdateSuccess(true);
-        setSuccessMessage('Password updated successfully!');
-        // Clear password fields
-        setAuthPassword('');
-        setAuthConfirmPassword('');
+        throw new Error(result.error.message);
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setAuthLoading(false);
-    }
+
+      setPasswordUpdateSuccess(true);
+      // Clear password fields
+      setAuthPassword('');
+      setAuthConfirmPassword('');
+      return 'updated';
+    }, {
+      successMessage: 'Password updated successfully!'
+    });
   };
 
   /**
@@ -321,21 +305,11 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
       history.replaceState(null, '', window.location.pathname);
     }
     setAuthSurface('login');
-    setError('');
-    setSuccessMessage('');
+    clearMessages();
     setShowUpdatePassword(false);
     setShowUpdateConfirmPassword(false);
   };
 
-  /**
-   * Clear error message
-   */
-  const clearError = () => setError('');
-
-  /**
-   * Clear success message
-   */
-  const clearSuccessMessage = () => setSuccessMessage('');
 
   // ==================== RENDER ====================
 
@@ -449,7 +423,7 @@ export function AuthSurface({ isRecoveryMode = false, onRecoveryModeExit }: Auth
 
         {/* Success message display */}
         {successMessage && (
-          <div class="success-message" onClick={clearSuccessMessage}>
+          <div class="success-message" onClick={() => setSuccessMessage('')}>
             {successMessage}
           </div>
         )}

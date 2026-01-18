@@ -12,6 +12,7 @@ import type { TemplateWithExercises, Exercise } from '@ironlift/shared';
 import { exercises, logging, templates } from '@ironlift/shared';
 import { WorkoutExerciseCard } from './WorkoutExerciseCard';
 import { ConfirmationModal, ExercisePickerModal } from '@/components';
+import { useAsyncOperation } from '@/hooks';
 
 // ============================================================================
 // Interfaces
@@ -189,9 +190,15 @@ export function WorkoutSurface({
   // Pending workout data (for template update decision)
   const [pendingWorkoutData, setPendingWorkoutData] = useState<WorkoutData | null>(null);
 
-  // Message state
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  // Async operation state for saving workout
+  const {
+    error,
+    successMessage,
+    isLoading: isSaving,
+    setError,
+    setSuccess: setSuccessMessage,
+    clearMessages
+  } = useAsyncOperation();
 
   // Available exercises for exercise picker
   const [availableExercises, setAvailableExercises] = useState<Exercise[]>([]);
@@ -532,8 +539,7 @@ export function WorkoutSurface({
    * Matches js/app.js lines 907-917.
    */
   const handleFinishWorkout = (): void => {
-    setError('');
-    setSuccessMessage('');
+    clearMessages();
 
     if (activeWorkout.exercises.length === 0) {
       setError('Add at least one exercise to finish the workout');

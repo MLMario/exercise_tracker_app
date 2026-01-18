@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-01-17)
 
 **Core value:** Simple, effective workout tracking with clean visual feedback
-**Current focus:** No active milestone — ready for next work
+**Current focus:** v2.5 Exercise Card Design Modifications
 
 ## Current Position
 
-Phase: None active
-Plan: None
-Status: Ready for next milestone
-Last activity: 2026-01-17 — v2.4 milestone complete
+Phase: 4 of 4 (Workout Card Action Footer)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-01-18 — Milestone v2.5 created
 
-Progress: Ready for next milestone
+Progress: ░░░░░░░░░░ 0%
 
 ## Performance Metrics
 
@@ -50,6 +50,7 @@ Recent decisions:
 
 - Milestone v2.3 completed: Template Editor UI Cleanup (Phases 1-2)
 - Milestone v2.4 completed: Debug Cleanup (Phase 3)
+- Milestone v2.5 created: Exercise Card Design Modifications, 1 phase (Phase 4)
 
 ### Pending Todos
 
@@ -65,6 +66,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-01-17
-Stopped at: v2.4 milestone archived
+Last session: 2026-01-18
+Stopped at: Milestone v2.5 initialization
 Resume file: None

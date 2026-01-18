@@ -24,6 +24,14 @@
 - Impact: Code duplication, inconsistent error/loading handling
 - Fix approach: Create custom hooks (`useFormState`, `useAsyncOperation`)
 
+**Duplicate State Management Patterns:**
+- Issue: Same useState pattern repeated across 5+ files
+- Files: `WorkoutSurface.tsx`, `TemplateEditorSurface.tsx`, `AuthSurface.tsx`, `DashboardSurface.tsx`, `ExercisePickerModal.tsx`
+- Pattern: `const [error, setError] = useState(''); const [isLoading, setIsLoading] = useState(false);`
+- Why: No shared hooks or state management abstraction
+- Impact: Code duplication, inconsistent error/loading handling
+- Fix approach: Create custom hooks (`useFormState`, `useAsyncOperation`)
+
 **Excessive Debug Logging:**
 - Issue: 30+ DEBUG console.log statements throughout codebase
 - Files:

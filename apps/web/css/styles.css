@@ -1830,6 +1830,7 @@ input[type="checkbox"]:focus {
 }
 
 .exercise-editor-card .exercise-name {
+  display: block;
   font-size: 1rem; /* 0.9375rem = 15px */
   font-weight: 700;
   color: var(--color-text-primary);

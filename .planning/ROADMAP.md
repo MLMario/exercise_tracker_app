@@ -45,7 +45,7 @@ None
 **Plans**: TBD
 
 Plans:
-- [ ] 04-01: TBD (run /gsd:plan-phase 4 to break down)
+- [ ] 04-01: Move action buttons to card footer
 
 ## Progress
 

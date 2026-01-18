@@ -100,48 +100,19 @@ export function ChartCard({
    * This ensures the canvas is in the DOM before Chart.js renders.
    */
   useEffect(() => {
-    const logPrefix = `[ChartCard ${chart.id}]`;
-
-    console.log(`${logPrefix} useEffect triggered`, {
-      hasCanvasRef: !!canvasRef.current,
-      hasChartData: !!chartData,
-      chartDataLabels: chartData?.labels?.length ?? 0,
-      chartDataValues: chartData?.values?.length ?? 0,
-      hasExistingInstance: !!chartInstanceRef.current,
-    });
-
     // Skip if no canvas or no chart data
     if (!canvasRef.current || !chartData) {
-      console.log(`${logPrefix} SKIPPING - missing canvas or chartData`, {
-        canvasRef: canvasRef.current,
-        chartData,
-      });
       return;
     }
 
     // Skip if already rendered for this data
     if (chartInstanceRef.current) {
-      console.log(`${logPrefix} SKIPPING - chart already rendered`);
       return;
     }
 
     const canvasId = `chart-${chart.id}`;
-    const canvas = canvasRef.current;
-
-    // Log canvas dimensions
-    console.log(`${logPrefix} Canvas dimensions before render:`, {
-      canvasId,
-      offsetWidth: canvas.offsetWidth,
-      offsetHeight: canvas.offsetHeight,
-      clientWidth: canvas.clientWidth,
-      clientHeight: canvas.clientHeight,
-      width: canvas.width,
-      height: canvas.height,
-      parentOffsetHeight: canvas.parentElement?.offsetHeight,
-    });
 
     try {
-      console.log(`${logPrefix} Attempting to render chart...`);
       const instance = charts.renderChart(
         canvasId,
         chartData,
@@ -152,31 +123,24 @@ export function ChartCard({
       );
 
       if (instance) {
-        console.log(`${logPrefix} Chart rendered successfully`, { instance });
         chartInstanceRef.current = instance;
         setIsRendered(true);
         if (onChartRendered) {
           onChartRendered(chart.id, instance);
         }
-      } else {
-        console.warn(`${logPrefix} renderChart returned null/undefined`);
       }
     } catch (err) {
-      console.error(`${logPrefix} Failed to render chart:`, err);
+      // Chart render failed - leave in loading state
     }
 
     // Cleanup on unmount
     return () => {
-      console.log(`${logPrefix} Cleanup function called`, {
-        hasInstance: !!chartInstanceRef.current,
-      });
       if (chartInstanceRef.current) {
         try {
           // Pass the actual Chart instance, not the canvas ID string
           charts.destroyChart(chartInstanceRef.current);
-          console.log(`${logPrefix} Chart destroyed successfully`);
-        } catch (err) {
-          console.warn(`${logPrefix} Error destroying chart:`, err);
+        } catch {
+          // Ignore cleanup errors
         }
         chartInstanceRef.current = null;
         setIsRendered(false);

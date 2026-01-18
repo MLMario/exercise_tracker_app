@@ -1,8 +1,8 @@
-# Roadmap: Template Editor UI Cleanup
+# Roadmap: Exercise Tracker App
 
 ## Overview
 
-A two-phase polish pass focusing on the template editor surface. Phase 1 fixes the header button/title alignment, Phase 2 adds proper text truncation with tooltips for exercise names.
+Ongoing maintenance and polish work for the Exercise Tracker application. Each milestone addresses specific cleanup or feature needs.
 
 ## Domain Expertise
 
@@ -11,6 +11,7 @@ None
 ## Milestones
 
 - [v2.3 Template Editor UI Cleanup](milestones/v2.3-ROADMAP.md) (Phases 1-2) — SHIPPED 2026-01-17
+- 🚧 **v2.4 Debug Cleanup** — Phase 3 (in progress)
 
 ## Completed Milestones
 
@@ -22,12 +23,29 @@ None
 
 </details>
 
+## Current Milestone
+
+### 🚧 v2.4 Debug Cleanup (In Progress)
+
+**Milestone Goal:** Remove excessive DEBUG console.log statements from codebase for cleaner production code.
+
+#### Phase 3: Remove Debug Logging
+
+**Goal**: Remove 30+ DEBUG console.log statements from main.tsx, AuthSurface.tsx, and ChartCard.tsx
+**Depends on**: Previous milestone complete
+**Research**: Unlikely (internal cleanup)
+**Plans**: TBD
+
+Plans:
+- [ ] 03-01: TBD (run /gsd:plan-phase 3 to break down)
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2
+Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
 | 1. Header Layout | v2.3 | 1/1 | Complete | 2026-01-18 |
 | 2. Exercise Name Truncation | v2.3 | 1/1 | Complete | 2026-01-17 |
+| 3. Remove Debug Logging | v2.4 | 0/? | Not started | - |

@@ -4,17 +4,17 @@
 
 See: .planning/PROJECT.md (updated 2026-01-17)
 
-**Core value:** Both issues are equally important — the header layout and exercise name truncation must both work correctly for a polished user experience.
-**Current focus:** v2.3 milestone complete
+**Core value:** Clean, maintainable codebase without excessive debug logging
+**Current focus:** v2.4 Debug Cleanup milestone
 
 ## Current Position
 
-Phase: 2 of 2 (completed)
-Plan: All plans complete
-Status: v2.3 shipped
-Last activity: 2026-01-17 — v2.3 milestone complete
+Phase: 3 of 3 (Remove Debug Logging)
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-01-17 — Milestone v2.4 created
 
-Progress: [v1.0 SHIPPED]
+Progress: ░░░░░░░░░░ 0%
 
 ## Performance Metrics
 
@@ -44,6 +44,10 @@ Recent decisions affecting current work:
 - Phase 01: Matched dashboard-surface pattern for template editor header
 - Phase 02: Used native browser title attribute for tooltip
 
+### Roadmap Evolution
+
+- Milestone v2.4 created: Debug cleanup, 1 phase (Phase 3)
+
 ### Deferred Issues
 
 None.
@@ -55,5 +59,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-17
-Stopped at: v2.3 milestone complete
+Stopped at: Milestone v2.4 initialization
 Resume file: None

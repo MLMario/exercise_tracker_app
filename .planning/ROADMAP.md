@@ -14,7 +14,7 @@ None
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Header Layout** - Fix Cancel/Title/Save alignment in single row
+- [x] **Phase 1: Header Layout** - Fix Cancel/Title/Save alignment in single row
 - [ ] **Phase 2: Exercise Name Truncation** - Add ellipsis overflow and hover tooltip
 
 ## Phase Details
@@ -26,7 +26,7 @@ None
 **Plans**: TBD
 
 Plans:
-- [ ] 01-01: Header flexbox layout fix
+- [x] 01-01: Header flexbox layout fix
 
 ### Phase 2: Exercise Name Truncation
 **Goal**: Exercise name truncates with ellipsis when text is too long, with full name shown in tooltip on hover
@@ -44,5 +44,5 @@ Phases execute in numeric order: 1 → 2
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Header Layout | 0/1 | Not started | - |
+| 1. Header Layout | 1/1 | Complete | 2026-01-18 |
 | 2. Exercise Name Truncation | 0/1 | Not started | - |

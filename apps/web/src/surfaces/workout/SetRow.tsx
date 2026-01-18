@@ -6,7 +6,7 @@
  * Implements swipe-to-delete gesture handling for mobile-friendly set deletion.
  *
  * Structure matches index.html lines 579-615.
- * Swipe handlers match js/app.js lines 773-896.
+ * Swipe gesture uses @use-gesture/react for simplified handling.
  */
 
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
@@ -16,17 +16,6 @@ import type { WorkoutSet } from './WorkoutSurface';
 // ============================================================================
 // Interfaces
 // ============================================================================
-
-/**
- * Internal swipe tracking data.
- */
-interface SwipeData {
-  startX: number;
-  startY: number;
-  currentX: number;
-  isDragging: boolean;
-  pointerId: number | null;
-}
 
 /**
  * Props for SetRow component.
@@ -64,8 +53,7 @@ export interface SetRowProps {
  * - Done checkbox button
  * - Delete button (revealed via swipe gesture)
  *
- * Matches index.html lines 579-615.
- * Swipe handling matches js/app.js lines 773-896.
+ * Structure matches index.html lines 579-615.
  */
 export function SetRow({
   set,
@@ -80,21 +68,20 @@ export function SetRow({
   onSwipeStateChange
 }: SetRowProps) {
   // ==================== SWIPE STATE ====================
-  // Matches js/app.js lines 790-796
 
-  const [swipeData, setSwipeData] = useState<SwipeData | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const setRowRef = useRef<HTMLDivElement>(null);
 
   // ==================== SWIPE HANDLERS ====================
-  // Matches js/app.js lines 775-881
 
   /**
    * Reset swipe to original position.
    */
   const resetSwipe = useCallback((): void => {
     setIsRevealed(false);
+    setIsDragging(false);
     if (setRowRef.current) {
       setRowRef.current.style.transform = '';
     }
@@ -102,109 +89,54 @@ export function SetRow({
   }, [onSwipeStateChange]);
 
   /**
-   * Handle swipe start (pointerdown/touchstart).
-   * Matches js/app.js lines 775-802.
+   * useDrag hook from @use-gesture/react for swipe gesture handling.
+   * Replaces manual pointer event handlers with simplified declarative API.
    */
-  const handleSwipeStart = (event: PointerEvent | TouchEvent): void => {
-    // Don't interfere if clicking the delete button
-    if ((event.target as HTMLElement).closest('.btn-remove-set')) {
-      return;
-    }
-
-    // Close this row if already revealed
-    if (isRevealed) {
-      resetSwipe();
-      return;
-    }
-
-    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
-    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
-
-    setSwipeData({
-      startX: clientX,
-      startY: clientY,
-      currentX: clientX,
-      isDragging: false,
-      pointerId: 'pointerId' in event ? event.pointerId : null
-    });
-
-    // Capture pointer for smoother tracking
-    if ('pointerId' in event && wrapperRef.current?.setPointerCapture) {
-      wrapperRef.current.setPointerCapture(event.pointerId);
-    }
-  };
-
-  /**
-   * Handle swipe move (pointermove/touchmove).
-   * Matches js/app.js lines 804-843.
-   */
-  const handleSwipeMove = (event: PointerEvent | TouchEvent): void => {
-    if (!swipeData) return;
-
-    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
-    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
-
-    const deltaX = clientX - swipeData.startX;
-    const deltaY = clientY - swipeData.startY;
-
-    // Only handle horizontal swipes
-    if (!swipeData.isDragging && Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 5) {
-      setSwipeData(prev => prev ? { ...prev, isDragging: true } : null);
-    }
-
-    if (swipeData.isDragging) {
-      // Prevent scrolling when swiping horizontally
-      if ('cancelable' in event && event.cancelable) {
-        event.preventDefault();
+  const bind = useDrag(
+    ({ movement: [mx], active, tap, event }) => {
+      // Don't interfere with delete button clicks
+      if ((event?.target as HTMLElement)?.closest('.btn-remove-set')) {
+        return;
       }
 
-      // Only allow swiping left, constrain to max distance
-      const swipeDistance = Math.min(0, deltaX);
-      const maxSwipe = -80;
-      const constrainedDistance = Math.max(maxSwipe, swipeDistance);
-
-      // Apply transform directly
-      if (setRowRef.current) {
-        setRowRef.current.style.transform = `translateX(${constrainedDistance}px)`;
+      // Tap on revealed row closes it
+      if (tap && isRevealed) {
+        resetSwipe();
+        return;
       }
 
-      setSwipeData(prev => prev ? { ...prev, currentX: clientX } : null);
-    }
-  };
+      // Track dragging state for CSS class
+      setIsDragging(active);
 
-  /**
-   * Handle swipe end (pointerup/touchend/pointercancel).
-   * Matches js/app.js lines 846-881.
-   */
-  const handleSwipeEnd = (event: PointerEvent | TouchEvent): void => {
-    if (!swipeData) return;
+      // Constrain to left swipe only, max -80px
+      const x = Math.max(-80, Math.min(0, mx));
 
-    const deltaX = swipeData.currentX - swipeData.startX;
-    const threshold = -40;
-
-    if (swipeData.isDragging && deltaX < threshold) {
-      // Snap to revealed position
-      setIsRevealed(true);
-      if (setRowRef.current) {
-        setRowRef.current.style.transform = 'translateX(-70px)';
+      if (active) {
+        // During drag - follow finger
+        if (setRowRef.current) {
+          setRowRef.current.style.transform = `translateX(${x}px)`;
+        }
+      } else if (!tap) {
+        // On release (not tap) - snap to position
+        const threshold = -40;
+        if (mx < threshold) {
+          // Snap to revealed
+          setIsRevealed(true);
+          if (setRowRef.current) {
+            setRowRef.current.style.transform = 'translateX(-70px)';
+          }
+          onSwipeStateChange?.(true);
+        } else {
+          // Snap back
+          resetSwipe();
+        }
       }
-      onSwipeStateChange?.(true);
-    } else {
-      // Snap back to original
-      resetSwipe();
+    },
+    {
+      axis: 'x',
+      filterTaps: true,
     }
-
-    // Release pointer capture
-    if (swipeData.pointerId && wrapperRef.current?.releasePointerCapture) {
-      try {
-        wrapperRef.current.releasePointerCapture(swipeData.pointerId);
-      } catch (e) {
-        // Ignore if already released
-      }
-    }
-
-    setSwipeData(null);
-  };
+  );
 
   // ==================== EFFECTS ====================
 
@@ -255,23 +187,12 @@ export function SetRow({
   // ==================== RENDER ====================
   // Structure matches index.html lines 569-615
 
-  // Style to prevent text selection and vertical scroll during swipe
-  const wrapperStyle = swipeData?.isDragging
-    ? { userSelect: 'none' as const, touchAction: 'none' as const }
-    : {};
-
   return (
     <div
       ref={wrapperRef}
-      class={`set-row-wrapper ${swipeData?.isDragging ? 'swiping' : ''} ${isRevealed ? 'swipe-revealed' : ''}`}
-      style={wrapperStyle}
-      onPointerDown={handleSwipeStart}
-      onPointerMove={handleSwipeMove}
-      onPointerUp={handleSwipeEnd}
-      onPointerCancel={handleSwipeEnd}
-      onTouchStart={handleSwipeStart}
-      onTouchMove={handleSwipeMove}
-      onTouchEnd={handleSwipeEnd}
+      class={`set-row-wrapper ${isDragging ? 'swiping' : ''} ${isRevealed ? 'swipe-revealed' : ''}`}
+      style={{ touchAction: 'pan-y' }}
+      {...bind()}
       onClick={(e) => e.stopPropagation()}
     >
       <div ref={setRowRef} class={`set-row ${set.is_done ? 'set-done' : ''}`}>
@@ -307,7 +228,7 @@ export function SetRow({
         type="button"
         class="btn-remove-set"
         onClick={handleDelete}
-        style={{ visibility: canDelete && (isRevealed || swipeData?.isDragging) ? 'visible' : 'hidden' }}
+        style={{ visibility: canDelete && (isRevealed || isDragging) ? 'visible' : 'hidden' }}
         title="Remove Set"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

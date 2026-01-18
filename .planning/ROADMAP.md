@@ -8,41 +8,26 @@ A two-phase polish pass focusing on the template editor surface. Phase 1 fixes t
 
 None
 
-## Phases
+## Milestones
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+- [v2.3 Template Editor UI Cleanup](milestones/v2.3-ROADMAP.md) (Phases 1-2) — SHIPPED 2026-01-17
 
-- [x] **Phase 1: Header Layout** - Fix Cancel/Title/Save alignment in single row
-- [x] **Phase 2: Exercise Name Truncation** - Add ellipsis overflow and hover tooltip
+## Completed Milestones
 
-## Phase Details
+<details>
+<summary>v2.3 Template Editor UI Cleanup (Phases 1-2) — SHIPPED 2026-01-17</summary>
 
-### Phase 1: Header Layout
-**Goal**: App header displays Cancel (btn-secondary), title "New Template", and Save (btn-primary) in a single row: `[Cancel] New Template [Save]`
-**Depends on**: Nothing (first phase)
-**Research**: Unlikely (CSS layout, internal patterns)
-**Plans**: TBD
+- [x] Phase 1: Header Layout (1/1 plans) — completed 2026-01-18
+- [x] Phase 2: Exercise Name Truncation (1/1 plans) — completed 2026-01-17
 
-Plans:
-- [x] 01-01: Header flexbox layout fix
-
-### Phase 2: Exercise Name Truncation
-**Goal**: Exercise name truncates with ellipsis when text is too long, with full name shown in tooltip on hover
-**Depends on**: Phase 1
-**Research**: Unlikely (CSS truncation, established patterns)
-**Plans**: TBD
-
-Plans:
-- [x] 02-01: CSS truncation and tooltip implementation
+</details>
 
 ## Progress
 
 **Execution Order:**
 Phases execute in numeric order: 1 → 2
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Header Layout | 1/1 | Complete | 2026-01-18 |
-| 2. Exercise Name Truncation | 1/1 | Complete | 2026-01-17 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Header Layout | v2.3 | 1/1 | Complete | 2026-01-18 |
+| 2. Exercise Name Truncation | v2.3 | 1/1 | Complete | 2026-01-17 |

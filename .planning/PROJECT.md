@@ -16,12 +16,13 @@ Both issues are equally important — the header layout and exercise name trunca
 - ✓ Header with Cancel and Save buttons present — existing
 - ✓ Exercise info display component present — existing
 - ✓ btn-primary and btn-secondary CSS classes exist — existing
+- ✓ App header displays Cancel (btn-secondary), title "New Template", and Save (btn-primary) in a single row — v2.3
+- ✓ Exercise name truncates with ellipsis when text is too long — v2.3
+- ✓ Truncated exercise names show full name in tooltip on hover — v2.3
 
 ### Active
 
-- [ ] App header displays Cancel (btn-secondary), title "New Template", and Save (btn-primary) in a single row: `[Cancel] New Template [Save]`
-- [ ] Exercise name (exercise-info) truncates with ellipsis when text is too long
-- [ ] Truncated exercise names show full name in tooltip on hover
+(None — milestone complete)
 
 ### Out of Scope
 
@@ -51,8 +52,17 @@ Both issues are equally important — the header layout and exercise name trunca
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Template-editor only | Keep changes scoped to avoid unintended side effects | — Pending |
-| Tooltip on truncation | Better UX — user can see full exercise name on hover | — Pending |
+| Template-editor only | Keep changes scoped to avoid unintended side effects | ✓ Good |
+| Tooltip on truncation | Better UX — user can see full exercise name on hover | ✓ Good |
+| Match dashboard-surface pattern | Consistent header flexbox layout across surfaces | ✓ Good |
+| Native browser title attribute | Simplest tooltip solution, works across all browsers | ✓ Good |
+
+## Context
+
+**Current State:**
+- v2.3 shipped with header layout fix and exercise name truncation
+- Template editor header now matches dashboard-surface pattern
+- Native browser tooltips used for truncated exercise names
 
 ---
-*Last updated: 2026-01-17 after initialization*
+*Last updated: 2026-01-17 after v2.3 milestone*

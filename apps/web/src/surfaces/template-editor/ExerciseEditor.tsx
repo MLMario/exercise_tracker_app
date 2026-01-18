@@ -129,7 +129,7 @@ export function ExerciseEditor({
       {/* Card Header */}
       <div class="card-header">
         <div class="exercise-info">
-          <span class="exercise-name">{exercise.name}</span>
+          <span class="exercise-name" title={exercise.name}>{exercise.name}</span>
         </div>
         <div class="header-actions">
           <button type="button" class="btn-add-set" onClick={onAddSet} title="Add Set">

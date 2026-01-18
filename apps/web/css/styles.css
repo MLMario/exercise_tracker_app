@@ -1370,72 +1370,72 @@ input[type="checkbox"]:focus {
   color: var(--color-success);
 }
 
-/* Header Actions */
-.exercise-workout-card .header-actions {
+/* Card Action Footer */
+.exercise-workout-card .card-action-footer {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: var(--spacing-xs);
-  flex-shrink: 0;
+  padding: 0.75rem 0;
+  margin-top: var(--spacing-sm);
+  border-top: 1px solid var(--color-border-dim);
 }
 
-/* Add Set Button in Header */
-.exercise-workout-card .header-actions .btn-add-set {
-  padding: 6px 10px;
+/* Add Set Button in Footer */
+.exercise-workout-card .card-action-footer .btn-add-set {
+  padding: 8px 12px;
   background: rgba(74, 222, 128, 0.15);
   border: 1px solid rgba(74, 222, 128, 0.3);
   border-radius: var(--radius-sm);
   color: var(--color-success);
   font-family: var(--font-mono);
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   width: auto;
   margin-top: 0;
 }
 
-.exercise-workout-card .header-actions .btn-add-set:hover {
+.exercise-workout-card .card-action-footer .btn-add-set:hover {
   background: var(--color-success);
   border-color: var(--color-success);
   color: white;
 }
 
-.exercise-workout-card .header-actions .btn-add-set svg {
-  width: 12px;
-  height: 12px;
+.exercise-workout-card .card-action-footer .btn-add-set svg {
+  width: 14px;
+  height: 14px;
 }
 
-/* Remove Button */
-.exercise-workout-card .btn-remove {
-  width: 40px;
-  height: 40px;
+/* Remove Button in Footer */
+.exercise-workout-card .card-action-footer .btn-remove {
+  padding: 8px 12px;
   background: transparent;
-  border: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
   color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-  opacity: 0;
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
+  gap: 6px;
 }
 
-.exercise-workout-card .card-header:hover .btn-remove {
-  opacity: 1;
-}
-
-.exercise-workout-card .btn-remove:hover {
+.exercise-workout-card .card-action-footer .btn-remove:hover {
   background: rgba(248, 113, 113, 0.15);
+  border-color: var(--color-danger);
   color: var(--color-danger);
 }
 
-.exercise-workout-card .btn-remove svg {
+.exercise-workout-card .card-action-footer .btn-remove svg {
   width: 14px;
   height: 14px;
 }

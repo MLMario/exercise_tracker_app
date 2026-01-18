@@ -1481,7 +1481,7 @@ input[type="checkbox"]:focus {
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) 0;
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1962,7 +1962,7 @@ input[type="checkbox"]:focus {
 
 /* Template Editor Set Table - Dense Grid Layout */
 .exercise-editor-card .set-table {
-  margin-top: var(--spacing-md);
+  margin-top: var(--spacing-sm);
 }
 
 .exercise-editor-card .set-header {
@@ -1971,7 +1971,7 @@ input[type="checkbox"]:focus {
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) 0;
   font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -2475,6 +2475,19 @@ input[type="checkbox"]:focus {
 
 /* Dashboard Surface Header */
 .dashboard-surface .app-header {
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Template Editor Surface Header */
+.template-editor-surface .app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: var(--color-bg-surface);
   border-bottom: 1px solid var(--color-border);
   padding: var(--spacing-md);

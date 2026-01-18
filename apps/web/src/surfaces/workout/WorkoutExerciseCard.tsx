@@ -93,19 +93,15 @@ export function WorkoutExerciseCard({
 
   /**
    * Handle remove exercise button click.
-   * Stops propagation to prevent toggle.
    */
-  const handleRemoveExercise = (e: Event): void => {
-    e.stopPropagation();
+  const handleRemoveExercise = (): void => {
     onRemoveExercise(exerciseIndex);
   };
 
   /**
    * Handle add set button click.
-   * Stops propagation to prevent toggle.
    */
-  const handleAddSet = (e: Event): void => {
-    e.stopPropagation();
+  const handleAddSet = (): void => {
     onAddSet(exerciseIndex);
   };
 
@@ -149,35 +145,6 @@ export function WorkoutExerciseCard({
           )}
         </div>
 
-        {/* Header Actions */}
-        <div class="header-actions">
-          <button
-            type="button"
-            class="btn-add-set"
-            onClick={handleAddSet}
-            title="Add Set"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Add Set
-          </button>
-        </div>
-
-        {/* Remove Button */}
-        <button
-          type="button"
-          class="btn-remove"
-          onClick={handleRemoveExercise}
-          title="Remove Exercise"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-
         {/* Chevron */}
         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="6 9 12 15 18 9" />
@@ -220,6 +187,34 @@ export function WorkoutExerciseCard({
             isComplete={isTimerActive && timerSeconds === 0}
             onAdjust={onAdjustTimer}
           />
+
+          {/* Action Footer */}
+          <div class="card-action-footer">
+            <button
+              type="button"
+              class="btn-add-set"
+              onClick={handleAddSet}
+              title="Add Set"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Add Set
+            </button>
+            <button
+              type="button"
+              class="btn-remove"
+              onClick={handleRemoveExercise}
+              title="Remove Exercise"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+              Remove
+            </button>
+          </div>
         </div>
       </div>
     </div>

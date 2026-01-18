@@ -50,7 +50,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- 1 todo in `.planning/todos/pending/`
+None.
 
 ### Deferred Issues
 

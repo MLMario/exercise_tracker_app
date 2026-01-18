@@ -1285,6 +1285,9 @@ input[type="checkbox"]:focus {
   cursor: pointer;
   user-select: none;
   transition: background var(--transition-fast);
+  margin-top: 0;
+  margin-bottom: 0;
+  
 }
 
 .exercise-workout-card .card-header:hover {
@@ -1468,7 +1471,8 @@ input[type="checkbox"]:focus {
 
 /* Set table adjustments for accordion */
 .exercise-workout-card .set-table {
-  margin-top: var(--spacing-md);
+  margin: var(--spacing-sm);
+
 }
 
 .exercise-workout-card .set-header {
@@ -1477,7 +1481,7 @@ input[type="checkbox"]:focus {
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) 0;
   font-family: var(--font-mono);
-  font-size: 0.5625rem;
+  font-size: 1rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -2081,7 +2085,7 @@ input[type="checkbox"]:focus {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  margin-top: var(--spacing-sm);
+  margin-top: 0;
   padding-top: var(--spacing-sm);
   border-top: 1px solid var(--color-border);
 }

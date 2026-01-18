@@ -48,6 +48,10 @@ Recent decisions affecting current work:
 
 - Milestone v2.4 created: Debug cleanup, 1 phase (Phase 3)
 
+### Pending Todos
+
+- 1 todo in `.planning/todos/pending/`
+
 ### Deferred Issues
 
 None.

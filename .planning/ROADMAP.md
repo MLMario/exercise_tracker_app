@@ -45,16 +45,14 @@ None
 
 **Milestone Goal:** Refactor swipe-to-delete gesture in SetRow using @use-gesture library for cleaner, more maintainable code.
 
-#### Phase 5: use-gesture-setup
+#### Phase 5: use-gesture-setup ✓
 
 **Goal**: Install @use-gesture/react and configure for Preact compatibility
 **Depends on**: Previous milestone complete
-**Research**: Likely (new library integration)
-**Research topics**: @use-gesture API, Preact compatibility, useDrag hook configuration
-**Plans**: TBD
+**Status**: Complete
 
 Plans:
-- [ ] 05-01: TBD (run /gsd:plan-phase 5 to break down)
+- [x] 05-01: Install and verify Preact compatibility — completed 2026-01-18
 
 #### Phase 6: setrow-swipe-refactor
 
@@ -87,6 +85,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Exercise Name Truncation | v2.3 | 1/1 | Complete | 2026-01-17 |
 | 3. Remove Debug Logging | v2.4 | 1/1 | Complete | 2026-01-17 |
 | 4. Workout Card Action Footer | v2.5 | 1/1 | Complete | 2026-01-18 |
-| 5. use-gesture-setup | v2.6 | 0/? | Not started | - |
+| 5. use-gesture-setup | v2.6 | 1/1 | Complete | 2026-01-18 |
 | 6. setrow-swipe-refactor | v2.6 | 0/? | Not started | - |
 | 7. swipe-polish | v2.6 | 0/? | Not started | - |

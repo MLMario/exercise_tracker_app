@@ -70,6 +70,7 @@ export function SetRow({
   // ==================== SWIPE STATE ====================
 
   const [isDragging, setIsDragging] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const setRowRef = useRef<HTMLDivElement>(null);
@@ -82,6 +83,7 @@ export function SetRow({
   const resetSwipe = useCallback((): void => {
     setIsRevealed(false);
     setIsDragging(false);
+    setIsClosing(false);
     if (setRowRef.current) {
       setRowRef.current.style.transform = '';
     }
@@ -107,6 +109,14 @@ export function SetRow({
 
       // Track dragging state for CSS class
       setIsDragging(active);
+
+      // Track if we're closing a revealed row (swiping right)
+      // Button should hide immediately when closing
+      if (isRevealed && active && mx > -60) {
+        setIsClosing(true);
+      } else if (!active) {
+        setIsClosing(false);
+      }
 
       // Constrain to left swipe only with rubberband past -80px
       const maxDrag = -80;
@@ -244,7 +254,7 @@ export function SetRow({
         type="button"
         class="btn-remove-set"
         onClick={handleDelete}
-        style={{ visibility: canDelete && (isRevealed || isDragging) ? 'visible' : 'hidden' }}
+        style={{ visibility: canDelete && (isRevealed || isDragging) && !isClosing ? 'visible' : 'hidden' }}
         title="Remove Set"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

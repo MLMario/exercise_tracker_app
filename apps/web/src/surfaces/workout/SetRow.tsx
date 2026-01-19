@@ -93,7 +93,7 @@ export function SetRow({
    * Replaces manual pointer event handlers with simplified declarative API.
    */
   const bind = useDrag(
-    ({ movement: [mx], active, tap, event }) => {
+    ({ movement: [mx], velocity: [vx], active, tap, event }) => {
       // Don't interfere with delete button clicks
       if ((event?.target as HTMLElement)?.closest('.btn-remove-set')) {
         return;
@@ -118,8 +118,13 @@ export function SetRow({
         }
       } else if (!tap) {
         // On release (not tap) - snap to position
-        const threshold = -40;
-        if (mx < threshold) {
+        // Use velocity for quick swipes (vx is in px/ms, typically 0.1-2.0 for normal swipes)
+        const positionThreshold = -40;
+        const velocityThreshold = 0.5; // Fast left swipe snaps regardless of position
+
+        const shouldReveal = mx < positionThreshold || (mx < -10 && vx < -velocityThreshold);
+
+        if (shouldReveal) {
           // Snap to revealed
           setIsRevealed(true);
           if (setRowRef.current) {

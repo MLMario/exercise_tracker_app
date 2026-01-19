@@ -63,15 +63,14 @@ Plans:
 Plans:
 - [x] 06-01: Replace manual swipe handlers with useDrag hook — completed 2026-01-18
 
-#### Phase 7: swipe-polish
+#### Phase 7: swipe-polish ✓
 
 **Goal**: Add spring animations and gesture refinements
 **Depends on**: Phase 6
-**Research**: Unlikely (internal patterns)
-**Plans**: TBD
+**Status**: Complete
 
 Plans:
-- [ ] 07-01: TBD
+- [x] 07-01: Add spring animations and gesture refinements — completed 2026-01-19
 
 ## Progress
 
@@ -86,4 +85,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 4. Workout Card Action Footer | v2.5 | 1/1 | Complete | 2026-01-18 |
 | 5. use-gesture-setup | v2.6 | 1/1 | Complete | 2026-01-18 |
 | 6. setrow-swipe-refactor | v2.6 | 1/1 | Complete | 2026-01-18 |
-| 7. swipe-polish | v2.6 | 0/? | Not started | - |
+| 7. swipe-polish | v2.6 | 1/1 | Complete | 2026-01-19 |

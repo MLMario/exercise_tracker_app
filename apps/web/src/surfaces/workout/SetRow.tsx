@@ -108,8 +108,19 @@ export function SetRow({
       // Track dragging state for CSS class
       setIsDragging(active);
 
-      // Constrain to left swipe only, max -80px
-      const x = Math.max(-80, Math.min(0, mx));
+      // Constrain to left swipe only with rubberband past -80px
+      const maxDrag = -80;
+      let x: number;
+      if (mx >= 0) {
+        x = 0; // No right swipe
+      } else if (mx >= maxDrag) {
+        x = mx; // Normal drag range
+      } else {
+        // Rubberband: resistance increases past max
+        // Every pixel past -80 adds only 0.2 pixels of movement
+        const overDrag = mx - maxDrag;
+        x = maxDrag + overDrag * 0.2;
+      }
 
       if (active) {
         // During drag - follow finger

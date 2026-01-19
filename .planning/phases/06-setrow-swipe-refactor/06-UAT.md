@@ -3,7 +3,7 @@ status: complete
 phase: 06-setrow-swipe-refactor
 source: 06-01-SUMMARY.md
 started: 2026-01-18T11:00:00Z
-updated: 2026-01-18T11:05:00Z
+updated: 2026-01-18T11:10:00Z
 ---
 
 ## Current Test
@@ -37,23 +37,27 @@ expected: When the delete button is revealed, swiping right should close the row
 result: issue
 reported: "it closes the row but the x botton remains visible until I stop pressing with my thumb, once i release it the x botton dissapears"
 severity: minor
+deferred: Phase 7 (swipe-polish)
 
 ## Summary
 
 total: 6
 passed: 5
-issues: 1
+issues: 1 (deferred to Phase 7)
 pending: 0
 skipped: 0
 
 ## Gaps
 
 - truth: "When swiping right to close, delete button should hide immediately as row closes"
-  status: failed
+  status: deferred
   reason: "User reported: it closes the row but the x botton remains visible until I stop pressing with my thumb, once i release it the x botton dissapears"
   severity: minor
   test: 6
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Delete button visibility depends on (isRevealed || isDragging) which doesn't account for drag direction - when dragging right to close from revealed state, isRevealed stays true during the entire drag until resetSwipe() is called on drag end"
+  artifacts:
+    - path: "apps/web/src/surfaces/workout/SetRow.tsx"
+      issue: "Line 231 visibility condition doesn't track drag direction for close gesture"
+  missing:
+    - "Track drag direction - when closing (dragging right from revealed state), set isRevealed to false immediately as drag begins"
+  deferred_to: "Phase 7 swipe-polish"

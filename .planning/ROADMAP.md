@@ -13,7 +13,7 @@ None
 - ✅ [v2.3 Template Editor UI Cleanup](milestones/v2.3-ROADMAP.md) (Phases 1-2) — SHIPPED 2026-01-17
 - ✅ [v2.4 Debug Cleanup](milestones/v2.4-ROADMAP.md) (Phase 3) — SHIPPED 2026-01-17
 - ✅ [v2.5 Exercise Card Design Modifications](milestones/v2.5-ROADMAP.md) (Phase 4) — SHIPPED 2026-01-18
-- 🚧 **v2.6 Swipe Gesture Refactor** - Phases 5-7 (in progress)
+- ✅ [v2.6 Swipe Gesture Refactor](milestones/v2.6-ROADMAP.md) (Phases 5-7) — SHIPPED 2026-01-19
 
 ## Completed Milestones
 
@@ -39,38 +39,18 @@ None
 
 </details>
 
+<details>
+<summary>✅ v2.6 Swipe Gesture Refactor (Phases 5-7) — SHIPPED 2026-01-19</summary>
+
+- [x] Phase 5: use-gesture-setup (1/1 plans) — completed 2026-01-18
+- [x] Phase 6: setrow-swipe-refactor (1/1 plans) — completed 2026-01-18
+- [x] Phase 7: swipe-polish (1/1 plans) — completed 2026-01-19
+
+</details>
+
 ## Current Milestone
 
-### 🚧 v2.6 Swipe Gesture Refactor (In Progress)
-
-**Milestone Goal:** Refactor swipe-to-delete gesture in SetRow using @use-gesture library for cleaner, more maintainable code.
-
-#### Phase 5: use-gesture-setup ✓
-
-**Goal**: Install @use-gesture/react and configure for Preact compatibility
-**Depends on**: Previous milestone complete
-**Status**: Complete
-
-Plans:
-- [x] 05-01: Install and verify Preact compatibility — completed 2026-01-18
-
-#### Phase 6: setrow-swipe-refactor ✓
-
-**Goal**: Replace manual pointer handlers in SetRow with useDrag hook
-**Depends on**: Phase 5
-**Status**: Complete
-
-Plans:
-- [x] 06-01: Replace manual swipe handlers with useDrag hook — completed 2026-01-18
-
-#### Phase 7: swipe-polish ✓
-
-**Goal**: Add spring animations and gesture refinements
-**Depends on**: Phase 6
-**Status**: Complete
-
-Plans:
-- [x] 07-01: Add spring animations and gesture refinements — completed 2026-01-19
+No active milestone. All planned work complete.
 
 ## Progress
 

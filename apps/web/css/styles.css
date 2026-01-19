@@ -1684,7 +1684,7 @@ input[type="checkbox"]:focus {
 .set-row-wrapper .set-row {
   position: relative;
   background-color: var(--color-bg-secondary); /* Ensure row has background to cover delete button */
-  transition: transform 0.2s ease-out;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   z-index: 2; /* Row above delete button */
 }
 
@@ -1713,7 +1713,7 @@ input[type="checkbox"]:focus {
   z-index: 1; /* Behind the row but clickable when revealed */
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease-out;
+  transition: opacity 0.25s ease-out;
 }
 
 .btn-remove-set svg {

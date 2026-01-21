@@ -1,5 +1,56 @@
 # Project Milestones: Exercise Tracker App
 
+## v2.6 Swipe Gesture Refactor (Shipped: 2026-01-19)
+
+**Delivered:** Replaced manual swipe handlers with @use-gesture/react library, adding spring animations, velocity-based snap, and iOS-style rubberband effects.
+
+**Phases completed:** 5-7 (3 plans total)
+
+**Key accomplishments:**
+
+- Installed @use-gesture/react with verified Preact compatibility via preact/compat aliasing
+- Replaced ~115 lines of manual pointer handlers with ~45 lines using useDrag hook
+- Added spring-like CSS transitions with overshoot effect using cubic-bezier curve
+- Implemented velocity-based snap for fast left swipes
+- Added iOS-style rubberband effect with 5:1 resistance past boundary
+- Fixed delete button visibility during close gesture
+
+**Stats:**
+
+- 3 files modified (core changes: SetRow.tsx, vite.config.ts, styles.css)
+- 3 phases, 3 plans, 11 tasks
+- 2 days from start to ship
+
+**Git range:** `21930ce` → `2a2b9e0`
+
+**What's next:** Swipe gesture system complete. Ready for next feature work.
+
+---
+
+## v2.5 Exercise Card Design Modifications (Shipped: 2026-01-18)
+
+**Delivered:** Moved exercise card action buttons to footer for cleaner header design.
+
+**Phases completed:** 4 (1 plan total)
+
+**Key accomplishments:**
+
+- Moved action buttons to card-action-footer component
+- Remove button always visible (no hover-reveal needed)
+- Cleaner exercise card header (progress ring, name, chevron only)
+
+**Stats:**
+
+- 2 files modified
+- 1 phase, 1 plan, 3 tasks
+- Same day completion
+
+**Git range:** `9a13902` → `635bbd4`
+
+**What's next:** Exercise card design complete. Ready for gesture improvements.
+
+---
+
 ## v2.4 Debug Cleanup (Shipped: 2026-01-17)
 
 **Delivered:** Removed 39 DEBUG console.log statements from 4 files for production-ready codebase.

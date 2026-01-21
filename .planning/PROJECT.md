@@ -21,6 +21,10 @@ Simple, effective workout tracking with clean visual feedback on progress.
 - ✓ Truncated exercise names show full name in tooltip on hover — v2.3
 - ✓ Production code free of DEBUG console.log statements — v2.4
 - ✓ Exercise card action buttons in footer (cleaner header) — v2.5
+- ✓ Swipe-to-delete uses @use-gesture/react library (cleaner implementation) — v2.6
+- ✓ Spring-like animations on swipe gestures with overshoot effect — v2.6
+- ✓ Velocity-based snap decision for fast swipes — v2.6
+- ✓ iOS-style rubberband effect when over-dragging — v2.6
 
 ### Active
 
@@ -44,10 +48,12 @@ Simple, effective workout tracking with clean visual feedback on progress.
 - v2.3 shipped with header layout fix and exercise name truncation
 - v2.4 shipped with debug logging cleanup (39 statements removed)
 - v2.5 shipped with exercise card action footer redesign
+- v2.6 shipped with swipe gesture refactor using @use-gesture/react
 - Template editor header matches dashboard-surface pattern
 - Native browser tooltips used for truncated exercise names
 - Production codebase clean of debug logging
 - Exercise card header now cleaner (progress ring, name, chevron only)
+- Swipe-to-delete with spring animations, velocity snap, and rubberband effects
 
 ## Constraints
 
@@ -66,6 +72,11 @@ Simple, effective workout tracking with clean visual feedback on progress.
 | Keep console.error statements | Error logging remains useful for production debugging | ✓ Good |
 | Move buttons to card-action-footer | Cleaner header, better UX for action visibility | ✓ Good |
 | Remove button always visible | No hover-reveal needed in footer, improves discoverability | ✓ Good |
+| @use-gesture/react for swipe handling | Standard library, cleaner code (~70 line reduction) | ✓ Good |
+| Explicit preact/compat aliases in vite.config.ts | Ensures @use-gesture/react resolves correctly in production | ✓ Good |
+| CSS cubic-bezier for spring animation | No additional dependency needed, sufficient for use case | ✓ Good |
+| Velocity threshold 0.5 px/ms | Fast swipes feel responsive, minimum -10px prevents accidental triggers | ✓ Good |
+| Rubberband 0.2 multiplier | iOS-style 5:1 resistance feels natural | ✓ Good |
 
 ---
-*Last updated: 2026-01-18 after v2.5 milestone*
+*Last updated: 2026-01-19 after v2.6 milestone*

@@ -62,9 +62,11 @@ None
 | 10 | Backend Updates | Update types and service functions | BACK-01 to BACK-03 | Pending |
 | 11 | Frontend Updates | Add badge and sorting to exercise picker | UI-01 to UI-03 | Pending |
 
-**Plans:**
+**Plans:** 4 plans
 - [x] 08-01-PLAN.md -- Create migration SQL for schema changes, RLS policies, and indexes
 - [x] 09-01-PLAN.md -- Create TypeScript script to fetch, transform, and generate CSV for Supabase import
+- [ ] 10-01-PLAN.md -- Update Exercise type and service functions for system exercises
+- [ ] 11-01-PLAN.md -- (to be planned)
 
 **Success Criteria:**
 - [ ] User sees ~800 system exercises in exercise picker

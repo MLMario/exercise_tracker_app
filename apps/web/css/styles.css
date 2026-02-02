@@ -2812,11 +2812,6 @@ input[type="checkbox"]:focus {
   text-overflow: ellipsis;
 }
 
-/* System exercise name - muted */
-.exercise-list-item.system .exercise-item-name {
-  color: #a1a1aa;
-}
-
 /* Category text */
 .exercise-item-category {
   display: block;

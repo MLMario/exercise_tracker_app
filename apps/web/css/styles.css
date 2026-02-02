@@ -2760,3 +2760,98 @@ input[type="checkbox"]:focus {
     max-width: 1200px;
   }
 }
+
+/* ==========================================================================
+   18. Exercise Picker - Visual Hierarchy (User vs System Exercises)
+   ========================================================================== */
+
+/* Base clickable item style */
+.exercise-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+/* Hover state */
+.exercise-list-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Already-added state */
+.exercise-list-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* No hover effect when disabled */
+.exercise-list-item.disabled:hover {
+  background-color: transparent;
+}
+
+/* Info container - stacked name/category layout */
+.exercise-item-info {
+  flex: 1;
+  min-width: 0; /* for text truncation */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Exercise name */
+.exercise-item-name {
+  display: block;
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 500;
+  color: #fafafa; /* bright white for user exercises */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Category text */
+.exercise-item-category {
+  display: block;
+  font-size: 0.75rem; /* 12px */
+  color: #71717a; /* muted gray */
+}
+
+/* Custom badge (Option B - Solid Pill) */
+.badge-custom {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 5px 10px;
+  border-radius: 100px;
+  color: #18181b; /* dark text */
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%); /* green gradient */
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3);
+  flex-shrink: 0; /* prevent badge from squishing */
+}
+
+/* Optional divider between custom and library sections */
+.exercise-list-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: var(--spacing-xs) 0;
+}
+
+.exercise-list-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.exercise-list-divider-text {
+  font-size: 10px;
+  font-weight: 500;
+  color: #52525b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}

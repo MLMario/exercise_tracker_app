@@ -19,7 +19,8 @@ export type ExerciseCategory =
   | 'Shoulders'
   | 'Legs'
   | 'Arms'
-  | 'Core';
+  | 'Core'
+  | 'Other';
 
 // ============================================================================
 // Row Types (SELECT results)
@@ -30,10 +31,15 @@ export type ExerciseCategory =
  * Represents a single exercise in the library.
  *
  * @property id - Unique identifier (UUID)
- * @property user_id - Owner's user ID (null for global/system exercises)
+ * @property user_id - Owner's user ID (null for system exercises)
  * @property name - Display name of the exercise
  * @property category - Exercise muscle group category
  * @property equipment - Optional equipment needed (e.g., "Barbell", "Dumbbell")
+ * @property instructions - Step-by-step exercise instructions (system exercises only)
+ * @property level - Difficulty level: beginner, intermediate, or expert
+ * @property force - Force type: push, pull, or static
+ * @property mechanic - Movement type: compound or isolation
+ * @property is_system - Whether this is a pre-created system exercise
  */
 export interface Exercise {
   id: string;
@@ -41,6 +47,11 @@ export interface Exercise {
   name: string;
   category: ExerciseCategory;
   equipment: string | null;
+  instructions: string[] | null;
+  level: 'beginner' | 'intermediate' | 'expert' | null;
+  force: 'push' | 'pull' | 'static' | null;
+  mechanic: 'compound' | 'isolation' | null;
+  is_system: boolean;
 }
 
 /**

@@ -114,6 +114,7 @@ async function createExercise(
           name: name.trim(),
           category: category,
           equipment: equipment ? equipment.trim() : null,
+          is_system: false, // User-created exercises are never system exercises
         },
       ])
       .select()
@@ -208,7 +209,7 @@ async function exerciseExists(name: string): Promise<boolean> {
  * @returns Array of category strings
  */
 function getCategories(): ExerciseCategory[] {
-  return ['Chest', 'Back', 'Shoulders', 'Legs', 'Arms', 'Core'];
+  return ['Chest', 'Back', 'Shoulders', 'Legs', 'Arms', 'Core', 'Other'];
 }
 
 /**

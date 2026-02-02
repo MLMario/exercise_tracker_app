@@ -60,13 +60,13 @@ None
 | 8 | Database Schema Migration | Modify exercises table and RLS policies | SCHEMA-01 to SCHEMA-09, RLS-01 to RLS-05 | Complete |
 | 9 | Data Import | Fetch and transform exercise data, generate CSV | DATA-01 to DATA-04 | Complete |
 | 10 | Backend Updates | Update types and service functions | BACK-01 to BACK-03 | Complete |
-| 11 | Frontend Updates | Add badge and sorting to exercise picker | UI-01 to UI-03 | Planned |
+| 11 | Frontend Updates | Add badge and sorting to exercise picker | UI-01 to UI-03 | Complete |
 
 **Plans:** 4 plans
 - [x] 08-01-PLAN.md -- Create migration SQL for schema changes, RLS policies, and indexes
 - [x] 09-01-PLAN.md -- Create TypeScript script to fetch, transform, and generate CSV for Supabase import
 - [x] 10-01-PLAN.md -- Update Exercise type and service functions for system exercises
-- [ ] 11-01-PLAN.md -- Add CSS styles and update ExercisePickerModal with sorting and badge
+- [x] 11-01-PLAN.md -- Add CSS styles and update ExercisePickerModal with sorting and badge
 
 **Success Criteria:**
 - [ ] User sees ~800 system exercises in exercise picker
@@ -92,4 +92,4 @@ Phases execute in numeric order: 8 -> 9 -> 10 -> 11
 | 8. Database Schema Migration | v2.7 | 1/1 | Complete | 2026-02-01 |
 | 9. Data Import | v2.7 | 1/1 | Complete | 2026-02-01 |
 | 10. Backend Updates | v2.7 | 1/1 | Complete | 2026-02-01 |
-| 11. Frontend Updates | v2.7 | 0/1 | Planned | -- |
+| 11. Frontend Updates | v2.7 | 1/1 | Complete | 2026-02-02 |

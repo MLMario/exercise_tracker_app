@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-01)
 
 ## Current Position
 
-Phase: 8 (Database Schema Migration)
-Plan: N/A (not yet planned)
-Status: Milestone initialized, ready for /gsd:plan-phase 8
-Last activity: 2026-02-01 — v2.7 milestone started
+Phase: 8 of 11 (Database Schema Migration)
+Plan: 1 of 1 complete
+Status: Phase complete
+Last activity: 2026-02-01 - Completed 08-01-PLAN.md
 
-Progress: ░░░░░░░░░░ 0% (v2.7)
+Progress: ██░░░░░░░░ 25% (v2.7 - 1/4 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
+- Total plans completed: 8
 - Average duration: 2 min
-- Total execution time: 16 min
+- Total execution time: 18 min
 
 **By Phase:**
 
@@ -34,9 +34,10 @@ Progress: ░░░░░░░░░░ 0% (v2.7)
 | 05-use-gesture-setup | 1 | 1 min | 1 min |
 | 06-setrow-swipe-refactor | 1 | 4 min | 4 min |
 | 07-swipe-polish | 1 | 4 min | 4 min |
+| 08-database-schema-migration | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (2 min), 04-01 (3 min), 05-01 (1 min), 06-01 (4 min), 07-01 (4 min)
+- Last 5 plans: 04-01 (3 min), 05-01 (1 min), 06-01 (4 min), 07-01 (4 min), 08-01 (2 min)
 - Trend: —
 
 ## Accumulated Context
@@ -53,6 +54,7 @@ Recent decisions:
 - Phase 05: Used @use-gesture/react with existing preact/compat aliasing
 - Phase 06: Explicit preact/compat aliases in vite.config.ts for @use-gesture/react compatibility
 - Phase 07: CSS cubic-bezier for spring animation, velocity threshold 0.5 px/ms, rubberband 0.2 multiplier
+- Phase 08: (SELECT auth.uid()) wrapper for RLS performance, 'Other' category for unmapped exercises
 
 ### Roadmap Evolution
 
@@ -77,6 +79,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-01
-Stopped at: v2.7 milestone initialized
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None
-Next step: /gsd:plan-phase 8
+Next step: Run migration in Supabase SQL Editor, then /gsd:plan-phase 9

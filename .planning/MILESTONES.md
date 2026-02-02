@@ -1,5 +1,32 @@
 # Project Milestones: Exercise Tracker App
 
+## v2.7 Pre-Created Exercise Library (Shipped: 2026-02-02)
+
+**Delivered:** Added 873 pre-created exercises from free-exercise-db that users can pick from when adding exercises, with database schema changes, RLS policies, and visual distinction in the picker.
+
+**Phases completed:** 8-13 (6 plans total)
+
+**Key accomplishments:**
+
+- Extended database schema with nullable user_id, is_system flag, and metadata columns (instructions, level, force, mechanic)
+- Imported 873 exercises mapped to 7 categories (Chest, Back, Shoulders, Legs, Arms, Core, Other)
+- Updated RLS policies for shared read access to system exercises while protecting user data
+- Exercise picker displays user exercises first with green "CUSTOM" badge, then system exercises alphabetically
+- Clean stacked layout with category below exercise name for improved visual hierarchy
+- Unified text color for all exercises (removed muted styling from system exercises)
+
+**Stats:**
+
+- 44 files modified
+- 6 phases, 6 plans, ~11 tasks
+- 2 days from start to ship (2026-02-01 → 2026-02-02)
+
+**Git range:** `77c7031` → `81b814e`
+
+**What's next:** Exercise library complete. Ready for next feature work or v2 enhancements (instructions display, difficulty filtering, favorites).
+
+---
+
 ## v2.6 Swipe Gesture Refactor (Shipped: 2026-01-19)
 
 **Delivered:** Replaced manual swipe handlers with @use-gesture/react library, adding spring animations, velocity-based snap, and iOS-style rubberband effects.

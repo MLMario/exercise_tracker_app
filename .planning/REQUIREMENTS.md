@@ -36,9 +36,9 @@ Requirements for v2.7 Pre-Created Exercise Library milestone. Each maps to roadm
 
 ### Backend
 
-- [ ] **BACK-01**: Exercise type updated with nullable user_id and new fields
-- [ ] **BACK-02**: getExercises returns both user and system exercises (RLS handles filtering)
-- [ ] **BACK-03**: createExercise sets is_system=false and current user_id
+- [x] **BACK-01**: Exercise type updated with nullable user_id and new fields
+- [x] **BACK-02**: getExercises returns both user and system exercises (RLS handles filtering)
+- [x] **BACK-03**: createExercise sets is_system=false and current user_id
 
 ### Frontend
 
@@ -100,9 +100,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-02 | Phase 9 | Complete |
 | DATA-03 | Phase 9 | Complete |
 | DATA-04 | Phase 9 | Complete |
-| BACK-01 | Phase 10 | Pending |
-| BACK-02 | Phase 10 | Pending |
-| BACK-03 | Phase 10 | Pending |
+| BACK-01 | Phase 10 | Complete |
+| BACK-02 | Phase 10 | Complete |
+| BACK-03 | Phase 10 | Complete |
 | UI-01 | Phase 11 | Pending |
 | UI-02 | Phase 11 | Pending |
 | UI-03 | Phase 11 | Pending |
@@ -114,4 +114,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after Phase 9 completion*
+*Last updated: 2026-02-01 after Phase 10 completion*

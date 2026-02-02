@@ -43,20 +43,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PICK-01 | Pending | Pending |
-| PICK-02 | Pending | Pending |
-| PICK-03 | Pending | Pending |
-| PICK-04 | Pending | Pending |
-| PICK-05 | Pending | Pending |
-| PICK-06 | Pending | Pending |
-| CHART-01 | Pending | Pending |
-| CHART-02 | Pending | Pending |
+| PICK-01 | Phase 14 | Pending |
+| PICK-02 | Phase 14 | Pending |
+| PICK-03 | Phase 14 | Pending |
+| PICK-04 | Phase 14 | Pending |
+| PICK-05 | Phase 14 | Pending |
+| PICK-06 | Phase 14 | Pending |
+| CHART-01 | Phase 15 | Pending |
+| CHART-02 | Phase 15 | Pending |
 
 **Coverage:**
 - v1 requirements: 8 total
-- Mapped to phases: 0
-- Unmapped: 8 ⚠️
+- Mapped to phases: 8
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-02*
-*Last updated: 2026-02-02 after initial definition*
+*Last updated: 2026-02-02 after roadmap creation*

@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Simple, effective workout tracking with clean visual feedback
-**Current focus:** v2.7 shipped — ready for next milestone
+**Current focus:** v2.8 Enhanced Filtering Capabilities
 
 ## Current Position
 
-Phase: 13 of 13 complete (v2.7 shipped)
-Plan: N/A
-Status: Milestone complete
-Last activity: 2026-02-02 - v2.7 milestone archived
+Phase: 14 of 15 (Exercise Picker Category Filter)
+Plan: None yet
+Status: Roadmap created, awaiting planning
+Last activity: 2026-02-02 - v2.8 roadmap created
 
-Progress: ██████████ 100% (v2.7 shipped)
+Progress: ░░░░░░░░░░ 0% (0/2 phases)
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Milestone v2.5 completed: Exercise Card Design Modifications (Phase 4)
 - Milestone v2.6 completed: Swipe Gesture Refactor (Phases 5-7)
 - Milestone v2.7 completed: Pre-Created Exercise Library (Phases 8-13) - SHIPPED 2026-02-02
+- Milestone v2.8 started: Enhanced Filtering Capabilities (Phases 14-15)
 
 ### Pending Todos
 
@@ -70,6 +71,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-02
-Stopped at: v2.7 milestone complete and archived
+Stopped at: Roadmap created for v2.8
 Resume file: None
-Next step: `/gsd:new-milestone` to start next milestone
+Next step: `/gsd:plan-phase 14` to plan Exercise Picker Category Filter

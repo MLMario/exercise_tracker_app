@@ -46,6 +46,10 @@ Requirements for v2.7 Pre-Created Exercise Library milestone. Each maps to roadm
 - [x] **UI-02**: Exercise list sorted: user exercises first, then system, both alphabetical
 - [x] **UI-03**: "Other" category available when creating custom exercises
 
+### Layout
+
+- [x] **LAYOUT-01**: Category text appears below exercise name in picker (not inline)
+
 ## v2 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
@@ -106,12 +110,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UI-01 | Phase 11 | Complete |
 | UI-02 | Phase 11 | Complete |
 | UI-03 | Phase 11 | Complete |
+| LAYOUT-01 | Phase 12 | Complete |
 
 **Coverage:**
-- v1 requirements: 23 total
-- Mapped to phases: 23
+- v1 requirements: 24 total
+- Mapped to phases: 24
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-02 after Phase 11 completion*
+*Last updated: 2026-02-02 after Phase 12 completion*

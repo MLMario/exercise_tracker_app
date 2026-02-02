@@ -2792,17 +2792,24 @@ input[type="checkbox"]:focus {
   background-color: transparent;
 }
 
-/* Info container */
+/* Info container - stacked name/category layout */
 .exercise-item-info {
   flex: 1;
   min-width: 0; /* for text truncation */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 /* Exercise name */
 .exercise-item-name {
+  display: block;
   font-size: 0.9375rem; /* 15px */
   font-weight: 500;
   color: #fafafa; /* bright white for user exercises */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* System exercise name - muted */
@@ -2812,6 +2819,7 @@ input[type="checkbox"]:focus {
 
 /* Category text */
 .exercise-item-category {
+  display: block;
   font-size: 0.75rem; /* 12px */
   color: #71717a; /* muted gray */
 }

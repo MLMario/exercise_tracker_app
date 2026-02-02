@@ -10,15 +10,16 @@ Simple, effective workout tracking with clean visual feedback on progress.
 
 ## Current State
 
-**v2.7 Pre-Created Exercise Library shipped 2026-02-02**
+**v2.8 Enhanced Filtering Capabilities — in progress**
 
-The app now includes:
-- 873 system exercises from free-exercise-db mapped to 7 categories
-- Exercise picker shows user exercises first (with "Custom" badge), then system exercises
-- Database schema supports nullable user_id for system exercises with RLS protection
-- Clean stacked layout in picker with category below exercise name
+**Goal:** Improve exercise filtering and selection across the app.
 
-**Next milestone goals:** TBD - run `/gsd:new-milestone` to define
+**Target features:**
+- Exercise Picker: Search filters by name only (not category)
+- Exercise Picker: Category dropdown filter above search box
+- Exercise Picker: Combined filtering (category, search, or both)
+- Chart Exercise Selector: Only show exercises with logged session data
+- Chart Exercise Selector: Show message when no exercises have data
 
 ## Requirements
 
@@ -51,7 +52,12 @@ The app now includes:
 
 ### Active
 
-(None - define in next milestone)
+- [ ] Exercise Picker search filters by exercise name only (not category text)
+- [ ] Category dropdown appears above search box in Exercise Picker Modal
+- [ ] Category dropdown defaults to "All Categories"
+- [ ] Combined filtering: category and search work together or independently
+- [ ] Chart exercise selector shows only exercises with logged session data
+- [ ] Chart exercise selector shows message when no exercises have data
 
 ### Out of Scope
 
@@ -107,4 +113,4 @@ The app now includes:
 | Removed system color override | Simpler solution than changing color — all exercises same appearance | ✓ Good |
 
 ---
-*Last updated: 2026-02-02 after v2.7 milestone*
+*Last updated: 2026-02-02 after v2.8 milestone start*

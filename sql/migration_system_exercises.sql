@@ -81,9 +81,11 @@ CREATE POLICY exercises_delete_policy ON public.exercises
 -- ============================================
 
 -- Partial index for efficient system exercises lookup
+DROP INDEX IF EXISTS idx_exercises_system;
 CREATE INDEX idx_exercises_system ON public.exercises (id) WHERE is_system = true;
 
 -- Index on user_id for filtering user's exercises
+DROP INDEX IF EXISTS idx_exercises_user_id;
 CREATE INDEX idx_exercises_user_id ON public.exercises (user_id);
 
 -- ============================================

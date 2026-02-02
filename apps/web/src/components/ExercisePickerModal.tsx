@@ -97,15 +97,27 @@ export function ExercisePickerModal({
    * Matches js/app.js lines 559-567 (filteredExercises getter).
    */
   const filteredExercises = useMemo(() => {
-    if (!searchQuery) {
-      return exercises;
+    let result = exercises;
+
+    // Filter by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (ex) =>
+          ex.name.toLowerCase().includes(query) ||
+          ex.category.toLowerCase().includes(query)
+      );
     }
-    const query = searchQuery.toLowerCase();
-    return exercises.filter(
-      (ex) =>
-        ex.name.toLowerCase().includes(query) ||
-        ex.category.toLowerCase().includes(query)
-    );
+
+    // Sort: user exercises first (is_system=false), then alphabetically
+    return [...result].sort((a, b) => {
+      // Primary: is_system (false < true, so user exercises first)
+      if (a.is_system !== b.is_system) {
+        return a.is_system ? 1 : -1;
+      }
+      // Secondary: alphabetical by name
+      return a.name.localeCompare(b.name);
+    });
   }, [exercises, searchQuery]);
 
   // ==================== HANDLERS ====================
@@ -245,12 +257,15 @@ export function ExercisePickerModal({
                   <div
                     key={exercise.id}
                     onClick={() => !isExcluded && handleSelect(exercise)}
-                    class={`exercise-list-item ${isExcluded ? 'disabled' : ''}`}
+                    class={`exercise-list-item ${exercise.is_system ? 'system' : ''} ${isExcluded ? 'disabled' : ''}`}
                   >
                     <div class="exercise-item-info">
                       <span class="exercise-item-name">{exercise.name}</span>
-                      <span class="badge badge-small"> ({exercise.category})</span>
+                      <span class="exercise-item-category">{exercise.category}</span>
                     </div>
+                    {!exercise.is_system && (
+                      <span class="badge-custom">Custom</span>
+                    )}
                   </div>
                 );
               })}

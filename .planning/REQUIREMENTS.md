@@ -29,10 +29,10 @@ Requirements for v2.7 Pre-Created Exercise Library milestone. Each maps to roadm
 
 ### Data Import
 
-- [ ] **DATA-01**: Fetch exercises.json from free-exercise-db GitHub repo
-- [ ] **DATA-02**: Map primaryMuscles to app categories (Chest/Back/Shoulders/Legs/Arms/Core/Other)
-- [ ] **DATA-03**: Generate CSV file with all columns for Supabase import
-- [ ] **DATA-04**: All imported exercises have is_system=true and user_id=NULL
+- [x] **DATA-01**: Fetch exercises.json from free-exercise-db GitHub repo
+- [x] **DATA-02**: Map primaryMuscles to app categories (Chest/Back/Shoulders/Legs/Arms/Core/Other)
+- [x] **DATA-03**: Generate CSV file with all columns for Supabase import
+- [x] **DATA-04**: All imported exercises have is_system=true and user_id=NULL
 
 ### Backend
 
@@ -96,10 +96,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RLS-03 | Phase 8 | Complete |
 | RLS-04 | Phase 8 | Complete |
 | RLS-05 | Phase 8 | Complete |
-| DATA-01 | Phase 9 | Pending |
-| DATA-02 | Phase 9 | Pending |
-| DATA-03 | Phase 9 | Pending |
-| DATA-04 | Phase 9 | Pending |
+| DATA-01 | Phase 9 | Complete |
+| DATA-02 | Phase 9 | Complete |
+| DATA-03 | Phase 9 | Complete |
+| DATA-04 | Phase 9 | Complete |
 | BACK-01 | Phase 10 | Pending |
 | BACK-02 | Phase 10 | Pending |
 | BACK-03 | Phase 10 | Pending |
@@ -114,4 +114,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after Phase 8 completion*
+*Last updated: 2026-02-01 after Phase 9 completion*

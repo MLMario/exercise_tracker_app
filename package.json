@@ -7,12 +7,14 @@
   "scripts": {
     "dev": "pnpm --filter @ironlift/web dev",
     "build": "pnpm --filter @ironlift/web build",
-    "preview": "pnpm --filter @ironlift/web preview"
+    "preview": "pnpm --filter @ironlift/web preview",
+    "import-exercises": "tsx scripts/import-exercises.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {

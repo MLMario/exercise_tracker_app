@@ -14,7 +14,7 @@ None
 - [v2.4 Debug Cleanup](milestones/v2.4-ROADMAP.md) (Phase 3) -- SHIPPED 2026-01-17
 - [v2.5 Exercise Card Design Modifications](milestones/v2.5-ROADMAP.md) (Phase 4) -- SHIPPED 2026-01-18
 - [v2.6 Swipe Gesture Refactor](milestones/v2.6-ROADMAP.md) (Phases 5-7) -- SHIPPED 2026-01-19
-- **v2.7 Pre-Created Exercise Library** (Phases 8-13) -- IN PROGRESS
+- **v2.7 Pre-Created Exercise Library** (Phases 8-13) -- SHIPPED 2026-02-02
 
 ## Completed Milestones
 
@@ -62,7 +62,7 @@ None
 | 10 | Backend Updates | Update types and service functions | BACK-01 to BACK-03 | Complete |
 | 11 | Frontend Updates | Add badge and sorting to exercise picker | UI-01 to UI-03 | Complete |
 | 12 | Exercise Picker Layout | Move category to line below exercise name | LAYOUT-01 | Complete |
-| 13 | System Exercise Color Fix | Remove graying from system exercises in picker | COLOR-01 | Planned |
+| 13 | System Exercise Color Fix | Remove graying from system exercises in picker | COLOR-01 | Complete |
 
 **Plans:** 6 plans
 - [x] 08-01-PLAN.md -- Create migration SQL for schema changes, RLS policies, and indexes
@@ -70,7 +70,7 @@ None
 - [x] 10-01-PLAN.md -- Update Exercise type and service functions for system exercises
 - [x] 11-01-PLAN.md -- Add CSS styles and update ExercisePickerModal with sorting and badge
 - [x] 12-01-PLAN.md -- Update exercise item layout to show category below name
-- [ ] 13-01-PLAN.md -- Remove graying from system exercises in exercise picker
+- [x] 13-01-PLAN.md -- Remove graying from system exercises in exercise picker
 
 **Success Criteria:**
 - [x] User sees ~800 system exercises in exercise picker
@@ -78,7 +78,7 @@ None
 - [x] User's custom exercises appear before system exercises
 - [x] "Other" category available for exercises that don't fit existing categories
 - [x] Existing user exercises still work after migration
-- [ ] System exercises display same color as user exercises in picker
+- [x] System exercises display same color as user exercises in picker
 
 ## Progress
 
@@ -99,4 +99,4 @@ Phases execute in numeric order: 8 -> 9 -> 10 -> 11 -> 12 -> 13
 | 10. Backend Updates | v2.7 | 1/1 | Complete | 2026-02-01 |
 | 11. Frontend Updates | v2.7 | 1/1 | Complete | 2026-02-02 |
 | 12. Exercise Picker Layout | v2.7 | 1/1 | Complete | 2026-02-02 |
-| 13. System Exercise Color Fix | v2.7 | 0/1 | Planned | - |
+| 13. System Exercise Color Fix | v2.7 | 1/1 | Complete | 2026-02-02 |

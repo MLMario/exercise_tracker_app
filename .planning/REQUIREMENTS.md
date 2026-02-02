@@ -9,23 +9,23 @@ Requirements for v2.7 Pre-Created Exercise Library milestone. Each maps to roadm
 
 ### Database Schema
 
-- [ ] **SCHEMA-01**: exercises.user_id column allows NULL values
-- [ ] **SCHEMA-02**: is_system boolean column added with default false
-- [ ] **SCHEMA-03**: instructions text[] column added
-- [ ] **SCHEMA-04**: level column added with CHECK constraint (beginner/intermediate/expert)
-- [ ] **SCHEMA-05**: force column added with CHECK constraint (push/pull/static)
-- [ ] **SCHEMA-06**: mechanic column added with CHECK constraint (compound/isolation)
-- [ ] **SCHEMA-07**: category CHECK constraint updated to include 'Other'
-- [ ] **SCHEMA-08**: Partial index on is_system for efficient lookup
-- [ ] **SCHEMA-09**: Index on user_id including NULL values
+- [x] **SCHEMA-01**: exercises.user_id column allows NULL values
+- [x] **SCHEMA-02**: is_system boolean column added with default false
+- [x] **SCHEMA-03**: instructions text[] column added
+- [x] **SCHEMA-04**: level column added with CHECK constraint (beginner/intermediate/expert)
+- [x] **SCHEMA-05**: force column added with CHECK constraint (push/pull/static)
+- [x] **SCHEMA-06**: mechanic column added with CHECK constraint (compound/isolation)
+- [x] **SCHEMA-07**: category CHECK constraint updated to include 'Other'
+- [x] **SCHEMA-08**: Partial index on is_system for efficient lookup
+- [x] **SCHEMA-09**: Index on user_id including NULL values
 
 ### RLS Policies
 
-- [ ] **RLS-01**: SELECT policy allows user's own exercises + all system exercises
-- [ ] **RLS-02**: INSERT policy restricts to user's own non-system exercises
-- [ ] **RLS-03**: UPDATE policy restricts to user's own non-system exercises
-- [ ] **RLS-04**: DELETE policy restricts to user's own non-system exercises
-- [ ] **RLS-05**: Uses (SELECT auth.uid()) optimization for performance
+- [x] **RLS-01**: SELECT policy allows user's own exercises + all system exercises
+- [x] **RLS-02**: INSERT policy restricts to user's own non-system exercises
+- [x] **RLS-03**: UPDATE policy restricts to user's own non-system exercises
+- [x] **RLS-04**: DELETE policy restricts to user's own non-system exercises
+- [x] **RLS-05**: Uses (SELECT auth.uid()) optimization for performance
 
 ### Data Import
 
@@ -82,20 +82,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SCHEMA-01 | Phase 8 | Pending |
-| SCHEMA-02 | Phase 8 | Pending |
-| SCHEMA-03 | Phase 8 | Pending |
-| SCHEMA-04 | Phase 8 | Pending |
-| SCHEMA-05 | Phase 8 | Pending |
-| SCHEMA-06 | Phase 8 | Pending |
-| SCHEMA-07 | Phase 8 | Pending |
-| SCHEMA-08 | Phase 8 | Pending |
-| SCHEMA-09 | Phase 8 | Pending |
-| RLS-01 | Phase 8 | Pending |
-| RLS-02 | Phase 8 | Pending |
-| RLS-03 | Phase 8 | Pending |
-| RLS-04 | Phase 8 | Pending |
-| RLS-05 | Phase 8 | Pending |
+| SCHEMA-01 | Phase 8 | Complete |
+| SCHEMA-02 | Phase 8 | Complete |
+| SCHEMA-03 | Phase 8 | Complete |
+| SCHEMA-04 | Phase 8 | Complete |
+| SCHEMA-05 | Phase 8 | Complete |
+| SCHEMA-06 | Phase 8 | Complete |
+| SCHEMA-07 | Phase 8 | Complete |
+| SCHEMA-08 | Phase 8 | Complete |
+| SCHEMA-09 | Phase 8 | Complete |
+| RLS-01 | Phase 8 | Complete |
+| RLS-02 | Phase 8 | Complete |
+| RLS-03 | Phase 8 | Complete |
+| RLS-04 | Phase 8 | Complete |
+| RLS-05 | Phase 8 | Complete |
 | DATA-01 | Phase 9 | Pending |
 | DATA-02 | Phase 9 | Pending |
 | DATA-03 | Phase 9 | Pending |
@@ -114,4 +114,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-01*
-*Last updated: 2026-02-01 after initial definition*
+*Last updated: 2026-02-01 after Phase 8 completion*

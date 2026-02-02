@@ -79,6 +79,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-01
-Stopped at: Completed 08-01-PLAN.md
+Stopped at: Phase 8 complete
 Resume file: None
-Next step: Run migration in Supabase SQL Editor, then /gsd:plan-phase 9
+Next step: /gsd:discuss-phase 9

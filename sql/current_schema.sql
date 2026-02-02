@@ -3,10 +3,15 @@
 
 CREATE TABLE public.exercises (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL,
+  user_id uuid,  -- Nullable for system exercises
   name text NOT NULL,
-  category text NOT NULL CHECK (category = ANY (ARRAY['Chest'::text, 'Back'::text, 'Shoulders'::text, 'Legs'::text, 'Arms'::text, 'Core'::text])),
+  category text NOT NULL CHECK (category = ANY (ARRAY['Chest'::text, 'Back'::text, 'Shoulders'::text, 'Legs'::text, 'Arms'::text, 'Core'::text, 'Other'::text])),
   equipment text,
+  instructions text[],
+  level text CHECK (level = ANY (ARRAY['beginner'::text, 'intermediate'::text, 'expert'::text])),
+  force text CHECK (force = ANY (ARRAY['push'::text, 'pull'::text, 'static'::text])),
+  mechanic text CHECK (mechanic = ANY (ARRAY['compound'::text, 'isolation'::text])),
+  is_system boolean NOT NULL DEFAULT false,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   CONSTRAINT exercises_pkey PRIMARY KEY (id),
   CONSTRAINT exercises_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)

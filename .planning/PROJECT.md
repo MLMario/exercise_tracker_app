@@ -8,6 +8,18 @@ An exercise tracking application with template-based workout management, real-ti
 
 Simple, effective workout tracking with clean visual feedback on progress.
 
+## Current Milestone: v2.7 Pre-Created Exercise Library
+
+**Goal:** Add a library of ~800 pre-created exercises from free-exercise-db that users can pick from when adding exercises during template creation or workout logging.
+
+**Target features:**
+- Schema changes to support system exercises (nullable user_id, is_system flag, new columns)
+- Add "Other" as 7th exercise category for unmapped muscles
+- Import ~800 exercises from free-exercise-db with muscle→category mapping
+- Updated RLS policies for system + user exercises
+- Exercise picker shows both user and system exercises (user first, then system)
+- "Custom" badge on user-created exercises to distinguish from library
+
 ## Requirements
 
 ### Validated
@@ -28,13 +40,25 @@ Simple, effective workout tracking with clean visual feedback on progress.
 
 ### Active
 
-(None — ready for next milestone)
+- [ ] exercises.user_id nullable to support system exercises
+- [ ] is_system boolean column to distinguish library vs custom exercises
+- [ ] New columns: instructions, level, force, mechanic (stored but not displayed in v1)
+- [ ] "Other" added as 7th exercise category
+- [ ] RLS policies updated: users see own + system exercises, can only modify own
+- [ ] ~800 exercises imported from free-exercise-db with primaryMuscles→category mapping
+- [ ] Exercise picker shows user exercises first, then system exercises (both alphabetical)
+- [ ] "Custom" badge displayed on user-created exercises
+- [ ] Duplicate names allowed (user's "Bench Press" + system "Bench Press" both visible)
 
 ### Out of Scope
 
-- Other surfaces — header changes are template-editor specific only
-- JavaScript changes — CSS-first approach unless absolutely necessary
-- New components — working with existing markup structure
+- Equipment filtering in exercise picker — future enhancement
+- Exercise images/GIFs — storage/bandwidth costs, defer
+- Secondary muscle group display — complexity, defer
+- Exercise difficulty filtering — defer
+- User favoriting/hiding system exercises — defer
+- Changing picker UX — keep current behavior, just add more exercises
+- Displaying instructions/level/force/mechanic — stored for future use only
 
 ## Context
 
@@ -43,17 +67,19 @@ Simple, effective workout tracking with clean visual feedback on progress.
 - Surface-based UI architecture (AuthSurface, DashboardSurface, TemplateEditorSurface, WorkoutSurface)
 - CSS styling in `apps/web/css/styles.css`
 - Template editor surface at `apps/web/src/surfaces/template-editor/`
+- Supabase backend with RLS policies
+- exercises table with user_id FK to auth.users
 
 **Current State:**
-- v2.3 shipped with header layout fix and exercise name truncation
-- v2.4 shipped with debug logging cleanup (39 statements removed)
-- v2.5 shipped with exercise card action footer redesign
 - v2.6 shipped with swipe gesture refactor using @use-gesture/react
-- Template editor header matches dashboard-surface pattern
-- Native browser tooltips used for truncated exercise names
-- Production codebase clean of debug logging
-- Exercise card header now cleaner (progress ring, name, chevron only)
-- Swipe-to-delete with spring animations, velocity snap, and rubberband effects
+- exercises table requires user_id (NOT NULL) — will change
+- 6 exercise categories: Chest, Back, Shoulders, Legs, Arms, Core — adding "Other"
+- ExercisePickerModal used in TemplateEditorSurface and WorkoutSurface
+
+**Data Source:**
+- free-exercise-db: https://github.com/yuhonas/free-exercise-db
+- ~800 exercises with primaryMuscles, equipment, instructions, level, force, mechanic
+- Will fetch JSON from GitHub, transform, and generate CSV for Supabase import
 
 ## Constraints
 
@@ -79,4 +105,4 @@ Simple, effective workout tracking with clean visual feedback on progress.
 | Rubberband 0.2 multiplier | iOS-style 5:1 resistance feels natural | ✓ Good |
 
 ---
-*Last updated: 2026-01-19 after v2.6 milestone*
+*Last updated: 2026-02-01 after starting v2.7 milestone*

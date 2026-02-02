@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-01)
 
 **Core value:** Simple, effective workout tracking with clean visual feedback
-**Current focus:** v2.7 Pre-Created Exercise Library
+**Current focus:** v2.7 Pre-Created Exercise Library - COMPLETE
 
 ## Current Position
 
-Phase: 11 of 11 (Frontend Updates)
+Phase: 12 of 12 (Exercise Picker Layout)
 Plan: 1 of 1 complete
 Status: Phase complete
-Last activity: 2026-02-02 - Completed 11-01-PLAN.md
+Last activity: 2026-02-02 - Completed 12-01-PLAN.md
 
-Progress: ██████████ 100% (v2.7 - 4/4 phases)
+Progress: ██████████ 100% (v2.7 - 5/5 phases)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 2 min
-- Total execution time: 26 min
+- Total execution time: 27 min
 
 **By Phase:**
 
@@ -38,9 +38,10 @@ Progress: ██████████ 100% (v2.7 - 4/4 phases)
 | 09-data-import | 1 | 3 min | 3 min |
 | 10-backend-updates | 1 | 2 min | 2 min |
 | 11-frontend-updates | 1 | 3 min | 3 min |
+| 12-exercise-picker-layout | 1 | 1 min | 1 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-01 (4 min), 08-01 (2 min), 09-01 (3 min), 10-01 (2 min), 11-01 (3 min)
+- Last 5 plans: 09-01 (3 min), 10-01 (2 min), 11-01 (3 min), 12-01 (1 min)
 - Trend: stable
 
 ## Accumulated Context
@@ -61,6 +62,7 @@ Recent decisions:
 - Phase 09: tsx for TypeScript scripts, manual CSV generation, scripts/ folder convention
 - Phase 10: Nullable fields for system exercise metadata, is_system=false for user exercises
 - Phase 11: Option B (Solid Pill) badge, category as text class instead of inline badge
+- Phase 12: flex-direction: column with 2px gap for stacked name/category layout
 
 ### Roadmap Evolution
 
@@ -68,7 +70,7 @@ Recent decisions:
 - Milestone v2.4 completed: Debug Cleanup (Phase 3)
 - Milestone v2.5 completed: Exercise Card Design Modifications (Phase 4)
 - Milestone v2.6 completed: Swipe Gesture Refactor (Phases 5-7)
-- Milestone v2.7 completed: Pre-Created Exercise Library (Phases 8-11)
+- Milestone v2.7 completed: Pre-Created Exercise Library (Phases 8-12)
 
 ### Pending Todos
 
@@ -85,6 +87,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-02
-Stopped at: Phase 11 complete (v2.7 milestone complete)
+Stopped at: Completed 12-01-PLAN.md (Phase 12 complete)
 Resume file: None
-Next step: UAT verification or new milestone planning
+Next step: v2.7 milestone complete - await next milestone planning

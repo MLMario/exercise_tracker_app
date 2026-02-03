@@ -70,6 +70,9 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   // Available exercises - fetched from exercises service
   const [availableExercises, setAvailableExercises] = useState<Exercise[]>([]);
 
+  // Exercises with logged data - for chart modal (filtered list)
+  const [exercisesWithData, setExercisesWithData] = useState<Exercise[]>([]);
+
   // Flag to control when charts need to reload
   const [chartsNeedRefresh, setChartsNeedRefresh] = useState(true);
 
@@ -297,11 +300,18 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   /**
    * Open the add chart modal.
    * Matches js/app.js lines 1198-1207.
+   * Loads exercises with logged data for filtered dropdown.
    */
-  const openAddChartModal = (): void => {
+  const openAddChartModal = async (): Promise<void> => {
     setShowAddChartModal(true);
     setChartError('');
     clearMessages();
+
+    // Refresh exercises with logged data
+    const { data, error } = await exercises.getExercisesWithLoggedData();
+    if (!error && data) {
+      setExercisesWithData(data);
+    }
   };
 
   /**
@@ -489,7 +499,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
       {/* Add Chart Modal */}
       <AddChartModal
         isOpen={showAddChartModal}
-        exercises={availableExercises}
+        exercises={exercisesWithData}
         onClose={closeAddChartModal}
         onSubmit={handleCreateChart}
         error={chartError}

@@ -89,7 +89,9 @@ None
 **Success Criteria** (what must be TRUE):
   1. Calling `updateExercise` with a valid exercise ID, name, and category persists the changes to the database
   2. A user cannot update exercises created by other users or system exercises (RLS enforced)
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 16-01-PLAN.md -- Add service types and implement updateExercise, getUserExercises, getExerciseDependencies
 
 ### Phase 17: Settings Surface Shell
 **Goal**: Users can navigate to a Settings surface and back, with logout relocated from dashboard
@@ -163,7 +165,7 @@ None
 | 13. System Exercise Color Fix | v2.7 | 1/1 | Complete | 2026-02-02 |
 | 14. Exercise Picker Category Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
 | 15. Chart Exercise Selector Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
-| 16. Service Layer | v3.0 | 0/0 | Not started | - |
+| 16. Service Layer | v3.0 | 0/1 | Not started | - |
 | 17. Settings Surface Shell | v3.0 | 0/0 | Not started | - |
 | 18. Exercise List | v3.0 | 0/0 | Not started | - |
 | 19. Exercise Edit | v3.0 | 0/0 | Not started | - |

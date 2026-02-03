@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-03)
 
 **Core value:** Simple, effective workout tracking with clean visual feedback
-**Current focus:** v3.0 Settings & Exercise Management -- Phase 16 (Service Layer)
+**Current focus:** v3.0 Settings & Exercise Management -- Phase 17 (Settings Surface Shell)
 
 ## Current Position
 
-Phase: 16 of 21 (Service Layer)
-Plan: 1 of 1 in current phase
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 16-01-PLAN.md
+Phase: 17 of 21 (Settings Surface Shell)
+Plan: None -- ready to plan
+Status: Ready to plan
+Last activity: 2026-02-03 -- Phase 16 verified and complete
 
 Progress: [================..........] 76% (16/21 phases)
 
@@ -75,6 +75,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-03
-Stopped at: Completed 16-01-PLAN.md
+Stopped at: Phase 16 complete, verified
 Resume file: None
-Next step: `/gsd:plan-phase 17`
+Next step: `/gsd:discuss-phase 17`

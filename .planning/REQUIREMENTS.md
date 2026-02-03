@@ -44,8 +44,8 @@ Requirements for v3.0 Settings & Exercise Management milestone.
 
 ### Backend
 
-- [ ] **BACK-01**: updateExercise service function exists to update exercise name and category
-- [ ] **BACK-02**: RLS UPDATE policy on exercises table allows users to update only their own non-system exercises
+- [x] **BACK-01**: updateExercise service function exists to update exercise name and category
+- [x] **BACK-02**: RLS UPDATE policy on exercises table allows users to update only their own non-system exercises
 
 ## v2 Requirements
 
@@ -81,8 +81,8 @@ Deferred to future release.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BACK-01 | Phase 16 | Pending |
-| BACK-02 | Phase 16 | Pending |
+| BACK-01 | Phase 16 | Complete |
+| BACK-02 | Phase 16 | Complete |
 | SETT-01 | Phase 17 | Pending |
 | SETT-02 | Phase 17 | Pending |
 | SETT-03 | Phase 17 | Pending |
@@ -111,4 +111,4 @@ Deferred to future release.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-03 after initial definition*
+*Last updated: 2026-02-03 after Phase 16 completion*

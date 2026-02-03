@@ -9,11 +9,11 @@ Requirements for v3.0 Settings & Exercise Management milestone.
 
 ### Settings Surface
 
-- [ ] **SETT-01**: User can tap gear icon (far right of dashboard header) to navigate to Settings
-- [ ] **SETT-02**: Settings menu displays "My Exercises" as a tappable menu item
-- [ ] **SETT-03**: Settings menu displays a Log Out button
-- [ ] **SETT-04**: User can navigate back from Settings to Dashboard
-- [ ] **SETT-05**: Logout button removed from dashboard header (relocated to Settings menu)
+- [x] **SETT-01**: User can tap gear icon (far right of dashboard header) to navigate to Settings
+- [x] **SETT-02**: Settings menu displays "My Exercises" as a tappable menu item
+- [x] **SETT-03**: Settings menu displays a Log Out button
+- [x] **SETT-04**: User can navigate back from Settings to Dashboard
+- [x] **SETT-05**: Logout button removed from dashboard header (relocated to Settings menu)
 
 ### Exercise List
 
@@ -83,11 +83,11 @@ Deferred to future release.
 |-------------|-------|--------|
 | BACK-01 | Phase 16 | Complete |
 | BACK-02 | Phase 16 | Complete |
-| SETT-01 | Phase 17 | Pending |
-| SETT-02 | Phase 17 | Pending |
-| SETT-03 | Phase 17 | Pending |
-| SETT-04 | Phase 17 | Pending |
-| SETT-05 | Phase 17 | Pending |
+| SETT-01 | Phase 17 | Complete |
+| SETT-02 | Phase 17 | Complete |
+| SETT-03 | Phase 17 | Complete |
+| SETT-04 | Phase 17 | Complete |
+| SETT-05 | Phase 17 | Complete |
 | LIST-01 | Phase 18 | Pending |
 | LIST-02 | Phase 18 | Pending |
 | LIST-03 | Phase 18 | Pending |
@@ -111,4 +111,4 @@ Deferred to future release.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-03 after Phase 16 completion*
+*Last updated: 2026-02-03 after Phase 17 completion*

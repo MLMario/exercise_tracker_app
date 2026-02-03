@@ -79,5 +79,5 @@ None
 | 11. Frontend Updates | v2.7 | 1/1 | Complete | 2026-02-02 |
 | 12. Exercise Picker Layout | v2.7 | 1/1 | Complete | 2026-02-02 |
 | 13. System Exercise Color Fix | v2.7 | 1/1 | Complete | 2026-02-02 |
-| 14. Exercise Picker Category Filter | v2.8 | 0/1 | Planned | - |
+| 14. Exercise Picker Category Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
 | 15. Chart Exercise Selector Filter | v2.8 | 0/? | Pending | - |

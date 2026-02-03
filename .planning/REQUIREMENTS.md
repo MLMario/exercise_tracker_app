@@ -27,11 +27,11 @@ Requirements for v3.0 Settings & Exercise Management milestone.
 
 ### Exercise Edit
 
-- [ ] **CRUD-02**: User can expand an exercise row to reveal an inline edit form (accordion-style)
-- [ ] **CRUD-03**: User can edit exercise name via text input in the expanded row
-- [ ] **CRUD-04**: User can edit exercise category via dropdown in the expanded row
-- [ ] **CRUD-05**: User can save edits (explicit Save button, no auto-save)
-- [ ] **CRUD-06**: User can cancel edits (explicit Cancel button, discards changes)
+- [x] **CRUD-02**: User can expand an exercise row to reveal an inline edit form (accordion-style)
+- [x] **CRUD-03**: User can edit exercise name via text input in the expanded row
+- [x] **CRUD-04**: User can edit exercise category via dropdown in the expanded row
+- [x] **CRUD-05**: User can save edits (explicit Save button, no auto-save)
+- [x] **CRUD-06**: User can cancel edits (explicit Cancel button, discards changes)
 
 ### Exercise Delete
 
@@ -91,11 +91,11 @@ Deferred to future release.
 | LIST-01 | Phase 18 | Complete |
 | LIST-04 | Phase 18 | Complete |
 | LIST-05 | Phase 18 | Complete |
-| CRUD-02 | Phase 19 | Pending |
-| CRUD-03 | Phase 19 | Pending |
-| CRUD-04 | Phase 19 | Pending |
-| CRUD-05 | Phase 19 | Pending |
-| CRUD-06 | Phase 19 | Pending |
+| CRUD-02 | Phase 19 | Complete |
+| CRUD-03 | Phase 19 | Complete |
+| CRUD-04 | Phase 19 | Complete |
+| CRUD-05 | Phase 19 | Complete |
+| CRUD-06 | Phase 19 | Complete |
 | CRUD-07 | Phase 20 | Pending |
 | CRUD-08 | Phase 20 | Pending |
 | CRUD-09 | Phase 20 | Pending |
@@ -109,4 +109,4 @@ Deferred to future release.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-03 after Phase 18 completion*
+*Last updated: 2026-02-03 after Phase 19 completion*

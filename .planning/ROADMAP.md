@@ -78,7 +78,7 @@ None
 - [x] **Phase 16: Service Layer** - Backend update function and RLS policy for exercise editing -- completed 2026-02-03
 - [x] **Phase 17: Settings Surface Shell** - Settings surface with menu, gear icon, navigation, logout relocation -- completed 2026-02-03
 - [x] **Phase 18: Exercise List** - My Exercises view with exercise list and empty state -- completed 2026-02-03
-- [ ] **Phase 19: Exercise Edit** - Inline accordion editing for exercise name and category
+- [x] **Phase 19: Exercise Edit** - Inline accordion editing for exercise name and category -- completed 2026-02-03
 - [ ] **Phase 20: Exercise Delete** - Delete with confirmation modal and dependency warnings
 - [ ] **Phase 21: Exercise Create** - Create exercise from My Exercises view
 
@@ -129,7 +129,7 @@ Plans:
   4. User can cancel edits via an explicit Cancel button and see original values restored
 **Plans**: 1 plan
 Plans:
-- [ ] 19-01-PLAN.md -- Add accordion edit form with pencil trigger, name/category fields, save/cancel, validation errors, success flash
+- [x] 19-01-PLAN.md -- Add accordion edit form with pencil trigger, name/category fields, save/cancel, validation errors, success flash
 
 ### Phase 20: Exercise Delete
 **Goal**: Users can delete custom exercises with clear warnings about downstream effects
@@ -173,6 +173,6 @@ Plans:
 | 16. Service Layer | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 17. Settings Surface Shell | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 18. Exercise List | v3.0 | 1/1 | Complete | 2026-02-03 |
-| 19. Exercise Edit | v3.0 | 0/1 | Not started | - |
+| 19. Exercise Edit | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 20. Exercise Delete | v3.0 | 0/0 | Not started | - |
 | 21. Exercise Create | v3.0 | 0/0 | Not started | - |

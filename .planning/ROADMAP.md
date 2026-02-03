@@ -16,6 +16,7 @@ None
 - [v2.6 Swipe Gesture Refactor](milestones/v2.6-ROADMAP.md) (Phases 5-7) -- SHIPPED 2026-01-19
 - [v2.7 Pre-Created Exercise Library](milestones/v2.7-ROADMAP.md) (Phases 8-13) -- SHIPPED 2026-02-02
 - [v2.8 Enhanced Filtering Capabilities](milestones/v2.8-ROADMAP.md) (Phases 14-15) -- SHIPPED 2026-02-02
+- v3.0 Settings & Exercise Management (Phases 16-21) -- IN PROGRESS
 
 ## Completed Milestones
 
@@ -70,6 +71,79 @@ None
 
 </details>
 
+## v3.0 Settings & Exercise Management (In Progress)
+
+**Milestone Goal:** Add a Settings surface with exercise CRUD management, enabling users to manage custom exercises outside the template editor workflow.
+
+- [ ] **Phase 16: Service Layer** - Backend update function and RLS policy for exercise editing
+- [ ] **Phase 17: Settings Surface Shell** - Settings surface with menu, gear icon, navigation, logout relocation
+- [ ] **Phase 18: Exercise List** - My Exercises view with search, filter, and empty state
+- [ ] **Phase 19: Exercise Edit** - Inline accordion editing for exercise name and category
+- [ ] **Phase 20: Exercise Delete** - Delete with confirmation modal and dependency warnings
+- [ ] **Phase 21: Exercise Create** - Create exercise from My Exercises view
+
+### Phase 16: Service Layer
+**Goal**: Backend infrastructure exists for updating exercises
+**Depends on**: Nothing (first phase of milestone)
+**Requirements**: BACK-01, BACK-02
+**Success Criteria** (what must be TRUE):
+  1. Calling `updateExercise` with a valid exercise ID, name, and category persists the changes to the database
+  2. A user cannot update exercises created by other users or system exercises (RLS enforced)
+**Plans**: TBD
+
+### Phase 17: Settings Surface Shell
+**Goal**: Users can navigate to a Settings surface and back, with logout relocated from dashboard
+**Depends on**: Phase 16
+**Requirements**: SETT-01, SETT-02, SETT-03, SETT-04, SETT-05
+**Success Criteria** (what must be TRUE):
+  1. User can tap gear icon in dashboard header (far right) to open Settings
+  2. Settings menu shows "My Exercises" as a tappable item and a Log Out button
+  3. User can navigate back from Settings to Dashboard
+  4. Logout button no longer appears in dashboard header (only in Settings menu)
+**Plans**: TBD
+
+### Phase 18: Exercise List
+**Goal**: Users can view and search their custom exercises in a dedicated management view
+**Depends on**: Phase 17
+**Requirements**: LIST-01, LIST-02, LIST-03, LIST-04, LIST-05
+**Success Criteria** (what must be TRUE):
+  1. My Exercises view shows only user-created exercises (system exercises excluded)
+  2. User can search exercises by name and filter by category (independently or combined)
+  3. When no custom exercises exist, an empty state message with a prompt to create is displayed
+  4. User can navigate back from My Exercises to the Settings menu
+**Plans**: TBD
+
+### Phase 19: Exercise Edit
+**Goal**: Users can edit the name and category of their custom exercises inline
+**Depends on**: Phase 18
+**Requirements**: CRUD-02, CRUD-03, CRUD-04, CRUD-05, CRUD-06
+**Success Criteria** (what must be TRUE):
+  1. User can expand an exercise row to reveal an inline edit form (accordion-style)
+  2. User can modify exercise name and category in the expanded form
+  3. User can save edits via an explicit Save button and see changes reflected in the list
+  4. User can cancel edits via an explicit Cancel button and see original values restored
+**Plans**: TBD
+
+### Phase 20: Exercise Delete
+**Goal**: Users can delete custom exercises with clear warnings about downstream effects
+**Depends on**: Phase 19
+**Requirements**: CRUD-07, CRUD-08, CRUD-09, CRUD-10
+**Success Criteria** (what must be TRUE):
+  1. User can initiate delete from the expanded exercise row
+  2. A confirmation modal appears before deletion occurs
+  3. If the exercise is used in templates, workout logs, or charts, the confirmation modal displays a dependency warning
+  4. Confirmation modal uses specific labels ("Delete Exercise" / "Keep Exercise")
+**Plans**: TBD
+
+### Phase 21: Exercise Create
+**Goal**: Users can create new custom exercises from the My Exercises management view
+**Depends on**: Phase 18
+**Requirements**: CRUD-01
+**Success Criteria** (what must be TRUE):
+  1. User can trigger the existing create exercise modal from the My Exercises view
+  2. After creating an exercise, it appears in the My Exercises list without manual refresh
+**Plans**: TBD
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -89,3 +163,9 @@ None
 | 13. System Exercise Color Fix | v2.7 | 1/1 | Complete | 2026-02-02 |
 | 14. Exercise Picker Category Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
 | 15. Chart Exercise Selector Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
+| 16. Service Layer | v3.0 | 0/0 | Not started | - |
+| 17. Settings Surface Shell | v3.0 | 0/0 | Not started | - |
+| 18. Exercise List | v3.0 | 0/0 | Not started | - |
+| 19. Exercise Edit | v3.0 | 0/0 | Not started | - |
+| 20. Exercise Delete | v3.0 | 0/0 | Not started | - |
+| 21. Exercise Create | v3.0 | 0/0 | Not started | - |

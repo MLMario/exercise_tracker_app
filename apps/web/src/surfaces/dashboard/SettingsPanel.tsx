@@ -8,6 +8,7 @@
 
 import { useState, useEffect } from 'preact/hooks';
 import { SettingsMenu } from './SettingsMenu';
+import { MyExercisesList } from './MyExercisesList';
 
 interface SettingsPanelProps {
   /** Whether the panel is currently open */
@@ -75,9 +76,7 @@ export function SettingsPanel({ isOpen, onClose, onLogout }: SettingsPanelProps)
             />
           )}
           {panelView === 'exercises' && (
-            <div class="my-exercises-placeholder">
-              My Exercises content coming soon
-            </div>
+            <MyExercisesList />
           )}
         </div>
       </div>

@@ -9,10 +9,10 @@
  * - js/app.js lines 538-691 (exercise picker methods)
  */
 
-import { useState, useMemo, useEffect } from 'preact/hooks';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'preact/hooks';
 import type { JSX } from 'preact';
-import type { Exercise } from '@ironlift/shared';
-import { useAsyncOperation } from '@/hooks';
+import type { Exercise, ExerciseCategory } from '@ironlift/shared';
+import { useAsyncOperation, useClickOutside } from '@/hooks';
 
 /**
  * Category options for new exercise creation.
@@ -26,6 +26,20 @@ const CATEGORY_OPTIONS = [
   'Arms',
   'Core',
   'Cardio',
+  'Other',
+] as const;
+
+/**
+ * Filter category options for dropdown (no Cardio per ExerciseCategory type).
+ */
+const FILTER_CATEGORIES: readonly ('All Categories' | ExerciseCategory)[] = [
+  'All Categories',
+  'Chest',
+  'Back',
+  'Shoulders',
+  'Legs',
+  'Arms',
+  'Core',
   'Other',
 ] as const;
 
@@ -67,6 +81,9 @@ export function ExercisePickerModal({
   // ==================== STATE ====================
   // Search/filter state
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<'All Categories' | ExerciseCategory>('All Categories');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // New exercise form state
   const [showNewExerciseForm, setShowNewExerciseForm] = useState(false);
@@ -76,6 +93,10 @@ export function ExercisePickerModal({
   // Async operation state for exercise creation
   const { error, isLoading: isCreating, setError, reset: resetAsync, execute } = useAsyncOperation({ trackSuccess: false });
 
+  // Close dropdown when clicking outside
+  const closeDropdown = useCallback(() => setIsDropdownOpen(false), []);
+  useClickOutside(dropdownRef, closeDropdown);
+
   // ==================== EFFECTS ====================
   /**
    * Reset state when modal opens.
@@ -84,6 +105,8 @@ export function ExercisePickerModal({
   useEffect(() => {
     if (isOpen) {
       setSearchQuery('');
+      setSelectedCategory('All Categories');
+      setIsDropdownOpen(false);
       setShowNewExerciseForm(false);
       setNewExerciseName('');
       setNewExerciseCategory('');
@@ -99,14 +122,15 @@ export function ExercisePickerModal({
   const filteredExercises = useMemo(() => {
     let result = exercises;
 
-    // Filter by search query
+    // Filter by category first (if not "All Categories")
+    if (selectedCategory !== 'All Categories') {
+      result = result.filter((ex) => ex.category === selectedCategory);
+    }
+
+    // Filter by search query - NAME ONLY (not category, per PICK-01)
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(
-        (ex) =>
-          ex.name.toLowerCase().includes(query) ||
-          ex.category.toLowerCase().includes(query)
-      );
+      result = result.filter((ex) => ex.name.toLowerCase().includes(query));
     }
 
     // Sort: user exercises first (is_system=false), then alphabetically
@@ -118,7 +142,7 @@ export function ExercisePickerModal({
       // Secondary: alphabetical by name
       return a.name.localeCompare(b.name);
     });
-  }, [exercises, searchQuery]);
+  }, [exercises, selectedCategory, searchQuery]);
 
   // ==================== HANDLERS ====================
   /**
@@ -126,6 +150,14 @@ export function ExercisePickerModal({
    */
   const handleSearch = (e: JSX.TargetedEvent<HTMLInputElement>): void => {
     setSearchQuery(e.currentTarget.value);
+  };
+
+  /**
+   * Handle category selection from dropdown.
+   */
+  const handleCategorySelect = (category: 'All Categories' | ExerciseCategory): void => {
+    setSelectedCategory(category);
+    setIsDropdownOpen(false);
   };
 
   /**
@@ -237,6 +269,45 @@ export function ExercisePickerModal({
             </div>
           )}
 
+          {/* Category filter dropdown - PICK-02: above search input */}
+          <div class="category-dropdown-wrapper">
+            <div class="category-dropdown" ref={dropdownRef}>
+              <button
+                type="button"
+                class="dropdown-trigger"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                aria-expanded={isDropdownOpen}
+                aria-haspopup="listbox"
+              >
+                <span>{selectedCategory}</span>
+                <svg
+                  class={`dropdown-chevron ${isDropdownOpen ? 'open' : ''}`}
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="currentColor"
+                >
+                  <path d="M6 9L1 4h10z" />
+                </svg>
+              </button>
+              {isDropdownOpen && (
+                <ul class="dropdown-menu" role="listbox">
+                  {FILTER_CATEGORIES.map((category) => (
+                    <li
+                      key={category}
+                      role="option"
+                      aria-selected={category === selectedCategory}
+                      class={category === selectedCategory ? 'selected' : ''}
+                      onClick={() => handleCategorySelect(category)}
+                    >
+                      {category}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
           {/* Search input - matches index.html lines 675-680 */}
           <div class="form-group">
             <input
@@ -271,10 +342,10 @@ export function ExercisePickerModal({
               })}
             </div>
 
-            {/* Empty state - matches index.html lines 698-700 */}
+            {/* Empty state */}
             {filteredExercises.length === 0 && !showNewExerciseForm && (
               <div class="empty-state">
-                <p>No exercises found. Try a different search or create a new exercise.</p>
+                <p>No exercises found</p>
               </div>
             )}
           </div>

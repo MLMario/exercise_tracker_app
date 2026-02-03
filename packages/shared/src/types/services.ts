@@ -174,6 +174,14 @@ export interface ExercisesService {
   getExercisesByCategory(category: ExerciseCategory): Promise<ServiceResult<Exercise[]>>;
 
   /**
+   * Get exercises that have logged workout data for the current user.
+   * Used for chart exercise selection - only exercises with data can be charted.
+   *
+   * @returns Promise resolving to exercises with logged data or error
+   */
+  getExercisesWithLoggedData(): Promise<ServiceResult<Exercise[]>>;
+
+  /**
    * Create a new exercise.
    *
    * @param name - Exercise display name

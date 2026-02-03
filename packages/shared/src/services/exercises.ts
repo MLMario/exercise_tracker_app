@@ -213,12 +213,90 @@ function getCategories(): ExerciseCategory[] {
 }
 
 /**
+ * Get exercises that have logged workout data for the current user.
+ * Used for chart exercise selection - only exercises with data can be charted.
+ *
+ * @returns Promise resolving to exercises with logged data or error
+ */
+async function getExercisesWithLoggedData(): Promise<ServiceResult<Exercise[]>> {
+  try {
+    // Get current user
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return {
+        data: null,
+        error: authError || new Error('User not authenticated'),
+      };
+    }
+
+    // Query exercises via inner join with workout_log_exercises
+    // The !inner modifier ensures only exercises with log entries are returned
+    const { data, error } = await supabase
+      .from('workout_log_exercises')
+      .select(`
+        exercise_id,
+        exercises!inner (
+          id,
+          name,
+          category,
+          is_system,
+          user_id,
+          equipment,
+          instructions,
+          level,
+          force,
+          mechanic
+        ),
+        workout_logs!inner (
+          user_id
+        )
+      `)
+      .eq('workout_logs.user_id', user.id);
+
+    if (error) {
+      console.error('Error fetching exercises with logged data:', error);
+      return { data: null, error };
+    }
+
+    // Deduplicate and build exercise array
+    const exerciseMap = new Map<string, Exercise>();
+    data?.forEach(item => {
+      const ex = item.exercises as unknown as Exercise;
+      if (ex && !exerciseMap.has(ex.id)) {
+        exerciseMap.set(ex.id, ex);
+      }
+    });
+
+    // Sort by category then name (A-Z per CONTEXT.md)
+    const exercisesList = Array.from(exerciseMap.values()).sort((a, b) => {
+      if (a.category !== b.category) {
+        return a.category.localeCompare(b.category);
+      }
+      return a.name.localeCompare(b.name);
+    });
+
+    return { data: exercisesList, error: null };
+  } catch (err) {
+    console.error('Unexpected error in getExercisesWithLoggedData:', err);
+    return {
+      data: null,
+      error: err instanceof Error ? err : new Error(String(err)),
+    };
+  }
+}
+
+/**
  * Exercises service object implementing the ExercisesService interface.
  * Provides all exercise CRUD operations.
  */
 export const exercises: ExercisesService = {
   getExercises,
   getExercisesByCategory,
+  getExercisesWithLoggedData,
   createExercise,
   deleteExercise,
   exerciseExists,

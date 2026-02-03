@@ -75,7 +75,7 @@ None
 
 **Milestone Goal:** Add a Settings surface with exercise CRUD management, enabling users to manage custom exercises outside the template editor workflow.
 
-- [ ] **Phase 16: Service Layer** - Backend update function and RLS policy for exercise editing
+- [x] **Phase 16: Service Layer** - Backend update function and RLS policy for exercise editing -- completed 2026-02-03
 - [ ] **Phase 17: Settings Surface Shell** - Settings surface with menu, gear icon, navigation, logout relocation
 - [ ] **Phase 18: Exercise List** - My Exercises view with search, filter, and empty state
 - [ ] **Phase 19: Exercise Edit** - Inline accordion editing for exercise name and category
@@ -91,7 +91,7 @@ None
   2. A user cannot update exercises created by other users or system exercises (RLS enforced)
 **Plans**: 1 plan
 Plans:
-- [ ] 16-01-PLAN.md -- Add service types and implement updateExercise, getUserExercises, getExerciseDependencies
+- [x] 16-01-PLAN.md -- Add service types and implement updateExercise, getUserExercises, getExerciseDependencies
 
 ### Phase 17: Settings Surface Shell
 **Goal**: Users can navigate to a Settings surface and back, with logout relocated from dashboard
@@ -165,7 +165,7 @@ Plans:
 | 13. System Exercise Color Fix | v2.7 | 1/1 | Complete | 2026-02-02 |
 | 14. Exercise Picker Category Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
 | 15. Chart Exercise Selector Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
-| 16. Service Layer | v3.0 | 0/1 | Not started | - |
+| 16. Service Layer | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 17. Settings Surface Shell | v3.0 | 0/0 | Not started | - |
 | 18. Exercise List | v3.0 | 0/0 | Not started | - |
 | 19. Exercise Edit | v3.0 | 0/0 | Not started | - |

@@ -17,9 +17,9 @@ Requirements for v3.0 Settings & Exercise Management milestone.
 
 ### Exercise List
 
-- [ ] **LIST-01**: My Exercises view shows only user-created exercises (system exercises excluded)
-- [ ] **LIST-04**: Empty state displays message with prompt to create when no custom exercises exist
-- [ ] **LIST-05**: User can navigate back from My Exercises to Settings menu
+- [x] **LIST-01**: My Exercises view shows only user-created exercises (system exercises excluded)
+- [x] **LIST-04**: Empty state displays message with prompt to create when no custom exercises exist
+- [x] **LIST-05**: User can navigate back from My Exercises to Settings menu
 
 ### Exercise Create
 
@@ -88,9 +88,9 @@ Deferred to future release.
 | SETT-03 | Phase 17 | Complete |
 | SETT-04 | Phase 17 | Complete |
 | SETT-05 | Phase 17 | Complete |
-| LIST-01 | Phase 18 | Pending |
-| LIST-04 | Phase 18 | Pending |
-| LIST-05 | Phase 18 | Pending |
+| LIST-01 | Phase 18 | Complete |
+| LIST-04 | Phase 18 | Complete |
+| LIST-05 | Phase 18 | Complete |
 | CRUD-02 | Phase 19 | Pending |
 | CRUD-03 | Phase 19 | Pending |
 | CRUD-04 | Phase 19 | Pending |
@@ -109,4 +109,4 @@ Deferred to future release.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-03 after Phase 17 completion*
+*Last updated: 2026-02-03 after Phase 18 completion*

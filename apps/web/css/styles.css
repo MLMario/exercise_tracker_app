@@ -3123,3 +3123,32 @@ input[type="checkbox"]:focus {
   background-color: rgba(248, 113, 113, 0.1);
   border-color: var(--color-danger);
 }
+
+/* My Exercises List */
+.my-exercises-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.my-exercises-row {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.my-exercises-empty {
+  text-align: center;
+  padding: var(--spacing-2xl) var(--spacing-md);
+}
+
+.my-exercises-empty-text {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+.my-exercises-loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-muted);
+}

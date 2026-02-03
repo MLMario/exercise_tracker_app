@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Option D — Bottom Navigation Bar with Surface Reorganization</title>
+  <style>
+    :root {
+      --color-bg-primary: #0f0f0f;
+      --color-bg-surface: #1a1a1a;
+      --color-bg-elevated: #27272a;
+      --color-border: #2a2a2a;
+      --color-accent: #4f9eff;
+      --color-success: #4ade80;
+      --color-danger: #f87171;
+      --color-text-primary: #ffffff;
+      --color-text-secondary: #a1a1aa;
+      --color-text-muted: #71717a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .option-label {
+      background: var(--color-accent);
+      color: white;
+      padding: 8px 16px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      position: relative;
+      min-height: 100vh;
+      background: var(--color-bg-primary);
+    }
+
+    /* Header */
+    .header {
+      background: var(--color-bg-surface);
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 20px;
+      position: sticky;
+      top: 36px;
+      z-index: 50;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .brand-iron {
+      color: var(--color-text-primary);
+    }
+
+    .brand-factor {
+      color: var(--color-accent);
+    }
+
+    /* Content Area */
+    .content-area {
+      padding-bottom: 80px; /* Space for bottom nav */
+      min-height: calc(100vh - 36px - 57px);
+    }
+
+    .surface {
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .surface.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .surface-content {
+      padding: 20px;
+    }
+
+    /* Section Header */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .btn {
+      background: var(--color-accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 44px;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #3d8aeb;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      min-height: 44px;
+      background: transparent;
+      border: none;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+      padding: 8px;
+    }
+
+    .btn-icon:hover {
+      background: var(--color-bg-elevated);
+      color: var(--color-text-primary);
+    }
+
+    .btn-icon.danger {
+      color: var(--color-danger);
+    }
+
+    .btn-icon.danger:hover {
+      background: rgba(248, 113, 113, 0.1);
+    }
+
+    /* Template Grid */
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .template-card {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .template-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .template-name {
+      font-weight: 600;
+      font-size: 16px;
+      flex: 1;
+    }
+
+    .template-actions {
+      display: flex;
+      gap: 4px;
+      margin-left: 8px;
+    }
+
+    .template-info {
+      color: var(--color-text-muted);
+      font-size: 13px;
+    }
+
+    .btn-start {
+      width: 100%;
+      justify-content: center;
+      margin-top: auto;
+    }
+
+    /* Chart Cards */
+    .chart-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .chart-card {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .chart-title {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .chart-placeholder {
+      width: 100%;
+      height: 200px;
+      background: var(--color-bg-elevated);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-muted);
+      font-size: 14px;
+    }
+
+    /* Settings Menu */
+    .settings-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .settings-item {
+      background: var(--color-bg-surface);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 64px;
+    }
+
+    .settings-item:hover {
+      background: var(--color-bg-elevated);
+    }
+
+    .settings-item:active {
+      transform: scale(0.99);
+    }
+
+    .settings-item-content {
+      flex: 1;
+    }
+
+    .settings-item-title {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .settings-item-subtitle {
+      color: var(--color-text-muted);
+      font-size: 14px;
+    }
+
+    .settings-item.danger .settings-item-title {
+      color: var(--color-danger);
+    }
+
+    /* Exercise Management */
+    .exercise-header {
+      background: var(--color-bg-surface);
+      border-bottom: 1px solid var(--color-border);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 36px;
+      z-index: 50;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: none;
+      color: var(--color-accent);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 0;
+      min-height: 44px;
+    }
+
+    .back-btn:active {
+      opacity: 0.7;
+    }
+
+    .exercise-filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .filter-select,
+    .filter-input {
+      flex: 1;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      min-height: 44px;
+    }
+
+    .filter-select:focus,
+    .filter-input:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--color-border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .exercise-item {
+      background: var(--color-bg-surface);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .exercise-info {
+      flex: 1;
+    }
+
+    .exercise-name {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-custom {
+      background: var(--color-success);
+      color: var(--color-bg-primary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .exercise-category {
+      color: var(--color-text-muted);
+      font-size: 14px;
+    }
+
+    .exercise-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--color-bg-surface);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      height: 56px;
+      z-index: 100;
+    }
+
+    .bottom-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 8px;
+      min-height: 56px;
+    }
+
+    .bottom-nav-item:active {
+      transform: scale(0.95);
+    }
+
+    .bottom-nav-item.active {
+      color: var(--color-accent);
+    }
+
+    .bottom-nav-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .bottom-nav-label {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.2s;
+    }
+
+    .modal {
+      background: var(--color-bg-surface);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 400px;
+      width: 100%;
+      animation: slideUp 0.2s;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--color-text-secondary);
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      min-height: 44px;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--color-accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn-secondary {
+      background: var(--color-bg-elevated);
+      color: var(--color-text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: #3a3a3d;
+    }
+
+    .btn-danger {
+      background: var(--color-danger);
+    }
+
+    .btn-danger:hover {
+      background: #f15c5c;
+    }
+
+    /* Confirmation Dialog */
+    .confirm-text {
+      color: var(--color-text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    /* SVG Icons */
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .bottom-nav-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="option-label">Option D — Bottom Navigation Bar with Surface Reorganization</div>
+
+  <div class="app-container">
+    <div class="content-area">
+      <!-- Workouts Surface -->
+      <div class="surface active" id="workouts-surface">
+        <div class="header">
+          <div class="brand">
+            <span class="brand-iron">Iron</span><span class="brand-factor">Factor</span>
+          </div>
+        </div>
+        <div class="surface-content">
+          <div class="section-header">
+            <h2 class="section-title">My Templates</h2>
+            <button class="btn">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"/>
+              </svg>
+              Create
+            </button>
+          </div>
+
+          <div class="template-grid">
+            <div class="template-card">
+              <div class="template-header">
+                <div class="template-name">Leg Day</div>
+                <div class="template-actions">
+                  <button class="btn-icon" title="Edit">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                    </svg>
+                  </button>
+                  <button class="btn-icon danger" title="Delete">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="template-info">5 exercises</div>
+              <button class="btn btn-start">Start</button>
+            </div>
+
+            <div class="template-card">
+              <div class="template-header">
+                <div class="template-name">Push Day</div>
+                <div class="template-actions">
+                  <button class="btn-icon" title="Edit">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                    </svg>
+                  </button>
+                  <button class="btn-icon danger" title="Delete">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="template-info">4 exercises</div>
+              <button class="btn btn-start">Start</button>
+            </div>
+
+            <div class="template-card">
+              <div class="template-header">
+                <div class="template-name">Pull Day</div>
+                <div class="template-actions">
+                  <button class="btn-icon" title="Edit">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                    </svg>
+                  </button>
+                  <button class="btn-icon danger" title="Delete">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="template-info">6 exercises</div>
+              <button class="btn btn-start">Start</button>
+            </div>
+
+            <div class="template-card">
+              <div class="template-header">
+                <div class="template-name">Upper Body</div>
+                <div class="template-actions">
+                  <button class="btn-icon" title="Edit">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                    </svg>
+                  </button>
+                  <button class="btn-icon danger" title="Delete">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="template-info">7 exercises</div>
+              <button class="btn btn-start">Start</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Surface -->
+      <div class="surface" id="dashboard-surface">
+        <div class="header">
+          <div class="brand">
+            <span class="brand-iron">Iron</span><span class="brand-factor">Factor</span>
+          </div>
+        </div>
+        <div class="surface-content">
+          <div class="section-header">
+            <h2 class="section-title">Progress Charts</h2>
+            <button class="btn">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"/>
+              </svg>
+              Add
+            </button>
+          </div>
+
+          <div class="chart-list">
+            <div class="chart-card">
+              <div class="chart-header">
+                <div class="chart-title">Bench Press — Max Weight</div>
+                <button class="btn-icon" title="Options">
+                  <svg viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="chart-placeholder">
+                <svg viewBox="0 0 200 100" style="width: 100%; height: 100%;">
+                  <polyline points="10,80 40,60 70,70 100,40 130,50 160,30 190,35"
+                    fill="none" stroke="#4f9eff" stroke-width="2"/>
+                  <circle cx="10" cy="80" r="3" fill="#4f9eff"/>
+                  <circle cx="40" cy="60" r="3" fill="#4f9eff"/>
+                  <circle cx="70" cy="70" r="3" fill="#4f9eff"/>
+                  <circle cx="100" cy="40" r="3" fill="#4f9eff"/>
+                  <circle cx="130" cy="50" r="3" fill="#4f9eff"/>
+                  <circle cx="160" cy="30" r="3" fill="#4f9eff"/>
+                  <circle cx="190" cy="35" r="3" fill="#4f9eff"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <div class="chart-title">Squat — Total Volume</div>
+                <button class="btn-icon" title="Options">
+                  <svg viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="chart-placeholder">
+                <svg viewBox="0 0 200 100" style="width: 100%; height: 100%;">
+                  <polyline points="10,70 40,65 70,50 100,55 130,35 160,40 190,25"
+                    fill="none" stroke="#4f9eff" stroke-width="2"/>
+                  <circle cx="10" cy="70" r="3" fill="#4f9eff"/>
+                  <circle cx="40" cy="65" r="3" fill="#4f9eff"/>
+                  <circle cx="70" cy="50" r="3" fill="#4f9eff"/>
+                  <circle cx="100" cy="55" r="3" fill="#4f9eff"/>
+                  <circle cx="130" cy="35" r="3" fill="#4f9eff"/>
+                  <circle cx="160" cy="40" r="3" fill="#4f9eff"/>
+                  <circle cx="190" cy="25" r="3" fill="#4f9eff"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-header">
+                <div class="chart-title">Deadlift — Max Weight</div>
+                <button class="btn-icon" title="Options">
+                  <svg viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="chart-placeholder">
+                <svg viewBox="0 0 200 100" style="width: 100%; height: 100%;">
+                  <polyline points="10,85 40,75 70,65 100,60 130,45 160,50 190,30"
+                    fill="none" stroke="#4f9eff" stroke-width="2"/>
+                  <circle cx="10" cy="85" r="3" fill="#4f9eff"/>
+                  <circle cx="40" cy="75" r="3" fill="#4f9eff"/>
+                  <circle cx="70" cy="65" r="3" fill="#4f9eff"/>
+                  <circle cx="100" cy="60" r="3" fill="#4f9eff"/>
+                  <circle cx="130" cy="45" r="3" fill="#4f9eff"/>
+                  <circle cx="160" cy="50" r="3" fill="#4f9eff"/>
+                  <circle cx="190" cy="30" r="3" fill="#4f9eff"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Surface -->
+      <div class="surface" id="settings-surface">
+        <div id="settings-menu-view">
+          <div class="header">
+            <div class="brand">
+              <span class="brand-iron">Iron</span><span class="brand-factor">Factor</span>
+            </div>
+          </div>
+          <div class="surface-content">
+            <div class="section-header">
+              <h2 class="section-title">Settings</h2>
+            </div>
+
+            <div class="settings-menu">
+              <div class="settings-item">
+                <div class="settings-item-content">
+                  <div class="settings-item-title">Profile</div>
+                  <div class="settings-item-subtitle">Account info, password</div>
+                </div>
+                <svg viewBox="0 0 20 20" fill="currentColor" style="width: 20px; height: 20px;">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+
+              <div class="settings-item" id="my-exercises-btn">
+                <div class="settings-item-content">
+                  <div class="settings-item-title">My Exercises</div>
+                  <div class="settings-item-subtitle">Manage custom exercises</div>
+                </div>
+                <svg viewBox="0 0 20 20" fill="currentColor" style="width: 20px; height: 20px;">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+
+              <div class="settings-item">
+                <div class="settings-item-content">
+                  <div class="settings-item-title">Preferences</div>
+                  <div class="settings-item-subtitle">Units, theme</div>
+                </div>
+                <svg viewBox="0 0 20 20" fill="currentColor" style="width: 20px; height: 20px;">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+
+              <div class="settings-item danger">
+                <div class="settings-item-content">
+                  <div class="settings-item-title">Log Out</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- My Exercises Sub-view -->
+        <div id="my-exercises-view" style="display: none;">
+          <div class="exercise-header">
+            <button class="back-btn" id="exercises-back-btn">
+              <svg viewBox="0 0 20 20" fill="currentColor" style="width: 20px; height: 20px;">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              My Exercises
+            </button>
+            <button class="btn">
+              <svg viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"/>
+              </svg>
+              Create
+            </button>
+          </div>
+
+          <div class="surface-content">
+            <div class="exercise-filters">
+              <select class="filter-select" id="category-filter">
+                <option value="all">All Categories</option>
+                <option value="Chest">Chest</option>
+                <option value="Back">Back</option>
+                <option value="Legs">Legs</option>
+                <option value="Shoulders">Shoulders</option>
+                <option value="Arms">Arms</option>
+              </select>
+              <input type="text" class="filter-input" id="search-input" placeholder="Search exercises...">
+            </div>
+
+            <div class="exercise-list" id="exercise-list">
+              <!-- Exercises will be rendered here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="bottom-nav-item active" data-surface="workouts">
+        <div class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/>
+          </svg>
+        </div>
+        <div class="bottom-nav-label">Workouts</div>
+      </button>
+
+      <button class="bottom-nav-item" data-surface="dashboard">
+        <div class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+          </svg>
+        </div>
+        <div class="bottom-nav-label">Dashboard</div>
+      </button>
+
+      <button class="bottom-nav-item" data-surface="settings">
+        <div class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+          </svg>
+        </div>
+        <div class="bottom-nav-label">Settings</div>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Edit Exercise Modal -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <div class="modal-header">Edit Exercise</div>
+      <form id="edit-form">
+        <div class="form-group">
+          <label class="form-label">Exercise Name</label>
+          <input type="text" class="form-input" id="edit-name" value="Barbell RDL">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-input" id="edit-category">
+            <option value="Chest">Chest</option>
+            <option value="Back">Back</option>
+            <option value="Legs" selected>Legs</option>
+            <option value="Shoulders">Shoulders</option>
+            <option value="Arms">Arms</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" style="flex: 1;" id="cancel-edit">Cancel</button>
+          <button type="submit" class="btn" style="flex: 1;">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="delete-modal">
+    <div class="modal">
+      <div class="modal-header">Delete Exercise</div>
+      <div class="confirm-text">
+        Are you sure you want to delete "<strong id="delete-exercise-name"></strong>"? This action cannot be undone.
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" style="flex: 1;" id="cancel-delete">Cancel</button>
+        <button type="button" class="btn btn-danger" style="flex: 1;" id="confirm-delete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Exercise data
+    const exercises = [
+      { id: 1, name: 'Barbell RDL', category: 'Legs', custom: true },
+      { id: 2, name: 'Cable Tricep Pushdown', category: 'Arms', custom: true },
+      { id: 3, name: 'Bulgarian Split Squat', category: 'Legs', custom: true },
+      { id: 4, name: 'Landmine Press', category: 'Shoulders', custom: true },
+      { id: 5, name: 'Bench Press', category: 'Chest', custom: false },
+      { id: 6, name: 'Deadlift', category: 'Back', custom: false },
+      { id: 7, name: 'Overhead Press', category: 'Shoulders', custom: false },
+      { id: 8, name: 'Squat', category: 'Legs', custom: false },
+    ];
+
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let currentDeleteId = null;
+
+    // Bottom Navigation
+    const navItems = document.querySelectorAll('.bottom-nav-item');
+    const surfaces = document.querySelectorAll('.surface');
+
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const targetSurface = item.dataset.surface;
+
+        // Update active nav item
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+
+        // Update active surface
+        surfaces.forEach(surface => surface.classList.remove('active'));
+        document.getElementById(`${targetSurface}-surface`).classList.add('active');
+
+        // Reset to menu view when navigating to settings
+        if (targetSurface === 'settings') {
+          document.getElementById('settings-menu-view').style.display = 'block';
+          document.getElementById('my-exercises-view').style.display = 'none';
+        }
+      });
+    });
+
+    // My Exercises Navigation
+    document.getElementById('my-exercises-btn').addEventListener('click', () => {
+      document.getElementById('settings-menu-view').style.display = 'none';
+      document.getElementById('my-exercises-view').style.display = 'block';
+      renderExercises();
+    });
+
+    document.getElementById('exercises-back-btn').addEventListener('click', () => {
+      document.getElementById('my-exercises-view').style.display = 'none';
+      document.getElementById('settings-menu-view').style.display = 'block';
+    });
+
+    // Exercise Filtering
+    document.getElementById('category-filter').addEventListener('change', (e) => {
+      currentFilter = e.target.value;
+      renderExercises();
+    });
+
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      currentSearch = e.target.value.toLowerCase();
+      renderExercises();
+    });
+
+    // Render Exercises
+    function renderExercises() {
+      const filtered = exercises.filter(ex => {
+        const matchesCategory = currentFilter === 'all' || ex.category === currentFilter;
+        const matchesSearch = ex.name.toLowerCase().includes(currentSearch);
+        return matchesCategory && matchesSearch;
+      });
+
+      const list = document.getElementById('exercise-list');
+      list.innerHTML = filtered.map(ex => `
+        <div class="exercise-item" data-id="${ex.id}">
+          <div class="exercise-info">
+            <div class="exercise-name">
+              ${ex.name}
+              ${ex.custom ? '<span class="badge-custom">Custom</span>' : ''}
+            </div>
+            <div class="exercise-category">${ex.category}</div>
+          </div>
+          ${ex.custom ? `
+            <div class="exercise-actions">
+              <button class="btn-icon edit-btn" data-id="${ex.id}" data-name="${ex.name}" data-category="${ex.category}" title="Edit">
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
+                </svg>
+              </button>
+              <button class="btn-icon danger delete-btn" data-id="${ex.id}" data-name="${ex.name}" title="Delete">
+                <svg viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+
+      // Attach event listeners
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const name = btn.dataset.name;
+          const category = btn.dataset.category;
+          document.getElementById('edit-name').value = name;
+          document.getElementById('edit-category').value = category;
+          document.getElementById('edit-modal').classList.add('active');
+        });
+      });
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentDeleteId = parseInt(btn.dataset.id);
+          document.getElementById('delete-exercise-name').textContent = btn.dataset.name;
+          document.getElementById('delete-modal').classList.add('active');
+        });
+      });
+    }
+
+    // Modal handling
+    document.getElementById('cancel-edit').addEventListener('click', () => {
+      document.getElementById('edit-modal').classList.remove('active');
+    });
+
+    document.getElementById('edit-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      document.getElementById('edit-modal').classList.remove('active');
+      // In a real app, would save the changes here
+    });
+
+    document.getElementById('cancel-delete').addEventListener('click', () => {
+      document.getElementById('delete-modal').classList.remove('active');
+      currentDeleteId = null;
+    });
+
+    document.getElementById('confirm-delete').addEventListener('click', () => {
+      if (currentDeleteId) {
+        const index = exercises.findIndex(ex => ex.id === currentDeleteId);
+        if (index > -1) {
+          exercises.splice(index, 1);
+          renderExercises();
+        }
+      }
+      document.getElementById('delete-modal').classList.remove('active');
+      currentDeleteId = null;
+    });
+
+    // Close modals on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+        }
+      });
+    });
+
+    // Initial render
+    renderExercises();
+  </script>
+</body>
+</html>

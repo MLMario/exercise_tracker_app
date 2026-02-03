@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock V5: Segmented Toggle with Expandable Rows</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f0f0f;
+            color: #ffffff;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .mock-label {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 32px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .view-container {
+            max-width: 480px;
+            margin: 0 auto 60px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #2a2a2a;
+        }
+
+        .header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 60px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: #4f9eff;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px;
+            margin: -8px;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background 150ms ease-in-out;
+        }
+
+        .back-button:hover {
+            background: rgba(79, 158, 255, 0.1);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .logo-iron {
+            color: #ffffff;
+        }
+
+        .logo-factor {
+            color: #4f9eff;
+        }
+
+        .settings-icon {
+            background: none;
+            border: none;
+            color: #a1a1aa;
+            cursor: pointer;
+            padding: 8px;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 150ms ease-in-out;
+            font-size: 20px;
+        }
+
+        .settings-icon:hover {
+            background: rgba(79, 158, 255, 0.1);
+            color: #4f9eff;
+        }
+
+        .settings-icon.pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                color: #a1a1aa;
+                transform: scale(1);
+            }
+            50% {
+                color: #4f9eff;
+                transform: scale(1.1);
+            }
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .segmented-control {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            display: flex;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .segment {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: none;
+            color: #71717a;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 150ms ease-in-out;
+            min-height: 44px;
+            position: relative;
+        }
+
+        .segment.active {
+            background: #4f9eff;
+            color: #ffffff;
+            cursor: default;
+        }
+
+        .segment.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .segment.disabled:hover::after {
+            content: 'Coming Soon';
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27272a;
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            border: 1px solid #2a2a2a;
+            z-index: 10;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: #27272a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            min-height: 44px;
+            transition: all 150ms ease-in-out;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4f9eff;
+            background: #1a1a1a;
+        }
+
+        .search-input::placeholder {
+            color: #71717a;
+        }
+
+        .category-select {
+            background: #27272a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 14px;
+            cursor: pointer;
+            min-height: 44px;
+            min-width: 140px;
+            transition: all 150ms ease-in-out;
+        }
+
+        .category-select:focus {
+            outline: none;
+            border-color: #4f9eff;
+        }
+
+        .exercise-list {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .exercise-row {
+            background: transparent;
+            border-bottom: 1px solid #2a2a2a;
+            transition: all 150ms ease-in-out;
+        }
+
+        .exercise-row.custom {
+            cursor: pointer;
+        }
+
+        .exercise-row.system {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .exercise-row.custom:hover:not(.expanded) .exercise-header {
+            background: rgba(79, 158, 255, 0.05);
+        }
+
+        .exercise-row.expanded {
+            background: #1a1a1a;
+            border-left: 3px solid #4f9eff;
+            border-bottom-color: transparent;
+            margin-bottom: 12px;
+            border-radius: 8px;
+        }
+
+        .exercise-row.delete-confirm {
+            background: rgba(248, 113, 113, 0.05);
+            border-left: 3px solid #f87171;
+        }
+
+        .exercise-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 150ms ease-in-out;
+        }
+
+        .exercise-row.expanded .exercise-header {
+            padding: 16px 16px 12px 16px;
+        }
+
+        .exercise-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .exercise-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-tag {
+            background: #27272a;
+            color: #a1a1aa;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.custom {
+            background: rgba(79, 158, 255, 0.15);
+            color: #4f9eff;
+        }
+
+        .badge.system {
+            background: rgba(161, 161, 170, 0.15);
+            color: #a1a1aa;
+        }
+
+        .lock-icon {
+            color: #71717a;
+            font-size: 16px;
+        }
+
+        .exercise-form {
+            padding: 0 16px 16px 16px;
+            display: none;
+            animation: slideDown 150ms ease-in-out;
+        }
+
+        .exercise-row.expanded .exercise-form {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #a1a1aa;
+            margin-bottom: 6px;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            background: #27272a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            min-height: 44px;
+            transition: all 150ms ease-in-out;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #4f9eff;
+            background: #1a1a1a;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 150ms ease-in-out;
+            min-height: 44px;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: #4f9eff;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #3d88e6;
+        }
+
+        .btn-secondary {
+            background: #27272a;
+            color: #ffffff;
+            border: 1px solid #2a2a2a;
+        }
+
+        .btn-secondary:hover {
+            background: #333333;
+        }
+
+        .btn-danger {
+            background: #f87171;
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .delete-confirmation {
+            padding: 0 16px 16px 16px;
+            display: none;
+            animation: slideDown 150ms ease-in-out;
+        }
+
+        .exercise-row.delete-confirm .delete-confirmation {
+            display: block;
+        }
+
+        .exercise-row.delete-confirm .exercise-form {
+            display: none;
+        }
+
+        .delete-warning {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: rgba(248, 113, 113, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .warning-icon {
+            color: #f87171;
+            font-size: 24px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .warning-text {
+            flex: 1;
+        }
+
+        .warning-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .warning-subtitle {
+            font-size: 13px;
+            color: #a1a1aa;
+        }
+
+        .dashboard-content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .dashboard-placeholder {
+            color: #71717a;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="mock-label">
+        Mock V5: Segmented Toggle with Expandable Rows
+    </div>
+
+    <!-- View 1: Dashboard with pulsing settings icon -->
+    <div class="view-container">
+        <div class="header">
+            <div class="logo">
+                <span class="logo-iron">Iron</span><span class="logo-factor">Factor</span>
+            </div>
+            <button class="settings-icon pulse" onclick="alert('Navigate to Settings')" title="Settings">
+                ⚙️
+            </button>
+        </div>
+        <div class="dashboard-content">
+            <div class="dashboard-placeholder">
+                Dashboard view - Click the settings icon above to enter Settings
+            </div>
+        </div>
+    </div>
+
+    <!-- View 2: Settings/Exercise Management with Expandable Rows -->
+    <div class="view-container">
+        <div class="header">
+            <div class="header-left">
+                <button class="back-button" onclick="alert('Back to Dashboard')" title="Back">
+                    ←
+                </button>
+                <h1 class="header-title">Settings</h1>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Segmented Control -->
+            <div class="segmented-control">
+                <button class="segment active">Exercises</button>
+                <button class="segment disabled">Profile</button>
+                <button class="segment disabled">Preferences</button>
+            </div>
+
+            <!-- Search and Filter Row -->
+            <div class="filter-row">
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search exercises..."
+                    oninput="filterExercises(this.value)"
+                >
+                <select class="category-select" onchange="filterByCategory(this.value)">
+                    <option value="all">All Categories</option>
+                    <option value="chest">Chest</option>
+                    <option value="back">Back</option>
+                    <option value="legs">Legs</option>
+                    <option value="shoulders">Shoulders</option>
+                    <option value="arms">Arms</option>
+                    <option value="cardio">Cardio</option>
+                </select>
+            </div>
+
+            <!-- Exercise List -->
+            <div class="exercise-list">
+                <!-- Custom Exercise - Expanded with Edit Form -->
+                <div class="exercise-row custom expanded" data-category="chest" data-name="Incline Dumbbell Press">
+                    <div class="exercise-header" onclick="toggleExpand(this.parentElement)">
+                        <div class="exercise-name">Incline Dumbbell Press</div>
+                        <div class="exercise-meta">
+                            <span class="category-tag">Chest</span>
+                            <span class="badge custom">Custom</span>
+                        </div>
+                    </div>
+                    <div class="exercise-form">
+                        <div class="form-group">
+                            <label class="form-label">Exercise Name</label>
+                            <input type="text" class="form-input" value="Incline Dumbbell Press">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-select">
+                                <option value="chest" selected>Chest</option>
+                                <option value="back">Back</option>
+                                <option value="legs">Legs</option>
+                                <option value="shoulders">Shoulders</option>
+                                <option value="arms">Arms</option>
+                                <option value="cardio">Cardio</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="toggleExpand(this.closest('.exercise-row'))">Cancel</button>
+                            <button class="btn btn-primary" onclick="saveExercise(this)">Save</button>
+                            <button class="btn btn-danger" onclick="showDeleteConfirm(this.closest('.exercise-row'))">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Exercise - Delete Confirmation State -->
+                <div class="exercise-row custom delete-confirm" data-category="legs" data-name="Bulgarian Split Squat">
+                    <div class="exercise-header">
+                        <div class="exercise-name">Bulgarian Split Squat</div>
+                        <div class="exercise-meta">
+                            <span class="category-tag">Legs</span>
+                            <span class="badge custom">Custom</span>
+                        </div>
+                    </div>
+                    <div class="exercise-form">
+                        <div class="form-group">
+                            <label class="form-label">Exercise Name</label>
+                            <input type="text" class="form-input" value="Bulgarian Split Squat">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-select">
+                                <option value="legs" selected>Legs</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary">Cancel</button>
+                            <button class="btn btn-primary">Save</button>
+                            <button class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                    <div class="delete-confirmation">
+                        <div class="delete-warning">
+                            <span class="warning-icon">⚠️</span>
+                            <div class="warning-text">
+                                <div class="warning-title">Delete Bulgarian Split Squat?</div>
+                                <div class="warning-subtitle">This cannot be undone</div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="cancelDelete(this.closest('.exercise-row'))">Cancel</button>
+                            <button class="btn btn-danger" onclick="deleteExercise(this)">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Exercise - Not Expandable -->
+                <div class="exercise-row system" data-category="chest" data-name="Bench Press">
+                    <div class="exercise-header">
+                        <div class="exercise-name">Bench Press</div>
+                        <div class="exercise-meta">
+                            <span class="category-tag">Chest</span>
+                            <span class="badge system">System</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Exercise - Collapsed -->
+                <div class="exercise-row custom" data-category="back" data-name="T-Bar Row">
+                    <div class="exercise-header" onclick="toggleExpand(this.parentElement)">
+                        <div class="exercise-name">T-Bar Row</div>
+                        <div class="exercise-meta">
+                            <span class="category-tag">Back</span>
+                            <span class="badge custom">Custom</span>
+                        </div>
+                    </div>
+                    <div class="exercise-form">
+                        <div class="form-group">
+                            <label class="form-label">Exercise Name</label>
+                            <input type="text" class="form-input" value="T-Bar Row">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-select">
+                                <option value="back" selected>Back</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="toggleExpand(this.closest('.exercise-row'))">Cancel</button>
+                            <button class="btn btn-primary" onclick="saveExercise(this)">Save</button>
+                            <button class="btn btn-danger" onclick="showDeleteConfirm(this.closest('.exercise-row'))">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Exercise - Not Expandable -->
+                <div class="exercise-row system" data-category="back" data-name="Deadlift">
+                    <div class="exercise-header">
+                        <div class="exercise-name">Deadlift</div>
+                        <div class="exercise-meta">
+                            <span class="category-tag">Back</span>
+                            <span class="badge system">System</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Exercise - Collapsed -->
+                <div class="exercise-row custom" data-category="shoulders" data-name="Face Pulls">
+                    <div class="exercise-header" onclick="toggleExpand(this.parentElement)">
+                        <div class="exercise-name">Face Pulls</div>
+                        <div class="exercise-meta">
+                            <span class="category-tag">Shoulders</span>
+                            <span class="badge custom">Custom</span>
+                        </div>
+                    </div>
+                    <div class="exercise-form">
+                        <div class="form-group">
+                            <label class="form-label">Exercise Name</label>
+                            <input type="text" class="form-input" value="Face Pulls">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-select">
+                                <option value="shoulders" selected>Shoulders</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="toggleExpand(this.closest('.exercise-row'))">Cancel</button>
+                            <button class="btn btn-primary" onclick="saveExercise(this)">Save</button>
+                            <button class="btn btn-danger" onclick="showDeleteConfirm(this.closest('.exercise-row'))">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Exercise - Not Expandable -->
+                <div class="exercise-row system" data-category="legs" data-name="Squat">
+                    <div class="exercise-header">
+                        <div class="exercise-name">Squat</div>
+                        <div class="exercise-meta">
+                            <span class="category-tag">Legs</span>
+                            <span class="badge system">System</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Exercise - Collapsed -->
+                <div class="exercise-row custom" data-category="arms" data-name="Hammer Curls">
+                    <div class="exercise-header" onclick="toggleExpand(this.parentElement)">
+                        <div class="exercise-name">Hammer Curls</div>
+                        <div class="exercise-meta">
+                            <span class="category-tag">Arms</span>
+                            <span class="badge custom">Custom</span>
+                        </div>
+                    </div>
+                    <div class="exercise-form">
+                        <div class="form-group">
+                            <label class="form-label">Exercise Name</label>
+                            <input type="text" class="form-input" value="Hammer Curls">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select class="form-select">
+                                <option value="arms" selected>Arms</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="toggleExpand(this.closest('.exercise-row'))">Cancel</button>
+                            <button class="btn btn-primary" onclick="saveExercise(this)">Save</button>
+                            <button class="btn btn-danger" onclick="showDeleteConfirm(this.closest('.exercise-row'))">Delete</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Exercise - Not Expandable -->
+                <div class="exercise-row system" data-category="shoulders" data-name="Overhead Press">
+                    <div class="exercise-header">
+                        <div class="exercise-name">Overhead Press</div>
+                        <div class="exercise-meta">
+                            <span class="category-tag">Shoulders</span>
+                            <span class="badge system">System</span>
+                            <span class="lock-icon">🔒</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Exercise Button -->
+            <button class="btn btn-secondary btn-full" onclick="addExercise()">
+                + Add Exercise
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function toggleExpand(row) {
+            if (row.classList.contains('system')) {
+                return; // System exercises cannot be expanded
+            }
+
+            // Close all other expanded rows
+            const allRows = document.querySelectorAll('.exercise-row.expanded');
+            allRows.forEach(r => {
+                if (r !== row) {
+                    r.classList.remove('expanded');
+                    r.classList.remove('delete-confirm');
+                }
+            });
+
+            // Toggle this row
+            if (row.classList.contains('delete-confirm')) {
+                row.classList.remove('delete-confirm');
+                return;
+            }
+
+            row.classList.toggle('expanded');
+            row.classList.remove('delete-confirm');
+        }
+
+        function showDeleteConfirm(row) {
+            row.classList.add('delete-confirm');
+        }
+
+        function cancelDelete(row) {
+            row.classList.remove('delete-confirm');
+        }
+
+        function saveExercise(button) {
+            const row = button.closest('.exercise-row');
+            const input = row.querySelector('.form-input');
+            const select = row.querySelector('.form-select');
+            const nameEl = row.querySelector('.exercise-name');
+            const categoryTag = row.querySelector('.category-tag');
+
+            // Update the display
+            nameEl.textContent = input.value;
+            categoryTag.textContent = select.options[select.selectedIndex].text;
+
+            // Update data attributes
+            row.dataset.name = input.value.toLowerCase();
+            row.dataset.category = select.value;
+
+            // Close the row
+            row.classList.remove('expanded');
+
+            // Show success feedback
+            button.textContent = 'Saved!';
+            button.style.background = '#4ade80';
+            setTimeout(() => {
+                button.textContent = 'Save';
+                button.style.background = '';
+            }, 1500);
+        }
+
+        function deleteExercise(button) {
+            const row = button.closest('.exercise-row');
+
+            // Fade out animation
+            row.style.transition = 'all 300ms ease-in-out';
+            row.style.opacity = '0';
+            row.style.transform = 'translateX(-20px)';
+
+            setTimeout(() => {
+                row.remove();
+            }, 300);
+        }
+
+        function addExercise() {
+            const list = document.querySelector('.exercise-list');
+            const newRow = document.createElement('div');
+            newRow.className = 'exercise-row custom expanded';
+            newRow.dataset.category = 'chest';
+            newRow.dataset.name = 'new exercise';
+
+            newRow.innerHTML = `
+                <div class="exercise-header" onclick="toggleExpand(this.parentElement)">
+                    <div class="exercise-name">New Exercise</div>
+                    <div class="exercise-meta">
+                        <span class="category-tag">Chest</span>
+                        <span class="badge custom">Custom</span>
+                    </div>
+                </div>
+                <div class="exercise-form">
+                    <div class="form-group">
+                        <label class="form-label">Exercise Name</label>
+                        <input type="text" class="form-input" value="New Exercise" placeholder="Enter exercise name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-select">
+                            <option value="chest" selected>Chest</option>
+                            <option value="back">Back</option>
+                            <option value="legs">Legs</option>
+                            <option value="shoulders">Shoulders</option>
+                            <option value="arms">Arms</option>
+                            <option value="cardio">Cardio</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" onclick="this.closest('.exercise-row').remove()">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveExercise(this)">Save</button>
+                        <button class="btn btn-danger" onclick="showDeleteConfirm(this.closest('.exercise-row'))">Delete</button>
+                    </div>
+                </div>
+            `;
+
+            // Close all other expanded rows
+            const allRows = document.querySelectorAll('.exercise-row.expanded');
+            allRows.forEach(r => {
+                r.classList.remove('expanded');
+                r.classList.remove('delete-confirm');
+            });
+
+            list.appendChild(newRow);
+
+            // Focus the name input
+            const input = newRow.querySelector('.form-input');
+            input.focus();
+            input.select();
+
+            // Scroll to the new row
+            newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function filterExercises(searchTerm) {
+            const rows = document.querySelectorAll('.exercise-row');
+            const term = searchTerm.toLowerCase().trim();
+
+            rows.forEach(row => {
+                const name = row.dataset.name || '';
+                if (name.includes(term)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function filterByCategory(category) {
+            const rows = document.querySelectorAll('.exercise-row');
+
+            rows.forEach(row => {
+                if (category === 'all' || row.dataset.category === category) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

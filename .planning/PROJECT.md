@@ -8,11 +8,19 @@ An exercise tracking application with template-based workout management, real-ti
 
 Simple, effective workout tracking with clean visual feedback on progress.
 
-## Current State
+## Current Milestone: v3.0 Settings & Exercise Management
 
-**v2.8 Enhanced Filtering Capabilities — SHIPPED 2026-02-02**
+**Goal:** Add a Settings surface with gear icon access from the dashboard, containing exercise management (My Exercises), placeholder menu items, and relocated logout — enabling users to manage their custom exercises outside the template editor workflow.
 
-All planned milestones complete through v2.8. Ready for next feature work.
+**Target features:**
+- Settings surface accessible via gear icon in dashboard header (far right)
+- Settings menu: "My Exercises" (active), "Profile" (disabled), "Preferences" (disabled), Log Out button
+- My Exercises view: search, category filter, create, edit, delete for user-created exercises only
+- Edit panel: slide-in overlay from right (name + category fields)
+- Delete confirmation modal
+- Empty state when no custom exercises exist
+- Backend updateExercise service function
+- Logout button relocated from dashboard header into settings menu
 
 ## Requirements
 
@@ -51,7 +59,17 @@ All planned milestones complete through v2.8. Ready for next feature work.
 
 ### Active
 
-(None — all planned work shipped through v2.8)
+- [ ] Gear icon in dashboard header (far right) opens Settings surface
+- [ ] Settings menu with "My Exercises" active, "Profile" and "Preferences" disabled with "Coming Soon"
+- [ ] Log Out button in settings menu
+- [ ] Current logout button removed from dashboard header
+- [ ] My Exercises view shows only user-created exercises
+- [ ] Search and category filter in My Exercises
+- [ ] Empty state message when no custom exercises exist
+- [ ] Create exercise via existing modal from My Exercises
+- [ ] Edit exercise via slide-in overlay panel (name + category)
+- [ ] Delete exercise with confirmation modal
+- [ ] updateExercise backend service function
 
 ### Out of Scope
 
@@ -66,7 +84,7 @@ All planned milestones complete through v2.8. Ready for next feature work.
 
 **Technical Environment:**
 - Preact-based web application with TypeScript
-- Surface-based UI architecture (AuthSurface, DashboardSurface, TemplateEditorSurface, WorkoutSurface)
+- Surface-based UI architecture (AuthSurface, DashboardSurface, TemplateEditorSurface, WorkoutSurface, SettingsSurface)
 - CSS styling in `apps/web/css/styles.css`
 - Template editor surface at `apps/web/src/surfaces/template-editor/`
 - Supabase backend with RLS policies
@@ -113,4 +131,4 @@ All planned milestones complete through v2.8. Ready for next feature work.
 | optgroup for category grouping in chart | Native HTML element, no custom styling needed | ✓ Good |
 
 ---
-*Last updated: 2026-02-02 after v2.8 milestone*
+*Last updated: 2026-02-03 after v3.0 milestone start*

@@ -15,7 +15,7 @@ None
 - [v2.5 Exercise Card Design Modifications](milestones/v2.5-ROADMAP.md) (Phase 4) -- SHIPPED 2026-01-18
 - [v2.6 Swipe Gesture Refactor](milestones/v2.6-ROADMAP.md) (Phases 5-7) -- SHIPPED 2026-01-19
 - [v2.7 Pre-Created Exercise Library](milestones/v2.7-ROADMAP.md) (Phases 8-13) -- SHIPPED 2026-02-02
-- [v2.8 Enhanced Filtering Capabilities](milestones/v2.8-ROADMAP.md) (Phases 14-15) -- IN PROGRESS
+- [v2.8 Enhanced Filtering Capabilities](milestones/v2.8-ROADMAP.md) (Phases 14-15) -- SHIPPED 2026-02-02
 
 ## Completed Milestones
 
@@ -80,4 +80,4 @@ None
 | 12. Exercise Picker Layout | v2.7 | 1/1 | Complete | 2026-02-02 |
 | 13. System Exercise Color Fix | v2.7 | 1/1 | Complete | 2026-02-02 |
 | 14. Exercise Picker Category Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
-| 15. Chart Exercise Selector Filter | v2.8 | 0/1 | Planned | - |
+| 15. Chart Exercise Selector Filter | v2.8 | 1/1 | Complete | 2026-02-02 |

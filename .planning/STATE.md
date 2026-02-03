@@ -75,4 +75,4 @@ None.
 Last session: 2026-02-02
 Stopped at: Phase 15 complete, Milestone v2.8 complete
 Resume file: None
-Next step: All planned work complete. Ready for new features or maintenance.
+Next step: `/gsd:audit-milestone` to verify and archive v2.8

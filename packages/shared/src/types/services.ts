@@ -154,6 +154,54 @@ export interface AuthService {
 // ============================================================================
 
 /**
+ * Parameters for updating an exercise.
+ * Supports partial updates -- provide only the fields to change.
+ *
+ * @property id - Exercise UUID (required)
+ * @property name - New exercise name (optional)
+ * @property category - New exercise category (optional)
+ */
+export interface UpdateExerciseParams {
+  id: string;
+  name?: string;
+  category?: ExerciseCategory;
+}
+
+/**
+ * Typed validation error for exercise update operations.
+ * Used instead of generic Error objects for name-related issues.
+ */
+export type UpdateExerciseError = 'DUPLICATE_NAME' | 'INVALID_NAME' | 'EMPTY_NAME';
+
+/**
+ * Result type for updateExercise operation.
+ * Dedicated type (not extending ServiceResult) to include typed validation errors.
+ *
+ * @property data - The updated exercise on success, null on failure
+ * @property error - Generic error (auth failure, DB error), null on success or validation error
+ * @property validationError - Typed validation error for name issues, undefined if no validation error
+ */
+export interface UpdateExerciseResult {
+  data: Exercise | null;
+  error: Error | null;
+  validationError?: UpdateExerciseError;
+}
+
+/**
+ * Dependency counts for an exercise.
+ * Shows how many other entities reference a given exercise.
+ *
+ * @property templateCount - Number of templates containing this exercise
+ * @property workoutLogCount - Number of workout logs containing this exercise
+ * @property chartCount - Number of charts tracking this exercise
+ */
+export interface ExerciseDependencies {
+  templateCount: number;
+  workoutLogCount: number;
+  chartCount: number;
+}
+
+/**
  * Exercises service interface.
  * Provides CRUD operations for the exercise library.
  */
@@ -217,6 +265,30 @@ export interface ExercisesService {
    * @returns Array of category strings
    */
   getCategories(): ExerciseCategory[];
+
+  /**
+   * Update an exercise's name and/or category.
+   * Returns typed validation errors for name issues.
+   *
+   * @param params - Update parameters (id required, name and category optional)
+   * @returns Promise resolving to the updated exercise, validation error, or generic error
+   */
+  updateExercise(params: UpdateExerciseParams): Promise<UpdateExerciseResult>;
+
+  /**
+   * Get only user-created exercises, sorted alphabetically by name.
+   *
+   * @returns Promise resolving to user-created exercises or error
+   */
+  getUserExercises(): Promise<ServiceResult<Exercise[]>>;
+
+  /**
+   * Get counts of templates, workout logs, and charts that reference an exercise.
+   *
+   * @param exerciseId - Exercise UUID to check dependencies for
+   * @returns Promise resolving to dependency counts or error
+   */
+  getExerciseDependencies(exerciseId: string): Promise<ServiceResult<ExerciseDependencies>>;
 }
 
 // ============================================================================

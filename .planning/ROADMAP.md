@@ -127,7 +127,9 @@ Plans:
   2. User can modify exercise name and category in the expanded form
   3. User can save edits via an explicit Save button and see changes reflected in the list
   4. User can cancel edits via an explicit Cancel button and see original values restored
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 19-01-PLAN.md -- Add accordion edit form with pencil trigger, name/category fields, save/cancel, validation errors, success flash
 
 ### Phase 20: Exercise Delete
 **Goal**: Users can delete custom exercises with clear warnings about downstream effects
@@ -171,6 +173,6 @@ Plans:
 | 16. Service Layer | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 17. Settings Surface Shell | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 18. Exercise List | v3.0 | 1/1 | Complete | 2026-02-03 |
-| 19. Exercise Edit | v3.0 | 0/0 | Not started | - |
+| 19. Exercise Edit | v3.0 | 0/1 | Not started | - |
 | 20. Exercise Delete | v3.0 | 0/0 | Not started | - |
 | 21. Exercise Create | v3.0 | 0/0 | Not started | - |

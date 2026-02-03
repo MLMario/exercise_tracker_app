@@ -3133,6 +3133,8 @@ input[type="checkbox"]:focus {
 .my-exercises-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  position: relative;
   padding: var(--spacing-sm) var(--spacing-md);
 }
 
@@ -3151,4 +3153,58 @@ input[type="checkbox"]:focus {
   text-align: center;
   padding: var(--spacing-xl);
   color: var(--color-text-muted);
+}
+
+.my-exercises-edit-trigger {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  color: var(--color-text-muted);
+  margin-left: auto;
+  font-size: 1.125rem;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-exercises-edit-form {
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.my-exercises-row.editing .my-exercises-edit-form {
+  max-height: 280px;
+}
+
+.my-exercises-edit-form-inner {
+  padding: var(--spacing-md);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-md);
+  margin-top: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.my-exercises-edit-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  margin-top: var(--spacing-xs);
+}
+
+.field-error {
+  color: var(--color-danger);
+  font-size: 0.8125rem;
+  margin-top: var(--spacing-xs);
+}
+
+.my-exercises-row.save-success {
+  background-color: rgba(74, 222, 128, 0.1);
+  transition: background-color 0.3s ease;
 }

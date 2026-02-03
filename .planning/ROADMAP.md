@@ -107,14 +107,13 @@ Plans:
 - [x] 17-01-PLAN.md -- Create settings panel shell with gear icon, slide-in panel, menu, and sub-navigation
 
 ### Phase 18: Exercise List
-**Goal**: Users can view and search their custom exercises in a dedicated management view
+**Goal**: Users can view their custom exercises in a dedicated management view
 **Depends on**: Phase 17
-**Requirements**: LIST-01, LIST-02, LIST-03, LIST-04, LIST-05
+**Requirements**: LIST-01, LIST-03, LIST-04, LIST-05
 **Success Criteria** (what must be TRUE):
-  1. My Exercises view shows only user-created exercises (system exercises excluded)
-  2. User can search exercises by name and filter by category (independently or combined)
-  3. When no custom exercises exist, an empty state message with a prompt to create is displayed
-  4. User can navigate back from My Exercises to the Settings menu
+  1. My Exercises view shows only user-created exercises (system exercises excluded), sorted alphabetically
+  2. When no custom exercises exist, an empty state message with a prompt to create is displayed
+  3. User can navigate back from My Exercises to the Settings menu
 **Plans**: TBD
 
 ### Phase 19: Exercise Edit

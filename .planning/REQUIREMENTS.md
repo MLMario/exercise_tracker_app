@@ -18,8 +18,6 @@ Requirements for v3.0 Settings & Exercise Management milestone.
 ### Exercise List
 
 - [ ] **LIST-01**: My Exercises view shows only user-created exercises (system exercises excluded)
-- [ ] **LIST-02**: User can search exercises by name in My Exercises view
-- [ ] **LIST-03**: User can filter exercises by category via dropdown in My Exercises view
 - [ ] **LIST-04**: Empty state displays message with prompt to create when no custom exercises exist
 - [ ] **LIST-05**: User can navigate back from My Exercises to Settings menu
 
@@ -60,8 +58,10 @@ Deferred to future release.
 ### Exercise Management Enhancements
 
 - **LIST-V2-01**: Sort options for exercise list (A-Z, Z-A, by category, by date)
-- **LIST-V2-02**: Bulk select and delete multiple exercises
-- **LIST-V2-03**: Exercise usage indicator (shows where each exercise is used)
+- **LIST-V2-02**: Search exercises by name in My Exercises view
+- **LIST-V2-03**: Filter exercises by category via dropdown in My Exercises view
+- **LIST-V2-04**: Bulk select and delete multiple exercises
+- **LIST-V2-05**: Exercise usage indicator (shows where each exercise is used)
 - **CRUD-V2-01**: Undo-after-delete toast notification
 
 ## Out of Scope
@@ -89,8 +89,6 @@ Deferred to future release.
 | SETT-04 | Phase 17 | Complete |
 | SETT-05 | Phase 17 | Complete |
 | LIST-01 | Phase 18 | Pending |
-| LIST-02 | Phase 18 | Pending |
-| LIST-03 | Phase 18 | Pending |
 | LIST-04 | Phase 18 | Pending |
 | LIST-05 | Phase 18 | Pending |
 | CRUD-02 | Phase 19 | Pending |
@@ -105,8 +103,8 @@ Deferred to future release.
 | CRUD-01 | Phase 21 | Pending |
 
 **Coverage:**
-- v1 requirements: 18 total
-- Mapped to phases: 18
+- v1 requirements: 16 total
+- Mapped to phases: 16
 - Unmapped: 0
 
 ---

@@ -5,16 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Simple, effective workout tracking with clean visual feedback
-**Current focus:** v2.8 Enhanced Filtering Capabilities - COMPLETE
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 15 of 15 (Chart Exercise Selector Filter)
-Plan: 01 of 01 - Complete
-Status: Phase 15 complete, Milestone v2.8 complete
-Last activity: 2026-02-02 - Completed 15-01-PLAN.md
-
-Progress: ██████████ 100% (2/2 phases)
+Phase: All 15 phases complete (v2.3-v2.8)
+Plan: None — between milestones
+Status: v2.8 shipped, ready for next milestone
+Last activity: 2026-02-02 - v2.8 milestone archived
 
 ## Performance Metrics
 
@@ -73,6 +71,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-02-02
-Stopped at: Phase 15 complete, Milestone v2.8 complete
+Stopped at: v2.8 milestone archived
 Resume file: None
-Next step: `/gsd:audit-milestone` to verify and archive v2.8
+Next step: `/gsd:new-milestone` to start next milestone

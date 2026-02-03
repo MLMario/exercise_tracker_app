@@ -1,5 +1,32 @@
 # Project Milestones: Exercise Tracker App
 
+## v2.8 Enhanced Filtering Capabilities (Shipped: 2026-02-02)
+
+**Delivered:** Added category dropdown filter to Exercise Picker and filtered Chart Exercise Selector to only show exercises with logged workout data.
+
+**Phases completed:** 14-15 (2 plans total)
+
+**Key accomplishments:**
+
+- Category dropdown filter in Exercise Picker with 7 categories above search input
+- Combined filtering: category and name search work together or independently
+- Reusable `useClickOutside` hook for dropdown dismissal with mobile support
+- `getExercisesWithLoggedData` service function using inner join through workout_log_exercises
+- Chart exercise selector shows "No exercise data yet" empty state when no logged data
+- Category-grouped exercise display with native optgroup headers in chart modal
+
+**Stats:**
+
+- 8 files modified
+- 2 phases, 2 plans, 5 tasks
+- Same day completion (2026-02-02)
+
+**Git range:** `761d606` → `d0e8189`
+
+**What's next:** Filtering capabilities complete. Ready for next feature work.
+
+---
+
 ## v2.7 Pre-Created Exercise Library (Shipped: 2026-02-02)
 
 **Delivered:** Added 873 pre-created exercises from free-exercise-db that users can pick from when adding exercises, with database schema changes, RLS policies, and visual distinction in the picker.

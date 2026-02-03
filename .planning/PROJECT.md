@@ -10,16 +10,9 @@ Simple, effective workout tracking with clean visual feedback on progress.
 
 ## Current State
 
-**v2.8 Enhanced Filtering Capabilities — in progress**
+**v2.8 Enhanced Filtering Capabilities — SHIPPED 2026-02-02**
 
-**Goal:** Improve exercise filtering and selection across the app.
-
-**Target features:**
-- Exercise Picker: Search filters by name only (not category)
-- Exercise Picker: Category dropdown filter above search box
-- Exercise Picker: Combined filtering (category, search, or both)
-- Chart Exercise Selector: Only show exercises with logged session data
-- Chart Exercise Selector: Show message when no exercises have data
+All planned milestones complete through v2.8. Ready for next feature work.
 
 ## Requirements
 
@@ -49,15 +42,16 @@ Simple, effective workout tracking with clean visual feedback on progress.
 - ✓ Duplicate names allowed (user's "Bench Press" + system "Bench Press" both visible) — v2.7
 - ✓ Category text appears below exercise name in picker — v2.7
 - ✓ System exercises display same color as user exercises in picker — v2.7
+- ✓ Exercise Picker search filters by exercise name only (not category text) — v2.8
+- ✓ Category dropdown appears above search box in Exercise Picker Modal — v2.8
+- ✓ Category dropdown defaults to "All Categories" — v2.8
+- ✓ Combined filtering: category and search work together or independently — v2.8
+- ✓ Chart exercise selector shows only exercises with logged session data — v2.8
+- ✓ Chart exercise selector shows message when no exercises have data — v2.8
 
 ### Active
 
-- [ ] Exercise Picker search filters by exercise name only (not category text)
-- [ ] Category dropdown appears above search box in Exercise Picker Modal
-- [ ] Category dropdown defaults to "All Categories"
-- [ ] Combined filtering: category and search work together or independently
-- [ ] Chart exercise selector shows only exercises with logged session data
-- [ ] Chart exercise selector shows message when no exercises have data
+(None — all planned work shipped through v2.8)
 
 ### Out of Scope
 
@@ -111,6 +105,12 @@ Simple, effective workout tracking with clean visual feedback on progress.
 | tsx for TypeScript scripts | Zero-config TypeScript execution for import script | ✓ Good |
 | Option B (Solid Pill) badge design | Clear visual distinction for custom exercises | ✓ Good |
 | Removed system color override | Simpler solution than changing color — all exercises same appearance | ✓ Good |
+| 180px partial-width category dropdown | Compact layout that doesn't dominate modal width | ✓ Good |
+| useClickOutside hook for dropdown | Reusable pattern for future dropdowns, handles mobile touch events | ✓ Good |
+| Name-only search (not category) | Category dropdown handles category filtering; name-only search is cleaner | ✓ Good |
+| Inner join via workout_log_exercises | Efficient filtering: only exercises with actual logged data appear | ✓ Good |
+| Fetch filtered exercises on modal open | Not cached — captures new workouts immediately | ✓ Good |
+| optgroup for category grouping in chart | Native HTML element, no custom styling needed | ✓ Good |
 
 ---
-*Last updated: 2026-02-02 after v2.8 milestone start*
+*Last updated: 2026-02-02 after v2.8 milestone*

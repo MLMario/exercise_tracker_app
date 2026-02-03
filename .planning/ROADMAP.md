@@ -62,6 +62,14 @@ None
 
 </details>
 
+<details>
+<summary>v2.8 Enhanced Filtering Capabilities (Phases 14-15) -- SHIPPED 2026-02-02</summary>
+
+- [x] Phase 14: Exercise Picker Category Filter (1/1 plans) -- completed 2026-02-02
+- [x] Phase 15: Chart Exercise Selector Filter (1/1 plans) -- completed 2026-02-02
+
+</details>
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |

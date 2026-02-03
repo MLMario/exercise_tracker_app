@@ -7,3 +7,5 @@
 
 export { DashboardSurface, default } from './DashboardSurface';
 export type { UserChart } from './DashboardSurface';
+export { SettingsPanel } from './SettingsPanel';
+export { SettingsMenu } from './SettingsMenu';

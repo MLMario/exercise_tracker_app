@@ -2941,3 +2941,185 @@ input[type="checkbox"]:focus {
   background-color: rgba(79, 158, 255, 0.15);
   color: var(--color-accent);
 }
+
+/* ==========================================================================
+   Settings Panel
+   ========================================================================== */
+
+/* Gear icon button in dashboard header */
+.settings-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  min-height: 36px;
+  min-width: 36px;
+}
+
+.settings-btn:hover {
+  background-color: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+}
+
+/* Settings backdrop */
+.settings-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.settings-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Settings panel */
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80%;
+  max-width: 400px;
+  background-color: var(--color-bg-surface);
+  border-left: 1px solid var(--color-border);
+  z-index: 1001;
+  transform: translateX(100%);
+  transition: transform var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+}
+
+.settings-panel.open {
+  transform: translateX(0);
+}
+
+/* Settings panel header */
+.settings-panel-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+}
+
+.settings-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.settings-back-btn {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  margin: calc(-1 * var(--spacing-sm));
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+  min-height: var(--min-tap-target);
+  min-width: var(--min-tap-target);
+  font-family: inherit;
+}
+
+.settings-back-btn:hover {
+  background: rgba(79, 158, 255, 0.1);
+}
+
+.settings-header-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Settings panel content */
+.settings-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
+/* Settings menu item (card style) */
+.settings-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: var(--spacing-sm);
+}
+
+.settings-menu-item:hover {
+  border-color: #3a3a3a;
+}
+
+.settings-menu-item-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.settings-menu-item-content {
+  flex: 1;
+}
+
+.settings-menu-item-label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.settings-menu-item-chevron {
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+}
+
+/* Settings logout button */
+.settings-logout-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-danger);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  margin-top: var(--spacing-md);
+  transition: all var(--transition-fast);
+  min-height: var(--min-tap-target);
+  font-family: inherit;
+}
+
+.settings-logout-btn:hover {
+  background-color: rgba(248, 113, 113, 0.1);
+  border-color: var(--color-danger);
+}

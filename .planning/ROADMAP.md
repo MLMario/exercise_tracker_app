@@ -102,7 +102,9 @@ Plans:
   2. Settings menu shows "My Exercises" as a tappable item and a Log Out button
   3. User can navigate back from Settings to Dashboard
   4. Logout button no longer appears in dashboard header (only in Settings menu)
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 17-01-PLAN.md -- Create settings panel shell with gear icon, slide-in panel, menu, and sub-navigation
 
 ### Phase 18: Exercise List
 **Goal**: Users can view and search their custom exercises in a dedicated management view
@@ -166,7 +168,7 @@ Plans:
 | 14. Exercise Picker Category Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
 | 15. Chart Exercise Selector Filter | v2.8 | 1/1 | Complete | 2026-02-02 |
 | 16. Service Layer | v3.0 | 1/1 | Complete | 2026-02-03 |
-| 17. Settings Surface Shell | v3.0 | 0/0 | Not started | - |
+| 17. Settings Surface Shell | v3.0 | 0/1 | Not started | - |
 | 18. Exercise List | v3.0 | 0/0 | Not started | - |
 | 19. Exercise Edit | v3.0 | 0/0 | Not started | - |
 | 20. Exercise Delete | v3.0 | 0/0 | Not started | - |

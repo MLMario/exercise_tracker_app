@@ -8,7 +8,14 @@
  */
 
 import type { Exercise, ExerciseCategory } from '../types/database';
-import type { ExercisesService, ServiceResult, ServiceError } from '../types/services';
+import type {
+  ExercisesService,
+  ServiceResult,
+  ServiceError,
+  UpdateExerciseParams,
+  UpdateExerciseResult,
+  ExerciseDependencies,
+} from '../types/services';
 
 import { supabase } from '../lib/supabase';
 
@@ -290,6 +297,187 @@ async function getExercisesWithLoggedData(): Promise<ServiceResult<Exercise[]>> 
 }
 
 /**
+ * Update an exercise's name and/or category.
+ * Returns typed validation errors for name issues.
+ *
+ * @param params - Update parameters (id required, name and category optional)
+ * @returns Promise resolving to the updated exercise, validation error, or generic error
+ */
+async function updateExercise(
+  params: UpdateExerciseParams
+): Promise<UpdateExerciseResult> {
+  try {
+    // Get current user
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return {
+        data: null,
+        error: userError || new Error('No authenticated user'),
+      };
+    }
+
+    const { id, name, category } = params;
+
+    // Build update object conditionally (only include provided fields)
+    const updateData: Record<string, string> = {};
+
+    if (name !== undefined) {
+      const trimmedName = name.trim();
+
+      // Reject empty/whitespace-only
+      if (!trimmedName) {
+        return { data: null, error: null, validationError: 'EMPTY_NAME' };
+      }
+
+      // Validate: letters, numbers, spaces only
+      if (!/^[a-zA-Z0-9 ]+$/.test(trimmedName)) {
+        return { data: null, error: null, validationError: 'INVALID_NAME' };
+      }
+
+      // Case-insensitive uniqueness check, scoped to user's exercises, excluding self
+      const { data: existing } = await supabase
+        .from('exercises')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('is_system', false)
+        .ilike('name', trimmedName)
+        .neq('id', id)
+        .maybeSingle();
+
+      if (existing) {
+        return { data: null, error: null, validationError: 'DUPLICATE_NAME' };
+      }
+
+      updateData.name = trimmedName;
+    }
+
+    if (category !== undefined) {
+      updateData.category = category;
+    }
+
+    // Nothing to update
+    if (Object.keys(updateData).length === 0) {
+      return { data: null, error: new Error('No fields to update') };
+    }
+
+    const { data, error } = await supabase
+      .from('exercises')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    return { data: data as Exercise, error: null };
+  } catch (err) {
+    console.error('Unexpected error in updateExercise:', err);
+    return {
+      data: null,
+      error: err instanceof Error ? err : new Error(String(err)),
+    };
+  }
+}
+
+/**
+ * Get only user-created exercises, sorted alphabetically by name.
+ *
+ * @returns Promise resolving to user-created exercises or error
+ */
+async function getUserExercises(): Promise<ServiceResult<Exercise[]>> {
+  try {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      return {
+        data: null,
+        error: userError || new Error('No authenticated user'),
+      };
+    }
+
+    const { data, error } = await supabase
+      .from('exercises')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('is_system', false)
+      .order('name', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching user exercises:', error);
+      return { data: null, error };
+    }
+
+    return { data: data as Exercise[], error: null };
+  } catch (err) {
+    console.error('Unexpected error in getUserExercises:', err);
+    return {
+      data: null,
+      error: err instanceof Error ? err : new Error(String(err)),
+    };
+  }
+}
+
+/**
+ * Get counts of templates, workout logs, and charts that reference an exercise.
+ *
+ * @param exerciseId - Exercise UUID to check dependencies for
+ * @returns Promise resolving to dependency counts or error
+ */
+async function getExerciseDependencies(
+  exerciseId: string
+): Promise<ServiceResult<ExerciseDependencies>> {
+  try {
+    // Run all three counts in parallel for efficiency
+    const [templateResult, workoutLogResult, chartResult] = await Promise.all([
+      supabase
+        .from('template_exercises')
+        .select('*', { count: 'exact', head: true })
+        .eq('exercise_id', exerciseId),
+      supabase
+        .from('workout_log_exercises')
+        .select('*', { count: 'exact', head: true })
+        .eq('exercise_id', exerciseId),
+      supabase
+        .from('user_charts')
+        .select('*', { count: 'exact', head: true })
+        .eq('exercise_id', exerciseId),
+    ]);
+
+    // Check for first error among results
+    const firstError =
+      templateResult.error || workoutLogResult.error || chartResult.error;
+    if (firstError) {
+      console.error('Error fetching exercise dependencies:', firstError);
+      return { data: null, error: firstError };
+    }
+
+    return {
+      data: {
+        templateCount: templateResult.count ?? 0,
+        workoutLogCount: workoutLogResult.count ?? 0,
+        chartCount: chartResult.count ?? 0,
+      },
+      error: null,
+    };
+  } catch (err) {
+    console.error('Unexpected error in getExerciseDependencies:', err);
+    return {
+      data: null,
+      error: err instanceof Error ? err : new Error(String(err)),
+    };
+  }
+}
+
+/**
  * Exercises service object implementing the ExercisesService interface.
  * Provides all exercise CRUD operations.
  */
@@ -301,4 +489,7 @@ export const exercises: ExercisesService = {
   deleteExercise,
   exerciseExists,
   getCategories,
+  updateExercise,
+  getUserExercises,
+  getExerciseDependencies,
 };

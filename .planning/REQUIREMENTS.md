@@ -35,10 +35,10 @@ Requirements for v3.0 Settings & Exercise Management milestone.
 
 ### Exercise Delete
 
-- [ ] **CRUD-07**: User can delete an exercise from the expanded row
-- [ ] **CRUD-08**: Delete shows a confirmation modal before removing the exercise
-- [ ] **CRUD-09**: Confirmation modal displays dependency warning if exercise is used in templates, workout logs, or charts
-- [ ] **CRUD-10**: Confirmation modal uses specific button labels ("Delete Exercise" / "Keep Exercise")
+- [x] **CRUD-07**: User can delete an exercise from the expanded row
+- [x] **CRUD-08**: Delete shows a confirmation modal before removing the exercise
+- [x] **CRUD-09**: Confirmation modal displays dependency warning if exercise is used in templates, workout logs, or charts
+- [x] **CRUD-10**: Confirmation modal uses specific button labels ("Delete Exercise" / "Keep Exercise")
 
 ### Backend
 
@@ -96,10 +96,10 @@ Deferred to future release.
 | CRUD-04 | Phase 19 | Complete |
 | CRUD-05 | Phase 19 | Complete |
 | CRUD-06 | Phase 19 | Complete |
-| CRUD-07 | Phase 20 | Pending |
-| CRUD-08 | Phase 20 | Pending |
-| CRUD-09 | Phase 20 | Pending |
-| CRUD-10 | Phase 20 | Pending |
+| CRUD-07 | Phase 20 | Complete |
+| CRUD-08 | Phase 20 | Complete |
+| CRUD-09 | Phase 20 | Complete |
+| CRUD-10 | Phase 20 | Complete |
 | CRUD-01 | Phase 21 | Pending |
 
 **Coverage:**
@@ -109,4 +109,4 @@ Deferred to future release.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-03 after Phase 19 completion*
+*Last updated: 2026-02-03 after Phase 20 completion*

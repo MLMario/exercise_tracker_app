@@ -8,19 +8,18 @@ An exercise tracking application with template-based workout management, real-ti
 
 Simple, effective workout tracking with clean visual feedback on progress.
 
-## Current Milestone: v3.0 Settings & Exercise Management
+## Current State
 
-**Goal:** Add a Settings surface with gear icon access from the dashboard, containing exercise management (My Exercises), placeholder menu items, and relocated logout — enabling users to manage their custom exercises outside the template editor workflow.
+**Last shipped:** v3.0 Settings & Exercise Management (2026-02-04)
 
-**Target features:**
-- Settings surface accessible via gear icon in dashboard header (far right)
-- Settings menu: "My Exercises" (active), "Profile" (disabled), "Preferences" (disabled), Log Out button
-- My Exercises view: search, category filter, create, edit, delete for user-created exercises only
-- Edit panel: slide-in overlay from right (name + category fields)
-- Delete confirmation modal
-- Empty state when no custom exercises exist
-- Backend updateExercise service function
-- Logout button relocated from dashboard header into settings menu
+**What shipped in v3.0:**
+- Settings surface accessible via gear icon in dashboard header
+- Settings menu with "My Exercises" and Log Out button
+- My Exercises view for managing user-created exercises
+- Inline accordion editing for name and category
+- Delete with confirmation modal and dependency warnings
+- Create exercise modal from header button and empty state
+- Backend service layer with typed validation errors
 
 ## Requirements
 
@@ -56,20 +55,19 @@ Simple, effective workout tracking with clean visual feedback on progress.
 - ✓ Combined filtering: category and search work together or independently — v2.8
 - ✓ Chart exercise selector shows only exercises with logged session data — v2.8
 - ✓ Chart exercise selector shows message when no exercises have data — v2.8
+- ✓ Gear icon in dashboard header opens Settings surface — v3.0
+- ✓ Settings menu with "My Exercises" menu item and Log Out button — v3.0
+- ✓ Logout button relocated from dashboard header to Settings menu — v3.0
+- ✓ My Exercises view shows only user-created exercises — v3.0
+- ✓ Empty state message when no custom exercises exist — v3.0
+- ✓ Create exercise via modal from My Exercises view — v3.0
+- ✓ Edit exercise via inline accordion form (name + category) — v3.0
+- ✓ Delete exercise with confirmation modal and dependency warning — v3.0
+- ✓ updateExercise, getUserExercises, getExerciseDependencies service functions — v3.0
 
 ### Active
 
-- [ ] Gear icon in dashboard header (far right) opens Settings surface
-- [ ] Settings menu with "My Exercises" active, "Profile" and "Preferences" disabled with "Coming Soon"
-- [ ] Log Out button in settings menu
-- [ ] Current logout button removed from dashboard header
-- [ ] My Exercises view shows only user-created exercises
-- [ ] Search and category filter in My Exercises
-- [ ] Empty state message when no custom exercises exist
-- [ ] Create exercise via existing modal from My Exercises
-- [ ] Edit exercise via slide-in overlay panel (name + category)
-- [ ] Delete exercise with confirmation modal
-- [ ] updateExercise backend service function
+(None — planning next milestone)
 
 ### Out of Scope
 
@@ -84,15 +82,16 @@ Simple, effective workout tracking with clean visual feedback on progress.
 
 **Technical Environment:**
 - Preact-based web application with TypeScript
-- Surface-based UI architecture (AuthSurface, DashboardSurface, TemplateEditorSurface, WorkoutSurface, SettingsSurface)
+- Surface-based UI architecture (AuthSurface, DashboardSurface, TemplateEditorSurface, WorkoutSurface)
+- Settings panel as DashboardSurface child overlay (slide-in from right)
 - CSS styling in `apps/web/css/styles.css`
-- Template editor surface at `apps/web/src/surfaces/template-editor/`
 - Supabase backend with RLS policies
 - exercises table with nullable user_id FK to auth.users
 - 873 system exercises with is_system=true
+- ON DELETE CASCADE on exercise FK constraints
 
 **Codebase:**
-- 9,376 lines of TypeScript
+- ~17,000 lines of TypeScript/CSS
 - Monorepo structure: apps/web, packages/shared
 - @use-gesture/react for swipe handling
 
@@ -129,6 +128,13 @@ Simple, effective workout tracking with clean visual feedback on progress.
 | Inner join via workout_log_exercises | Efficient filtering: only exercises with actual logged data appear | ✓ Good |
 | Fetch filtered exercises on modal open | Not cached — captures new workouts immediately | ✓ Good |
 | optgroup for category grouping in chart | Native HTML element, no custom styling needed | ✓ Good |
+| Settings panel as DashboardSurface child overlay | Simpler than new AppSurface route, maintains dashboard context | ✓ Good |
+| Slide-from-right panel with CSS transform | Smooth animation without JS, consistent with mobile patterns | ✓ Good |
+| Typed validation errors (string literal union) | Better than generic Error objects, enables field-specific error display | ✓ Good |
+| ON DELETE CASCADE on exercise FK constraints | True cascade behavior matches "All history will be deleted" UX copy | ✓ Good |
+| Inline accordion edit (not slide-in panel) | Simpler pattern, keeps user in list context during edits | ✓ Good |
+| Lifted modal state to SettingsPanel | Coordinates header "+ Create" button with empty state CTA | ✓ Good |
+| Case-insensitive duplicate check via .ilike() | Prevents "Bench Press" and "bench press" duplicates | ✓ Good |
 
 ---
-*Last updated: 2026-02-03 after v3.0 milestone start*
+*Last updated: 2026-02-04 after v3.0 milestone*

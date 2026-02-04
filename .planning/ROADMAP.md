@@ -18,6 +18,10 @@ None
 - [v2.8 Enhanced Filtering Capabilities](milestones/v2.8-ROADMAP.md) (Phases 14-15) -- SHIPPED 2026-02-02
 - [v3.0 Settings & Exercise Management](milestones/v3.0-ROADMAP.md) (Phases 16-21) -- SHIPPED 2026-02-04
 
+## Next Milestone
+
+Planning next milestone. Use `/gsd:new-milestone` to start.
+
 ## Completed Milestones
 
 <details>
@@ -71,94 +75,17 @@ None
 
 </details>
 
-## v3.0 Settings & Exercise Management (In Progress)
+<details>
+<summary>v3.0 Settings & Exercise Management (Phases 16-21) -- SHIPPED 2026-02-04</summary>
 
-**Milestone Goal:** Add a Settings surface with exercise CRUD management, enabling users to manage custom exercises outside the template editor workflow.
+- [x] Phase 16: Service Layer (1/1 plans) -- completed 2026-02-03
+- [x] Phase 17: Settings Surface Shell (1/1 plans) -- completed 2026-02-03
+- [x] Phase 18: Exercise List (1/1 plans) -- completed 2026-02-03
+- [x] Phase 19: Exercise Edit (1/1 plans) -- completed 2026-02-03
+- [x] Phase 20: Exercise Delete (3/3 plans) -- completed 2026-02-04
+- [x] Phase 21: Exercise Create (2/2 plans) -- completed 2026-02-04
 
-- [x] **Phase 16: Service Layer** - Backend update function and RLS policy for exercise editing -- completed 2026-02-03
-- [x] **Phase 17: Settings Surface Shell** - Settings surface with menu, gear icon, navigation, logout relocation -- completed 2026-02-03
-- [x] **Phase 18: Exercise List** - My Exercises view with exercise list and empty state -- completed 2026-02-03
-- [x] **Phase 19: Exercise Edit** - Inline accordion editing for exercise name and category -- completed 2026-02-03
-- [x] **Phase 20: Exercise Delete** - Delete with confirmation modal and dependency warnings -- completed 2026-02-04
-- [x] **Phase 21: Exercise Create** - Create exercise from My Exercises view -- completed 2026-02-04
-
-### Phase 16: Service Layer
-**Goal**: Backend infrastructure exists for updating exercises
-**Depends on**: Nothing (first phase of milestone)
-**Requirements**: BACK-01, BACK-02
-**Success Criteria** (what must be TRUE):
-  1. Calling `updateExercise` with a valid exercise ID, name, and category persists the changes to the database
-  2. A user cannot update exercises created by other users or system exercises (RLS enforced)
-**Plans**: 1 plan
-Plans:
-- [x] 16-01-PLAN.md -- Add service types and implement updateExercise, getUserExercises, getExerciseDependencies
-
-### Phase 17: Settings Surface Shell
-**Goal**: Users can navigate to a Settings surface and back, with logout relocated from dashboard
-**Depends on**: Phase 16
-**Requirements**: SETT-01, SETT-02, SETT-03, SETT-04, SETT-05
-**Success Criteria** (what must be TRUE):
-  1. User can tap gear icon in dashboard header (far right) to open Settings
-  2. Settings menu shows "My Exercises" as a tappable item and a Log Out button
-  3. User can navigate back from Settings to Dashboard
-  4. Logout button no longer appears in dashboard header (only in Settings menu)
-**Plans**: 1 plan
-Plans:
-- [x] 17-01-PLAN.md -- Create settings panel shell with gear icon, slide-in panel, menu, and sub-navigation
-
-### Phase 18: Exercise List
-**Goal**: Users can view their custom exercises in a dedicated management view
-**Depends on**: Phase 17
-**Requirements**: LIST-01, LIST-04, LIST-05
-**Success Criteria** (what must be TRUE):
-  1. My Exercises view shows only user-created exercises (system exercises excluded), sorted alphabetically
-  2. When no custom exercises exist, an empty state message with a prompt to create is displayed
-  3. User can navigate back from My Exercises to the Settings menu
-**Plans**: 1 plan
-Plans:
-- [x] 18-01-PLAN.md -- Create MyExercisesList component with data fetching, list rendering, empty state, and SettingsPanel integration
-
-### Phase 19: Exercise Edit
-**Goal**: Users can edit the name and category of their custom exercises inline
-**Depends on**: Phase 18
-**Requirements**: CRUD-02, CRUD-03, CRUD-04, CRUD-05, CRUD-06
-**Success Criteria** (what must be TRUE):
-  1. User can expand an exercise row to reveal an inline edit form (accordion-style)
-  2. User can modify exercise name and category in the expanded form
-  3. User can save edits via an explicit Save button and see changes reflected in the list
-  4. User can cancel edits via an explicit Cancel button and see original values restored
-**Plans**: 1 plan
-Plans:
-- [x] 19-01-PLAN.md -- Add accordion edit form with pencil trigger, name/category fields, save/cancel, validation errors, success flash
-
-### Phase 20: Exercise Delete
-**Goal**: Users can delete custom exercises with clear warnings about downstream effects
-**Depends on**: Phase 19
-**Requirements**: CRUD-07, CRUD-08, CRUD-09, CRUD-10
-**Success Criteria** (what must be TRUE):
-  1. User can initiate delete from the expanded exercise row
-  2. A confirmation modal appears before deletion occurs
-  3. If the exercise is used in templates, workout logs, or charts, the confirmation modal displays a dependency warning
-  4. Confirmation modal uses specific labels ("Delete Exercise" / "Keep Exercise")
-**Plans**: 3 plans
-Plans:
-- [x] 20-01-PLAN.md -- Add cascade delete migration, trash icon button, confirmation modal with dependency warning
-- [x] 20-02-PLAN.md -- Gap closure: chart refresh on exercise delete, modal button sizing fix
-- [x] 20-03-PLAN.md -- Gap closure: refresh templates on exercise delete, filter deleted exercises from template data
-
-### Phase 21: Exercise Create
-**Goal**: Users can create new custom exercises from the My Exercises management view
-**Depends on**: Phase 18
-**Requirements**: CRUD-01
-**Success Criteria** (what must be TRUE):
-  1. User can trigger the create exercise modal from the My Exercises view
-  2. After creating an exercise, it appears in the My Exercises list without manual refresh
-  3. Duplicate name detection is case-insensitive (e.g., "bench press" rejected if "Bench Press" exists)
-  4. Modal cannot be dismissed during an active save operation
-**Plans**: 2 plans
-Plans:
-- [x] 21-01-PLAN.md -- Add "+ Create" header button, simplified create modal with name/category fields, empty state wiring
-- [x] 21-02-PLAN.md -- Gap closure: case-insensitive duplicate detection, modal dismiss guard during save
+</details>
 
 ## Progress
 

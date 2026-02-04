@@ -1,5 +1,33 @@
 # Project Milestones: Exercise Tracker App
 
+## v3.0 Settings & Exercise Management (Shipped: 2026-02-04)
+
+**Delivered:** Added Settings surface with gear icon access, containing My Exercises management view for creating, editing, and deleting custom exercises outside the template editor workflow.
+
+**Phases completed:** 16-21 (9 plans total)
+
+**Key accomplishments:**
+
+- Service layer with updateExercise, getUserExercises, getExerciseDependencies and typed validation errors
+- Settings panel with gear icon trigger and slide-in animation from right
+- My Exercises list displaying user-created exercises with empty state
+- Inline accordion editing for exercise name and category with validation
+- Delete with confirmation modal, dependency warnings, and ON DELETE CASCADE
+- Create exercise modal from header button and empty state CTA
+
+**Stats:**
+
+- 56 files modified
+- 7,364 lines added
+- 6 phases, 9 plans
+- 2 days from start to ship (2026-02-03 -> 2026-02-04)
+
+**Git range:** `fd2819f` -> `c90e109`
+
+**What's next:** Exercise management complete. Ready for next feature work.
+
+---
+
 ## v2.8 Enhanced Filtering Capabilities (Shipped: 2026-02-02)
 
 **Delivered:** Added category dropdown filter to Exercise Picker and filtered Chart Exercise Selector to only show exercises with logged workout data.

@@ -112,13 +112,30 @@ async function createExercise(
       return { data: null, error: validationError };
     }
 
+    // Case-insensitive duplicate check, scoped to user's custom exercises
+    const trimmedName = name.trim();
+    const { data: existing } = await supabase
+      .from('exercises')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('is_system', false)
+      .ilike('name', trimmedName)
+      .maybeSingle();
+
+    if (existing) {
+      return {
+        data: null,
+        error: new Error('An exercise with this name already exists'),
+      };
+    }
+
     // Insert new exercise
     const { data, error } = await supabase
       .from('exercises')
       .insert([
         {
           user_id: user.id,
-          name: name.trim(),
+          name: trimmedName,
           category: category,
           equipment: equipment ? equipment.trim() : null,
           is_system: false, // User-created exercises are never system exercises
@@ -195,7 +212,7 @@ async function exerciseExists(name: string): Promise<boolean> {
     const { data, error } = await supabase
       .from('exercises')
       .select('id')
-      .eq('name', name.trim())
+      .ilike('name', name.trim())
       .maybeSingle();
 
     if (error) {

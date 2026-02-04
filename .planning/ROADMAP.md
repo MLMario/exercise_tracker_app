@@ -140,7 +140,9 @@ Plans:
   2. A confirmation modal appears before deletion occurs
   3. If the exercise is used in templates, workout logs, or charts, the confirmation modal displays a dependency warning
   4. Confirmation modal uses specific labels ("Delete Exercise" / "Keep Exercise")
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 20-01-PLAN.md -- Add cascade delete migration, trash icon button, confirmation modal with dependency warning
 
 ### Phase 21: Exercise Create
 **Goal**: Users can create new custom exercises from the My Exercises management view
@@ -174,5 +176,5 @@ Plans:
 | 17. Settings Surface Shell | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 18. Exercise List | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 19. Exercise Edit | v3.0 | 1/1 | Complete | 2026-02-03 |
-| 20. Exercise Delete | v3.0 | 0/0 | Not started | - |
+| 20. Exercise Delete | v3.0 | 0/1 | Not started | - |
 | 21. Exercise Create | v3.0 | 0/0 | Not started | - |

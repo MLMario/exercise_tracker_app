@@ -23,7 +23,7 @@ Requirements for v3.0 Settings & Exercise Management milestone.
 
 ### Exercise Create
 
-- [ ] **CRUD-01**: User can create a new exercise from My Exercises view using existing create modal
+- [x] **CRUD-01**: User can create a new exercise from My Exercises view using existing create modal
 
 ### Exercise Edit
 
@@ -100,7 +100,7 @@ Deferred to future release.
 | CRUD-08 | Phase 20 | Complete |
 | CRUD-09 | Phase 20 | Complete |
 | CRUD-10 | Phase 20 | Complete |
-| CRUD-01 | Phase 21 | Pending |
+| CRUD-01 | Phase 21 | Complete |
 
 **Coverage:**
 - v1 requirements: 16 total
@@ -109,4 +109,4 @@ Deferred to future release.
 
 ---
 *Requirements defined: 2026-02-03*
-*Last updated: 2026-02-04 after Phase 20 gap closure completion*
+*Last updated: 2026-02-04 after Phase 21 completion*

@@ -16,7 +16,7 @@ None
 - [v2.6 Swipe Gesture Refactor](milestones/v2.6-ROADMAP.md) (Phases 5-7) -- SHIPPED 2026-01-19
 - [v2.7 Pre-Created Exercise Library](milestones/v2.7-ROADMAP.md) (Phases 8-13) -- SHIPPED 2026-02-02
 - [v2.8 Enhanced Filtering Capabilities](milestones/v2.8-ROADMAP.md) (Phases 14-15) -- SHIPPED 2026-02-02
-- v3.0 Settings & Exercise Management (Phases 16-21) -- IN PROGRESS
+- [v3.0 Settings & Exercise Management](milestones/v3.0-ROADMAP.md) (Phases 16-21) -- SHIPPED 2026-02-04
 
 ## Completed Milestones
 
@@ -80,7 +80,7 @@ None
 - [x] **Phase 18: Exercise List** - My Exercises view with exercise list and empty state -- completed 2026-02-03
 - [x] **Phase 19: Exercise Edit** - Inline accordion editing for exercise name and category -- completed 2026-02-03
 - [x] **Phase 20: Exercise Delete** - Delete with confirmation modal and dependency warnings -- completed 2026-02-04
-- [ ] **Phase 21: Exercise Create** - Create exercise from My Exercises view
+- [x] **Phase 21: Exercise Create** - Create exercise from My Exercises view -- completed 2026-02-04
 
 ### Phase 16: Service Layer
 **Goal**: Backend infrastructure exists for updating exercises
@@ -155,7 +155,7 @@ Plans:
   2. After creating an exercise, it appears in the My Exercises list without manual refresh
 **Plans**: 1 plan
 Plans:
-- [ ] 21-01-PLAN.md -- Add "+ Create" header button, simplified create modal with name/category fields, empty state wiring
+- [x] 21-01-PLAN.md -- Add "+ Create" header button, simplified create modal with name/category fields, empty state wiring
 
 ## Progress
 
@@ -181,4 +181,4 @@ Plans:
 | 18. Exercise List | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 19. Exercise Edit | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 20. Exercise Delete | v3.0 | 3/3 | Complete | 2026-02-04 |
-| 21. Exercise Create | v3.0 | 0/1 | Not started | - |
+| 21. Exercise Create | v3.0 | 1/1 | Complete | 2026-02-04 |

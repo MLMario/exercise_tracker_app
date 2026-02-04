@@ -38,7 +38,7 @@ function TrashIcon() {
   );
 }
 
-export function MyExercisesList() {
+export function MyExercisesList({ onExerciseDeleted }: { onExerciseDeleted?: () => void }) {
   const [userExercises, setUserExercises] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -160,8 +160,9 @@ export function MyExercisesList() {
       setPendingDeleteId(null);
       setPendingDeleteName('');
       setHasTemplateDeps(false);
+      onExerciseDeleted?.();
     }
-  }, [pendingDeleteId, expandedId]);
+  }, [pendingDeleteId, expandedId, onExerciseDeleted]);
 
   const dismissDelete = useCallback(() => {
     setShowDeleteModal(false);

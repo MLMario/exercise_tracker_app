@@ -421,6 +421,16 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
     });
   };
 
+  // ==================== EXERCISE DELETE HANDLER ====================
+
+  /**
+   * Refresh charts when an exercise is deleted from My Exercises.
+   * Threaded through SettingsPanel -> MyExercisesList.
+   */
+  const handleExerciseDeleted = useCallback(async () => {
+    await loadUserCharts();
+  }, []);
+
   // ==================== INITIALIZATION ====================
 
   useEffect(() => {
@@ -553,6 +563,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         onLogout={onLogout}
+        onExerciseDeleted={handleExerciseDeleted}
       />
     </div>
   );

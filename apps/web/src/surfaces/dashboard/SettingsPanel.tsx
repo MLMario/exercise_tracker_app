@@ -17,11 +17,13 @@ interface SettingsPanelProps {
   onClose: () => void;
   /** Logout callback passed through to SettingsMenu */
   onLogout?: () => void;
+  /** Callback when an exercise is deleted, to refresh charts */
+  onExerciseDeleted?: () => void;
 }
 
 type PanelView = 'menu' | 'exercises';
 
-export function SettingsPanel({ isOpen, onClose, onLogout }: SettingsPanelProps) {
+export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: SettingsPanelProps) {
   const [panelView, setPanelView] = useState<PanelView>('menu');
 
   // Reset to menu view after close animation finishes
@@ -76,7 +78,7 @@ export function SettingsPanel({ isOpen, onClose, onLogout }: SettingsPanelProps)
             />
           )}
           {panelView === 'exercises' && (
-            <MyExercisesList />
+            <MyExercisesList onExerciseDeleted={onExerciseDeleted} />
           )}
         </div>
       </div>

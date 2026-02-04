@@ -77,10 +77,10 @@ interface RawTemplate {
  * @returns Transformed template with exercises and sets
  */
 function transformTemplate(template: RawTemplate): TemplateWithExercises {
-  // Sort exercises by order
-  const sortedTemplateExercises = (template.template_exercises || []).sort(
-    (a, b) => a.order - b.order
-  );
+  // Filter out deleted exercises (where FK join returns null) and sort by order
+  const sortedTemplateExercises = (template.template_exercises || [])
+    .filter((te) => te.exercises !== null)
+    .sort((a, b) => a.order - b.order);
 
   // Transform to the format expected by the app
   const exercises: TemplateExerciseWithSets[] = sortedTemplateExercises.map((te) => {

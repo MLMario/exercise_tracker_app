@@ -424,11 +424,12 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   // ==================== EXERCISE DELETE HANDLER ====================
 
   /**
-   * Refresh charts when an exercise is deleted from My Exercises.
+   * Refresh charts and templates when an exercise is deleted from My Exercises.
+   * Charts may reference the deleted exercise, and templates may contain it.
    * Threaded through SettingsPanel -> MyExercisesList.
    */
   const handleExerciseDeleted = useCallback(async () => {
-    await loadUserCharts();
+    await Promise.all([loadUserCharts(), loadTemplates()]);
   }, []);
 
   // ==================== INITIALIZATION ====================

@@ -205,10 +205,10 @@ export function MyExercisesList({ onExerciseDeleted }: { onExerciseDeleted?: () 
                 )}
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onClick={dismissDelete} disabled={isDeleting}>
+                <button type="button" class="btn btn-sm btn-secondary" onClick={dismissDelete} disabled={isDeleting}>
                   Keep Exercise
                 </button>
-                <button type="button" class="btn btn-danger" onClick={confirmDelete} disabled={isDeleting}>
+                <button type="button" class="btn btn-sm btn-danger" onClick={confirmDelete} disabled={isDeleting}>
                   {isDeleting ? 'Deleting...' : 'Delete Exercise'}
                 </button>
               </div>
@@ -319,10 +319,10 @@ export function MyExercisesList({ onExerciseDeleted }: { onExerciseDeleted?: () 
               )}
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" onClick={dismissDelete} disabled={isDeleting}>
+              <button type="button" class="btn btn-sm btn-secondary" onClick={dismissDelete} disabled={isDeleting}>
                 Keep Exercise
               </button>
-              <button type="button" class="btn btn-danger" onClick={confirmDelete} disabled={isDeleting}>
+              <button type="button" class="btn btn-sm btn-danger" onClick={confirmDelete} disabled={isDeleting}>
                 {isDeleting ? 'Deleting...' : 'Delete Exercise'}
               </button>
             </div>

@@ -151,9 +151,11 @@ Plans:
 **Depends on**: Phase 18
 **Requirements**: CRUD-01
 **Success Criteria** (what must be TRUE):
-  1. User can trigger the existing create exercise modal from the My Exercises view
+  1. User can trigger the create exercise modal from the My Exercises view
   2. After creating an exercise, it appears in the My Exercises list without manual refresh
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 21-01-PLAN.md -- Add "+ Create" header button, simplified create modal with name/category fields, empty state wiring
 
 ## Progress
 
@@ -179,4 +181,4 @@ Plans:
 | 18. Exercise List | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 19. Exercise Edit | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 20. Exercise Delete | v3.0 | 3/3 | Complete | 2026-02-04 |
-| 21. Exercise Create | v3.0 | 0/0 | Not started | - |
+| 21. Exercise Create | v3.0 | 0/1 | Not started | - |

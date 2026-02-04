@@ -26,6 +26,7 @@ type PanelView = 'menu' | 'exercises';
 export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: SettingsPanelProps) {
   const [panelView, setPanelView] = useState<PanelView>('menu');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const handleOpenCreate = () => setShowCreateModal(true);
 
@@ -34,13 +35,16 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
     if (!isOpen) {
       const timer = setTimeout(() => {
         setPanelView('menu');
-        setShowCreateModal(false);
+        if (!isCreating) {
+          setShowCreateModal(false);
+        }
       }, 250);
       return () => clearTimeout(timer);
     }
-  }, [isOpen]);
+  }, [isOpen, isCreating]);
 
   const handleBack = () => {
+    if (isCreating) return;
     if (panelView === 'exercises') {
       setPanelView('menu');
     } else {
@@ -49,6 +53,7 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
   };
 
   const handleBackdropClick = () => {
+    if (isCreating) return;
     onClose();
   };
 
@@ -94,6 +99,7 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
               showCreateModal={showCreateModal}
               onOpenCreate={handleOpenCreate}
               onCloseCreate={() => setShowCreateModal(false)}
+              onCreatingChange={setIsCreating}
             />
           )}
         </div>

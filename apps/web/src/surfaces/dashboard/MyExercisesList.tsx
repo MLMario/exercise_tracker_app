@@ -43,9 +43,10 @@ interface MyExercisesListProps {
   showCreateModal?: boolean;
   onOpenCreate?: () => void;
   onCloseCreate?: () => void;
+  onCreatingChange?: (creating: boolean) => void;
 }
 
-export function MyExercisesList({ onExerciseDeleted, showCreateModal, onOpenCreate, onCloseCreate }: MyExercisesListProps) {
+export function MyExercisesList({ onExerciseDeleted, showCreateModal, onOpenCreate, onCloseCreate, onCreatingChange }: MyExercisesListProps) {
   const [userExercises, setUserExercises] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -70,6 +71,11 @@ export function MyExercisesList({ onExerciseDeleted, showCreateModal, onOpenCrea
   const [isCreating, setIsCreating] = useState(false);
 
   const categories = exercises.getCategories();
+
+  // Notify parent of isCreating state changes for dismiss guards
+  useEffect(() => {
+    onCreatingChange?.(isCreating);
+  }, [isCreating, onCreatingChange]);
 
   useEffect(() => {
     const load = async () => {

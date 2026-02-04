@@ -79,7 +79,7 @@ None
 - [x] **Phase 17: Settings Surface Shell** - Settings surface with menu, gear icon, navigation, logout relocation -- completed 2026-02-03
 - [x] **Phase 18: Exercise List** - My Exercises view with exercise list and empty state -- completed 2026-02-03
 - [x] **Phase 19: Exercise Edit** - Inline accordion editing for exercise name and category -- completed 2026-02-03
-- [x] **Phase 20: Exercise Delete** - Delete with confirmation modal and dependency warnings -- completed 2026-02-03
+- [ ] **Phase 20: Exercise Delete** - Delete with confirmation modal and dependency warnings (UAT gap closure in progress)
 - [ ] **Phase 21: Exercise Create** - Create exercise from My Exercises view
 
 ### Phase 16: Service Layer
@@ -140,9 +140,10 @@ Plans:
   2. A confirmation modal appears before deletion occurs
   3. If the exercise is used in templates, workout logs, or charts, the confirmation modal displays a dependency warning
   4. Confirmation modal uses specific labels ("Delete Exercise" / "Keep Exercise")
-**Plans**: 1 plan
+**Plans**: 2 plans
 Plans:
 - [x] 20-01-PLAN.md -- Add cascade delete migration, trash icon button, confirmation modal with dependency warning
+- [ ] 20-02-PLAN.md -- Gap closure: chart refresh on exercise delete, modal button sizing fix
 
 ### Phase 21: Exercise Create
 **Goal**: Users can create new custom exercises from the My Exercises management view
@@ -176,5 +177,5 @@ Plans:
 | 17. Settings Surface Shell | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 18. Exercise List | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 19. Exercise Edit | v3.0 | 1/1 | Complete | 2026-02-03 |
-| 20. Exercise Delete | v3.0 | 1/1 | Complete | 2026-02-03 |
+| 20. Exercise Delete | v3.0 | 1/2 | Gap closure | - |
 | 21. Exercise Create | v3.0 | 0/0 | Not started | - |

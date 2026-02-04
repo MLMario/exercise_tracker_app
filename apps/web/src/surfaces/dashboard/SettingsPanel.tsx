@@ -25,11 +25,17 @@ type PanelView = 'menu' | 'exercises';
 
 export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: SettingsPanelProps) {
   const [panelView, setPanelView] = useState<PanelView>('menu');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const handleOpenCreate = () => setShowCreateModal(true);
 
   // Reset to menu view after close animation finishes
   useEffect(() => {
     if (!isOpen) {
-      const timer = setTimeout(() => setPanelView('menu'), 250);
+      const timer = setTimeout(() => {
+        setPanelView('menu');
+        setShowCreateModal(false);
+      }, 250);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -67,6 +73,11 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
             </button>
             <span class="settings-header-title">{headerTitle}</span>
           </div>
+          {panelView === 'exercises' && (
+            <button type="button" class="btn btn-primary btn-sm" style={{ marginLeft: 'auto' }} onClick={handleOpenCreate}>
+              + Create
+            </button>
+          )}
         </div>
 
         {/* Panel content */}
@@ -78,7 +89,12 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
             />
           )}
           {panelView === 'exercises' && (
-            <MyExercisesList onExerciseDeleted={onExerciseDeleted} />
+            <MyExercisesList
+              onExerciseDeleted={onExerciseDeleted}
+              showCreateModal={showCreateModal}
+              onOpenCreate={handleOpenCreate}
+              onCloseCreate={() => setShowCreateModal(false)}
+            />
           )}
         </div>
       </div>

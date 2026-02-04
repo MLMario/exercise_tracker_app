@@ -79,7 +79,7 @@ None
 - [x] **Phase 17: Settings Surface Shell** - Settings surface with menu, gear icon, navigation, logout relocation -- completed 2026-02-03
 - [x] **Phase 18: Exercise List** - My Exercises view with exercise list and empty state -- completed 2026-02-03
 - [x] **Phase 19: Exercise Edit** - Inline accordion editing for exercise name and category -- completed 2026-02-03
-- [ ] **Phase 20: Exercise Delete** - Delete with confirmation modal and dependency warnings -- 2/3 plans complete
+- [x] **Phase 20: Exercise Delete** - Delete with confirmation modal and dependency warnings -- completed 2026-02-04
 - [ ] **Phase 21: Exercise Create** - Create exercise from My Exercises view
 
 ### Phase 16: Service Layer
@@ -144,7 +144,7 @@ Plans:
 Plans:
 - [x] 20-01-PLAN.md -- Add cascade delete migration, trash icon button, confirmation modal with dependency warning
 - [x] 20-02-PLAN.md -- Gap closure: chart refresh on exercise delete, modal button sizing fix
-- [ ] 20-03-PLAN.md -- Gap closure: refresh templates on exercise delete, filter deleted exercises from template data
+- [x] 20-03-PLAN.md -- Gap closure: refresh templates on exercise delete, filter deleted exercises from template data
 
 ### Phase 21: Exercise Create
 **Goal**: Users can create new custom exercises from the My Exercises management view
@@ -178,5 +178,5 @@ Plans:
 | 17. Settings Surface Shell | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 18. Exercise List | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 19. Exercise Edit | v3.0 | 1/1 | Complete | 2026-02-03 |
-| 20. Exercise Delete | v3.0 | 2/3 | In Progress | - |
+| 20. Exercise Delete | v3.0 | 3/3 | Complete | 2026-02-04 |
 | 21. Exercise Create | v3.0 | 0/0 | Not started | - |

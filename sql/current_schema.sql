@@ -34,7 +34,7 @@ CREATE TABLE public.template_exercises (
   order integer NOT NULL CHECK ("order" >= 0),
   CONSTRAINT template_exercises_pkey PRIMARY KEY (id),
   CONSTRAINT template_exercises_template_id_fkey FOREIGN KEY (template_id) REFERENCES public.templates(id),
-  CONSTRAINT template_exercises_exercise_id_fkey FOREIGN KEY (exercise_id) REFERENCES public.exercises(id)
+  CONSTRAINT template_exercises_exercise_id_fkey FOREIGN KEY (exercise_id) REFERENCES public.exercises(id) ON DELETE CASCADE
 );
 CREATE TABLE public.templates (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -55,7 +55,7 @@ CREATE TABLE public.user_charts (
   created_at timestamp with time zone NOT NULL DEFAULT now(),
   CONSTRAINT user_charts_pkey PRIMARY KEY (id),
   CONSTRAINT user_charts_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id),
-  CONSTRAINT user_charts_exercise_id_fkey FOREIGN KEY (exercise_id) REFERENCES public.exercises(id)
+  CONSTRAINT user_charts_exercise_id_fkey FOREIGN KEY (exercise_id) REFERENCES public.exercises(id) ON DELETE CASCADE
 );
 CREATE TABLE public.workout_log_exercises (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -65,7 +65,7 @@ CREATE TABLE public.workout_log_exercises (
   order integer NOT NULL CHECK ("order" >= 0),
   CONSTRAINT workout_log_exercises_pkey PRIMARY KEY (id),
   CONSTRAINT workout_log_exercises_workout_log_id_fkey FOREIGN KEY (workout_log_id) REFERENCES public.workout_logs(id),
-  CONSTRAINT workout_log_exercises_exercise_id_fkey FOREIGN KEY (exercise_id) REFERENCES public.exercises(id)
+  CONSTRAINT workout_log_exercises_exercise_id_fkey FOREIGN KEY (exercise_id) REFERENCES public.exercises(id) ON DELETE CASCADE
 );
 CREATE TABLE public.workout_log_sets (
   id uuid NOT NULL DEFAULT gen_random_uuid(),

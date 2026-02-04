@@ -1,17 +1,25 @@
 ---
 phase: 20-exercise-delete
-verified: 2026-02-03T20:30:00Z
+verified: 2026-02-03T22:15:00Z
 status: passed
-score: 5/5 must-haves verified
+score: 4/4 must-haves verified
+re_verification:
+  previous_status: passed
+  previous_score: 5/5
+  gaps_closed:
+    - Charts disappear immediately when exercise deleted (UAT gap from test 4)
+    - Modal buttons properly sized with btn-sm (UAT observation from test 5)
+  gaps_remaining: []
+  regressions: []
 gaps: []
 ---
 
 # Phase 20: Exercise Delete Verification Report
 
 **Phase Goal:** Users can delete custom exercises with clear warnings about downstream effects
-**Verified:** 2026-02-03T20:30:00Z
+**Verified:** 2026-02-03T22:15:00Z
 **Status:** PASSED
-**Re-verification:** No -- initial verification
+**Re-verification:** Yes -- after UAT gap closure (plan 20-02)
 
 ## Goal Achievement
 
@@ -19,41 +27,43 @@ gaps: []
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | User can tap a trash icon on any exercise row to initiate delete | VERIFIED | TrashIcon SVG component (lines 21-39) rendered inside `button.my-exercises-delete-trigger` (lines 246-253) on every exercise row, onClick calls `handleDeleteClick(exercise)` |
-| 2 | A confirmation modal appears with exercise name and warning about history deletion | VERIFIED | `showDeleteModal` state gates modal overlay (lines 306, 192). Title: "Delete Exercise?", body: "Delete {pendingDeleteName}. All history will be deleted with it." Uses proper modal CSS classes (modal-overlay, modal-sm, modal-header, modal-body, modal-footer) |
-| 3 | If the exercise is used in templates, an amber warning box appears in the modal | VERIFIED | `handleDeleteClick` calls `exercises.getExerciseDependencies(exercise.id)` (line 146), sets `hasTemplateDeps` from `data.templateCount > 0` (line 147). Conditional `<div class="delete-warning-box">` renders "This exercise is used in templates." CSS has amber background (rgba(251,191,36,0.1)) and `var(--color-warning)` border/color |
-| 4 | Confirming delete removes the exercise from the list immediately | VERIFIED | `confirmDelete` calls `exercises.deleteExercise(pendingDeleteId)` (line 154), on success filters from state via `setUserExercises(prev => prev.filter(...))` (line 157), resets expandedId if matching (line 158) |
-| 5 | Modal buttons are labeled "Delete Exercise" and "Keep Exercise" | VERIFIED | "Keep Exercise" with `btn btn-secondary` (line 321), "Delete Exercise" with `btn btn-danger` (line 324), toggles to "Deleting..." during async (line 325) |
+| 1 | User can initiate delete from the expanded exercise row | VERIFIED | TrashIcon SVG component (lines 21-39) rendered inside button.my-exercises-delete-trigger (lines 247-254) on every exercise row; onClick calls handleDeleteClick(exercise) which fetches dependencies and opens modal |
+| 2 | A confirmation modal appears before deletion occurs | VERIFIED | showDeleteModal state (line 54) gates modal overlay rendering (lines 307-331). Modal displays title Delete Exercise?, body text includes exercise name and history warning. Two modal instances: one in empty state block (lines 193-217), one after exercise list (lines 307-331) |
+| 3 | If the exercise is used in templates, workout logs, or charts, the confirmation modal displays a dependency warning | VERIFIED | handleDeleteClick (line 143) calls exercises.getExerciseDependencies(exercise.id) which queries template_exercises, workout_log_exercises, and user_charts in parallel (exercises.ts lines 440-453). Sets hasTemplateDeps from data.templateCount > 0 (line 147). Conditional div.delete-warning-box renders amber warning (lines 315-319, 201-204) |
+| 4 | Confirmation modal uses specific labels (Delete Exercise / Keep Exercise) | VERIFIED | Keep Exercise with btn btn-sm btn-secondary (lines 208, 322); Delete Exercise with btn btn-sm btn-danger (lines 211, 325); toggles to Deleting... during async operation |
 
-**Score:** 5/5 truths verified
+**Score:** 4/4 truths verified
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `sql/migration_cascade_delete.sql` | ON DELETE CASCADE migration for three FK constraints | VERIFIED | 22 lines, all three ALTER TABLE DROP + ADD pairs present (template_exercises, workout_log_exercises, user_charts) |
-| `apps/web/src/surfaces/dashboard/MyExercisesList.tsx` | Delete button, confirmation modal, dependency check, state management | VERIFIED | 334 lines, TrashIcon component, 5 delete state variables, handleDeleteClick/confirmDelete/dismissDelete handlers, inline modal with conditional warning box |
-| `apps/web/css/styles.css` | Delete trigger button styles and warning box styles | VERIFIED | `.my-exercises-delete-trigger` (line 3212) with danger color, 44px touch targets. `.delete-warning-box` (line 3226) with amber background, warning border/color |
-| `sql/current_schema.sql` | Updated FK constraints with ON DELETE CASCADE | VERIFIED | All three exercise_id FK constraints show ON DELETE CASCADE (lines 37, 58, 68) |
+| sql/migration_cascade_delete.sql | ON DELETE CASCADE migration for three FK constraints | VERIFIED (22 lines) | All three ALTER TABLE DROP + ADD pairs for template_exercises, workout_log_exercises, user_charts |
+| sql/current_schema.sql | Updated FK constraints with ON DELETE CASCADE | VERIFIED | All three exercise_id FK constraints show ON DELETE CASCADE (lines 37, 58, 68) |
+| apps/web/src/surfaces/dashboard/MyExercisesList.tsx | Delete button, modal, dependency check, onExerciseDeleted callback | VERIFIED (334 lines) | TrashIcon component, 5 delete state variables, handlers, inline modal with conditional warning box, onExerciseDeleted prop called on line 163 |
+| apps/web/src/surfaces/dashboard/SettingsPanel.tsx | onExerciseDeleted prop threading | VERIFIED (87 lines) | Props interface includes onExerciseDeleted (line 21), destructured in component (line 26), passed to MyExercisesList (line 81) |
+| apps/web/src/surfaces/dashboard/DashboardSurface.tsx | handleExerciseDeleted handler calling loadUserCharts | VERIFIED (572 lines) | handleExerciseDeleted (lines 430-432) calls loadUserCharts(), passed to SettingsPanel (line 566) |
+| apps/web/css/styles.css | Delete trigger and warning box styles | VERIFIED | .my-exercises-delete-trigger (line 3212): danger color, 44px touch targets. .delete-warning-box (line 3226): amber background, warning border. .btn-sm (line 499): smaller padding/font/min-height |
+| packages/shared/src/services/exercises.ts | deleteExercise and getExerciseDependencies | VERIFIED | deleteExercise (lines 159-181): Supabase delete with validation and error handling. getExerciseDependencies (lines 435-478): parallel Promise.all for three count queries |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| `MyExercisesList.tsx` | `exercises.deleteExercise` | confirmDelete handler | WIRED | Line 154: `await exercises.deleteExercise(pendingDeleteId)`, result error checked, state updated on success |
-| `MyExercisesList.tsx` | `exercises.getExerciseDependencies` | handleDeleteClick pre-modal check | WIRED | Line 146: `await exercises.getExerciseDependencies(exercise.id)`, `data.templateCount` drives `hasTemplateDeps` state |
-| `MyExercisesList.tsx` | SettingsPanel (parent) | import + render | WIRED | Imported in SettingsPanel.tsx line 11, rendered at line 79 |
-| `exercises` service | Supabase delete | `.from('exercises').delete().eq('id', id)` | WIRED | exercises.ts line 167, full error handling, returns `{ error }` |
-| `exercises` service | Supabase dependency counts | Promise.all with three count queries | WIRED | exercises.ts lines 440-453, parallel queries for template_exercises, workout_log_exercises, user_charts |
+| MyExercisesList.tsx | exercises.deleteExercise | confirmDelete handler | WIRED | Line 154: await exercises.deleteExercise(pendingDeleteId), error checked, state updated on success |
+| MyExercisesList.tsx | exercises.getExerciseDependencies | handleDeleteClick | WIRED | Line 146: await exercises.getExerciseDependencies(exercise.id), templateCount drives hasTemplateDeps state |
+| MyExercisesList.tsx | DashboardSurface.tsx | onExerciseDeleted callback | WIRED | Line 163: onExerciseDeleted?.() called after successful delete. Prop threaded through SettingsPanel (line 81) to DashboardSurface (line 566) |
+| DashboardSurface.tsx | loadUserCharts | handleExerciseDeleted | WIRED | Lines 430-432: handleExerciseDeleted calls loadUserCharts() to refresh chart state |
+| MyExercisesList.tsx | SettingsPanel (parent) | import + render | WIRED | Imported in SettingsPanel.tsx line 11, rendered at line 81 |
 
 ### Requirements Coverage
 
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
-| CRUD-07: User can delete an exercise from the expanded row | SATISFIED | Trash icon button on every exercise row triggers `handleDeleteClick` which opens confirmation modal |
-| CRUD-08: Delete shows a confirmation modal before removing | SATISFIED | Modal with "Delete Exercise?" title, exercise name in body, overlay backdrop, proper modal CSS classes |
-| CRUD-09: Confirmation modal displays dependency warning if exercise is used in templates, workout logs, or charts | SATISFIED | `getExerciseDependencies` checks all three tables; UI shows amber warning box when `templateCount > 0` (per CONTEXT.md decision to only display template warning) |
-| CRUD-10: Confirmation modal uses specific button labels ("Delete Exercise" / "Keep Exercise") | SATISFIED | Exact labels verified in modal footer: "Keep Exercise" (btn-secondary), "Delete Exercise" (btn-danger) |
+| CRUD-07: User can delete from expanded row | SATISFIED | Trash icon button on every exercise row triggers handleDeleteClick |
+| CRUD-08: Delete shows confirmation modal | SATISFIED | Modal with Delete Exercise? title, exercise name in body, overlay backdrop |
+| CRUD-09: Dependency warning displayed | SATISFIED | getExerciseDependencies checks all three tables; amber warning box when templateCount > 0 |
+| CRUD-10: Specific button labels | SATISFIED | Exact labels Keep Exercise (btn-secondary) and Delete Exercise (btn-danger) verified in both modal instances |
 
 ### Anti-Patterns Found
 
@@ -61,35 +71,49 @@ gaps: []
 |------|------|---------|----------|--------|
 | None | - | - | - | No anti-patterns detected |
 
-No TODO, FIXME, placeholder content, empty returns, or stub patterns found in phase-modified files. The two "placeholder" grep hits are a code comment about the existing empty state and an HTML input placeholder attribute -- both legitimate.
+No TODO, FIXME, stub, or placeholder patterns found in any phase-modified files.
+
+### UAT Gap Closure Verification
+
+Two gaps were identified during UAT and addressed by plan 20-02:
+
+**Gap 1: Charts not disappearing immediately on exercise delete**
+- Previous state: confirmDelete only updated local MyExercisesList state; charts persisted until page refresh
+- Current state: FIXED. onExerciseDeleted callback chain verified.
+  - MyExercisesList calls onExerciseDeleted?.() on line 163 after successful delete
+  - SettingsPanel threads prop on line 81
+  - DashboardSurface passes handleExerciseDeleted on line 566 to SettingsPanel
+  - handleExerciseDeleted (lines 430-432) calls loadUserCharts() which re-fetches chart config and data
+
+**Gap 2: Modal buttons too large / overflowing modal-sm**
+- Previous state: Buttons used btn base class (44px min-height) without size modifier
+- Current state: FIXED. All 4 modal buttons (2 per modal instance x 2 instances) now use btn-sm class.
+  - Lines 208, 211 (empty state modal)
+  - Lines 322, 325 (main list modal)
+  - btn-sm CSS class (line 499): padding 0.5rem, font-size 0.875rem, min-height 36px
 
 ### Human Verification Required
 
-#### 1. Visual appearance of trash icon alongside pencil icon
-**Test:** Open the My Exercises list with at least one custom exercise. Verify the trash icon appears to the right of the pencil icon, is danger-red colored, and is visually balanced (18x18 SVG vs Unicode pencil).
-**Expected:** Both icons sit side by side on the right of the exercise row, both have 44px touch targets, trash is red.
-**Why human:** Visual layout and color rendering cannot be verified programmatically.
+#### 1. Full delete flow end-to-end with chart refresh
+**Test:** Create a chart for a custom exercise. Open Settings then My Exercises. Delete that exercise. Observe the dashboard.
+**Expected:** Modal appears, clicking Delete Exercise removes the exercise from the list AND the associated chart disappears from the dashboard immediately without page refresh.
+**Why human:** Requires running app with live Supabase connection to verify async delete, callback chain, and chart state refresh.
 
-#### 2. Full delete flow end-to-end
-**Test:** Click the trash icon on an exercise. Verify the modal appears with the correct exercise name, then click "Delete Exercise". Verify the exercise disappears from the list immediately.
-**Expected:** Modal shows "Delete [Name]. All history will be deleted with it.", clicking Delete removes it, no page refresh needed.
-**Why human:** Requires running app with live Supabase connection to verify async delete and state update.
+#### 2. Dependency warning display
+**Test:** Create an exercise used in a template, then tap its trash icon.
+**Expected:** Amber warning box appears in the modal below the body text indicating template usage.
+**Why human:** Requires specific data state (exercise referenced in template_exercises table) and visual confirmation.
 
-#### 3. Dependency warning display
-**Test:** Create an exercise that is used in a template, then click the trash icon on it.
-**Expected:** The amber warning box "This exercise is used in templates." appears below the body text in the modal.
-**Why human:** Requires specific data state (exercise referenced in template_exercises table) and visual confirmation of warning box styling.
-
-#### 4. Empty state transition
-**Test:** Delete the last remaining custom exercise.
-**Expected:** The list transitions to the empty state ("You haven't created any custom exercises yet.").
-**Why human:** Requires specific data state and visual confirmation.
+#### 3. Modal button sizing
+**Test:** Open the delete confirmation modal and verify both buttons are fully visible within the modal.
+**Expected:** Keep Exercise and Delete Exercise buttons fit cleanly within the modal-sm container with no overflow or clipping.
+**Why human:** Visual layout rendering cannot be verified programmatically.
 
 ### Gaps Summary
 
-No gaps found. All five observable truths are verified at the code level. All four artifacts exist, are substantive, and are properly wired. All four CRUD requirements (CRUD-07 through CRUD-10) are satisfied by the implementation. The cascade delete migration covers all three FK constraints. The service layer functions (`deleteExercise`, `getExerciseDependencies`) are real implementations with proper Supabase queries and error handling, and are called correctly from the UI component.
+No gaps found. All four observable truths from the success criteria are verified at the code level. All artifacts exist, are substantive (real implementations with Supabase queries, error handling, and proper state management), and are correctly wired. Both UAT gaps from plan 20-01 have been closed by plan 20-02: the onExerciseDeleted callback chain enables immediate chart refresh, and btn-sm class fixes modal button overflow.
 
 ---
 
-_Verified: 2026-02-03T20:30:00Z_
+_Verified: 2026-02-03T22:15:00Z_
 _Verifier: Claude (gsd-verifier)_

@@ -38,7 +38,14 @@ function TrashIcon() {
   );
 }
 
-export function MyExercisesList({ onExerciseDeleted }: { onExerciseDeleted?: () => void }) {
+interface MyExercisesListProps {
+  onExerciseDeleted?: () => void;
+  showCreateModal?: boolean;
+  onOpenCreate?: () => void;
+  onCloseCreate?: () => void;
+}
+
+export function MyExercisesList({ onExerciseDeleted, showCreateModal, onOpenCreate, onCloseCreate }: MyExercisesListProps) {
   const [userExercises, setUserExercises] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -56,6 +63,11 @@ export function MyExercisesList({ onExerciseDeleted }: { onExerciseDeleted?: () 
   const [pendingDeleteName, setPendingDeleteName] = useState('');
   const [hasTemplateDeps, setHasTemplateDeps] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const [createName, setCreateName] = useState('');
+  const [createCategory, setCreateCategory] = useState('');
+  const [createError, setCreateError] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
 
   const categories = exercises.getCategories();
 
@@ -171,6 +183,30 @@ export function MyExercisesList({ onExerciseDeleted }: { onExerciseDeleted?: () 
     setHasTemplateDeps(false);
   }, []);
 
+  const dismissCreate = useCallback(() => {
+    if (isCreating) return;
+    setCreateName('');
+    setCreateCategory('');
+    setCreateError('');
+    onCloseCreate?.();
+  }, [isCreating, onCloseCreate]);
+
+  const handleCreate = useCallback(async () => {
+    setIsCreating(true);
+    setCreateError('');
+    const result = await exercises.createExercise(createName.trim(), createCategory as ExerciseCategory);
+    setIsCreating(false);
+    if (result.data) {
+      setUserExercises(prev => [...prev, result.data!].sort((a, b) => a.name.localeCompare(b.name)));
+      setCreateName('');
+      setCreateCategory('');
+      setCreateError('');
+      onCloseCreate?.();
+    } else if (result.error) {
+      setCreateError(result.error.message);
+    }
+  }, [createName, createCategory, onCloseCreate]);
+
   if (isLoading) {
     return <div class="my-exercises-loading">Loading exercises...</div>;
   }
@@ -186,10 +222,56 @@ export function MyExercisesList({ onExerciseDeleted }: { onExerciseDeleted?: () 
           <p class="my-exercises-empty-text">
             You haven't created any custom exercises yet.
           </p>
-          <button type="button" class="btn btn-primary">
+          <button type="button" class="btn btn-primary" onClick={onOpenCreate}>
             Create Exercise
           </button>
         </div>
+        {showCreateModal && (
+          <div class="modal-overlay" onClick={dismissCreate}>
+            <div class="modal modal-sm" onClick={(e: JSX.TargetedMouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+              <div class="modal-header">
+                <h2>Create Exercise</h2>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <input
+                    type="text"
+                    placeholder="Exercise name"
+                    value={createName}
+                    onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => setCreateName(e.currentTarget.value)}
+                    disabled={isCreating}
+                  />
+                </div>
+                <div class="form-group">
+                  <select
+                    value={createCategory}
+                    onChange={(e: JSX.TargetedEvent<HTMLSelectElement>) => setCreateCategory(e.currentTarget.value)}
+                    disabled={isCreating}
+                  >
+                    <option value="">Select category</option>
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+                {createError && <div class="error-message">{createError}</div>}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" onClick={dismissCreate} disabled={isCreating}>
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  onClick={handleCreate}
+                  disabled={!createName.trim() || !createCategory || isCreating}
+                >
+                  {isCreating ? 'Creating...' : 'Create Exercise'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         {showDeleteModal && (
           <div class="modal-overlay" onClick={dismissDelete}>
             <div class="modal modal-sm" onClick={(e: JSX.TargetedMouseEvent<HTMLDivElement>) => e.stopPropagation()}>
@@ -304,6 +386,52 @@ export function MyExercisesList({ onExerciseDeleted }: { onExerciseDeleted?: () 
           </div>
         ))}
       </div>
+      {showCreateModal && (
+        <div class="modal-overlay" onClick={dismissCreate}>
+          <div class="modal modal-sm" onClick={(e: JSX.TargetedMouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+            <div class="modal-header">
+              <h2>Create Exercise</h2>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <input
+                  type="text"
+                  placeholder="Exercise name"
+                  value={createName}
+                  onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => setCreateName(e.currentTarget.value)}
+                  disabled={isCreating}
+                />
+              </div>
+              <div class="form-group">
+                <select
+                  value={createCategory}
+                  onChange={(e: JSX.TargetedEvent<HTMLSelectElement>) => setCreateCategory(e.currentTarget.value)}
+                  disabled={isCreating}
+                >
+                  <option value="">Select category</option>
+                  {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+              {createError && <div class="error-message">{createError}</div>}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-sm btn-secondary" onClick={dismissCreate} disabled={isCreating}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm btn-primary"
+                onClick={handleCreate}
+                disabled={!createName.trim() || !createCategory || isCreating}
+              >
+                {isCreating ? 'Creating...' : 'Create Exercise'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {showDeleteModal && (
         <div class="modal-overlay" onClick={dismissDelete}>
           <div class="modal modal-sm" onClick={(e: JSX.TargetedMouseEvent<HTMLDivElement>) => e.stopPropagation()}>

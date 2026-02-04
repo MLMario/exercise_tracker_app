@@ -80,7 +80,7 @@ None
 - [x] **Phase 18: Exercise List** - My Exercises view with exercise list and empty state -- completed 2026-02-03
 - [x] **Phase 19: Exercise Edit** - Inline accordion editing for exercise name and category -- completed 2026-02-03
 - [x] **Phase 20: Exercise Delete** - Delete with confirmation modal and dependency warnings -- completed 2026-02-04
-- [ ] **Phase 21: Exercise Create** - Create exercise from My Exercises view -- UAT gap closure in progress
+- [x] **Phase 21: Exercise Create** - Create exercise from My Exercises view -- completed 2026-02-04
 
 ### Phase 16: Service Layer
 **Goal**: Backend infrastructure exists for updating exercises
@@ -158,7 +158,7 @@ Plans:
 **Plans**: 2 plans
 Plans:
 - [x] 21-01-PLAN.md -- Add "+ Create" header button, simplified create modal with name/category fields, empty state wiring
-- [ ] 21-02-PLAN.md -- Gap closure: case-insensitive duplicate detection, modal dismiss guard during save
+- [x] 21-02-PLAN.md -- Gap closure: case-insensitive duplicate detection, modal dismiss guard during save
 
 ## Progress
 
@@ -184,4 +184,4 @@ Plans:
 | 18. Exercise List | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 19. Exercise Edit | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 20. Exercise Delete | v3.0 | 3/3 | Complete | 2026-02-04 |
-| 21. Exercise Create | v3.0 | 1/2 | In Progress | -- |
+| 21. Exercise Create | v3.0 | 2/2 | Complete | 2026-02-04 |

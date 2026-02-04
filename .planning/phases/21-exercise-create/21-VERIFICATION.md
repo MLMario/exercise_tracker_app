@@ -1,8 +1,17 @@
 ---
 phase: 21-exercise-create
-verified: 2026-02-04T12:00:00Z
+verified: 2026-02-04T21:30:00Z
 status: passed
-score: 6/6 must-haves verified
+score: 4/4 success criteria verified
+re_verification:
+  previous_status: passed
+  previous_score: 6/6
+  gap_closure_plan: 21-02
+  gaps_closed:
+    - "Duplicate name detection is case-insensitive"
+    - "Modal cannot be dismissed during active save"
+  gaps_remaining: []
+  regressions: []
 ---
 
 # Phase 21: Exercise Create Verification Report
@@ -10,46 +19,46 @@ score: 6/6 must-haves verified
 **Phase Goal:** Users can create new custom exercises from the My Exercises management view
 **Verified:** 2026-02-04
 **Status:** PASSED
-**Re-verification:** No -- initial verification
+**Re-verification:** Yes -- after gap closure (Plan 21-02)
 
 ## Goal Achievement
 
-### Observable Truths
+### Success Criteria (from ROADMAP.md)
 
-| # | Truth | Status | Evidence |
-|---|-------|--------|----------|
-| 1 | User can tap '+ Create' button in My Exercises header to open create modal | VERIFIED | SettingsPanel.tsx L76-80: conditional button when `panelView === 'exercises'`, calls `handleOpenCreate`, sets `showCreateModal` true, passed as prop to MyExercisesList |
-| 2 | User can fill exercise name and select category, then tap 'Create Exercise' to create | VERIFIED | MyExercisesList.tsx L237-242/L397-401: name input + category select; L194-208: `handleCreate` calls `exercises.createExercise()` service; service is 63-line real Supabase implementation |
-| 3 | Create button is disabled until both name and category are provided | VERIFIED | MyExercisesList.tsx L267/L427: `disabled={!createName.trim() \|\| !createCategory \|\| isCreating}` |
-| 4 | After creating, the new exercise appears in the My Exercises list without manual refresh | VERIFIED | MyExercisesList.tsx L200: `setUserExercises(prev => [...prev, result.data!].sort((a, b) => a.name.localeCompare(b.name)))` -- local state append + sort, no page refresh |
-| 5 | User can tap 'Create Exercise' button in the empty state to open the same create modal | VERIFIED | MyExercisesList.tsx L225: empty state button has `onClick={onOpenCreate}`; modal markup present in empty state return path (L229-274) |
-| 6 | After creating from empty state, the list replaces the empty state | VERIFIED | Empty state conditional on `userExercises.length === 0` (L218); `handleCreate` appends to `userExercises` (L200), triggering re-render into list path (L309+) |
+| # | Criterion | Status | Evidence |
+|---|-----------|--------|----------|
+| 1 | User can trigger the create exercise modal from the My Exercises view | VERIFIED | SettingsPanel.tsx L81-84: conditional `+ Create` button when `panelView === 'exercises'`; L31: `handleOpenCreate` sets `showCreateModal` true; L99: prop passed to MyExercisesList; MyExercisesList.tsx L235-280, L395-440: modal renders when prop true |
+| 2 | After creating an exercise, it appears in the My Exercises list without manual refresh | VERIFIED | MyExercisesList.tsx L205-206: `setUserExercises(prev => [...prev, result.data!].sort(...))` -- local state append + sort, no page refresh |
+| 3 | Duplicate name detection is case-insensitive (e.g., "bench press" rejected if "Bench Press" exists) | VERIFIED | exercises.ts L115-130: `.ilike('name', trimmedName)` pre-check before INSERT; returns error "An exercise with this name already exists" on match |
+| 4 | Modal cannot be dismissed during an active save operation | VERIFIED | MyExercisesList.tsx L192-198: `dismissCreate` has `if (isCreating) return;` guard; L76-78: useEffect notifies parent via `onCreatingChange`; SettingsPanel.tsx L29,102: `isCreating` state synced via callback; L47,56: `handleBack` and `handleBackdropClick` both guard with `if (isCreating) return;`; L38-40: cleanup useEffect guarded |
 
-**Score:** 6/6 truths verified
+**Score:** 4/4 success criteria verified
 
 ### Required Artifacts
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `apps/web/src/surfaces/dashboard/SettingsPanel.tsx` | Header '+ Create' button, showCreateModal state lifted | VERIFIED | 103 lines. Has `showCreateModal` state (L28), `handleOpenCreate` (L30), conditional button (L76-80), props passed to MyExercisesList (L94-96), reset on panel close (L37) |
-| `apps/web/src/surfaces/dashboard/MyExercisesList.tsx` | Create modal with name input, category dropdown, create/cancel buttons | VERIFIED | 462 lines. Props interface extended (L41-46), create state (L67-70), `dismissCreate` (L186-192), `handleCreate` (L194-208), modal in empty state path (L229-274), modal in list path (L389-434) |
-| `packages/shared/src/services/exercises.ts` (pre-existing) | `createExercise` service function | VERIFIED | 63-line function (L88-151). Real Supabase insert, auth check, validation, duplicate detection (Postgres 23505), proper error returns |
+| `apps/web/src/surfaces/dashboard/SettingsPanel.tsx` | Header '+ Create' button, showCreateModal state, isCreating guard | VERIFIED | 109 lines. Has `showCreateModal` state (L28), `isCreating` state (L29), `handleOpenCreate` (L31), conditional button (L81-84), all dismiss paths guarded (L38,47,56), props passed to MyExercisesList (L97-103) |
+| `apps/web/src/surfaces/dashboard/MyExercisesList.tsx` | Create modal with name/category, dismissCreate guard, onCreatingChange callback | VERIFIED | 469 lines. Props interface extended (L41-47), create state (L68-71), `isCreating` notification useEffect (L76-78), `dismissCreate` guarded (L192-198), `handleCreate` calls service + appends sorted (L200-214), modal in both return paths (L235-280, L395-440) |
+| `packages/shared/src/services/exercises.ts` | `createExercise` with case-insensitive duplicate check | VERIFIED | 513 lines. `createExercise` (L88-168) has `.ilike()` pre-check (L117-123) before INSERT, scoped to user_id and is_system=false. `exerciseExists` (L206-228) also uses `.ilike()` for consistency |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| SettingsPanel header button | MyExercisesList create modal | `showCreateModal` prop | WIRED | SettingsPanel L94 passes prop; MyExercisesList L229,L389 conditionally render modal |
-| Empty state button | Create modal | `onOpenCreate` callback prop | WIRED | SettingsPanel L95 passes `handleOpenCreate`; MyExercisesList L225 `onClick={onOpenCreate}` |
-| Modal submit button | `exercises.createExercise()` | `handleCreate` callback | WIRED | MyExercisesList L197 calls `exercises.createExercise(createName.trim(), createCategory as ExerciseCategory)` |
-| createExercise result | userExercises state | `setUserExercises` append + sort | WIRED | MyExercisesList L200: `setUserExercises(prev => [...prev, result.data!].sort(...))` |
-| createExercise error | Modal error display | `setCreateError` | WIRED | MyExercisesList L206: `setCreateError(result.error.message)`; L257/L417: `{createError && <div class="error-message">...}` |
+| SettingsPanel header button | MyExercisesList create modal | `showCreateModal` prop | WIRED | SettingsPanel L99 passes prop; MyExercisesList L235,L395 conditionally render modal |
+| Empty state button | Create modal | `onOpenCreate` callback prop | WIRED | SettingsPanel L100 passes `handleOpenCreate`; MyExercisesList L231 `onClick={onOpenCreate}` |
+| Modal submit button | `exercises.createExercise()` | `handleCreate` callback | WIRED | MyExercisesList L203 calls `exercises.createExercise(createName.trim(), createCategory as ExerciseCategory)` |
+| createExercise result | userExercises state | `setUserExercises` append + sort | WIRED | MyExercisesList L206: `setUserExercises(prev => [...prev, result.data!].sort(...))` |
+| createExercise error | Modal error display | `setCreateError` | WIRED | MyExercisesList L212: `setCreateError(result.error.message)`; L263,L423: `{createError && <div class="error-message">...}` |
+| isCreating state | SettingsPanel dismiss guards | `onCreatingChange` callback | WIRED | MyExercisesList L77: calls `onCreatingChange?.(isCreating)`; SettingsPanel L102 passes `setIsCreating`; L47,56,38: guards check isCreating |
 
-### Requirements Coverage
+### Gap Closure Verification
 
-| Requirement | Status | Blocking Issue |
-|-------------|--------|----------------|
-| CRUD-01: User can create a new exercise from My Exercises view | SATISFIED | None -- full create flow implemented via header button + modal + service call + list refresh |
+| Gap (from UAT) | Plan | Status | Evidence |
+|----------------|------|--------|----------|
+| Case-insensitive duplicate check | 21-02 Task 1 | CLOSED | exercises.ts L117-123: `.ilike('name', trimmedName)` check added before INSERT |
+| Modal dismiss during save | 21-02 Task 2 | CLOSED | SettingsPanel.tsx L29,47,56,38: `isCreating` state + guards on all dismiss paths; MyExercisesList.tsx L76-78: useEffect notifies parent |
 
 ### Anti-Patterns Found
 
@@ -61,33 +70,38 @@ No TODO/FIXME comments, no stub patterns, no empty returns, no placeholder conte
 
 ### TypeScript Compilation
 
-Passes clean. Only error is pre-existing `useClickOutside.ts` RefObject import issue (unrelated to phase 21).
+Passes clean for phase 21 files. Only error is pre-existing `useClickOutside.ts` RefObject import issue (unrelated to phase 21).
 
 ### Human Verification Required
 
-### 1. Visual appearance of "+ Create" button
-**Test:** Navigate to Settings > My Exercises and confirm the "+ Create" button appears in the header, right-aligned
-**Expected:** Blue primary button with text "+ Create" on the far right of the header bar
-**Why human:** Cannot verify CSS layout and visual alignment programmatically
+All 7 UAT tests were completed by user in 21-UAT.md:
+- Tests 1-5: PASSED
+- Tests 6-7: FAILED (bugs found)
+- Bugs diagnosed and fixed in Plan 21-02
 
-### 2. Create modal flow
-**Test:** Click "+ Create", fill name and category, click "Create Exercise"
-**Expected:** Modal opens, form accepts input, button enables when both fields filled, exercise appears in alphabetical position in list after creation
-**Why human:** Cannot verify modal rendering, form interaction, and visual list update programmatically
+### 1. Verify gap closure: Case-insensitive duplicate detection
+**Test:** Create exercise "Bench Press", then try to create "bench press" or "BENCH PRESS"
+**Expected:** Error message "An exercise with this name already exists" appears in modal
+**Why human:** Requires real database interaction to verify .ilike() query behavior
 
-### 3. Empty state create flow
-**Test:** Delete all exercises, then click "Create Exercise" in the empty state
-**Expected:** Same create modal opens, creating an exercise transitions from empty state to list view
-**Why human:** Cannot verify state transition and visual rendering programmatically
-
-### 4. Duplicate name error
-**Test:** Try creating an exercise with an existing name
-**Expected:** Error message "An exercise with this name already exists" appears in modal body
-**Why human:** Requires real database interaction to trigger unique constraint violation
+### 2. Verify gap closure: Modal dismiss guard during save
+**Test:** Click "Create Exercise" and immediately try to: (a) tap outside modal, (b) press back button, (c) close settings panel
+**Expected:** Modal stays open, save completes or fails with error, then modal can be dismissed
+**Why human:** Requires real-time timing verification during async operation
 
 ### Gaps Summary
 
-No gaps found. All 6 must-have truths are verified through code inspection. Both modified files are substantive, contain real implementations (not stubs), and are properly wired together. The create flow is complete: header button triggers modal open state in SettingsPanel, state is passed as prop to MyExercisesList, modal renders with name input and category dropdown, submit calls the real `exercises.createExercise()` service, success appends to local state with sorted insertion, and the modal closes. Empty state button uses the same `onOpenCreate` callback. Error handling surfaces server errors in the modal body. The dismiss function is blocked during active creation.
+No gaps found. All 4 success criteria from ROADMAP.md are verified through code inspection:
+
+1. **Create modal trigger:** Header `+ Create` button in SettingsPanel opens modal via `showCreateModal` state passed to MyExercisesList.
+
+2. **No manual refresh:** `handleCreate` in MyExercisesList appends new exercise to local state with sorted insertion -- no page refresh or re-fetch.
+
+3. **Case-insensitive duplicates:** `createExercise` in exercises.ts uses `.ilike()` pre-check before INSERT, returning "An exercise with this name already exists" on case-variant matches.
+
+4. **Dismiss guard during save:** `isCreating` state is lifted from MyExercisesList to SettingsPanel via `onCreatingChange` callback. All three dismiss paths (backdrop click, back button, cleanup useEffect) check `isCreating` and no-op when true.
+
+The gap closure plan (21-02) successfully addressed both UAT-reported issues.
 
 ---
 

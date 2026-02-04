@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 21-exercise-create
 source: 21-01-SUMMARY.md
 started: 2026-02-04T12:00:00Z
@@ -59,17 +59,35 @@ skipped: 0
   reason: "User reported: ErrorMessage appears, but not when there are difference lower and upper cases, so if I have already created Bench Press and I write bench press it allows the creation, it should not"
   severity: major
   test: 6
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "createExercise() has no pre-insert duplicate name check. It relies on catching Postgres 23505 error but no unique constraint exists on exercises table. Unlike updateExercise() which uses .ilike(), createExercise() skips this entirely."
+  artifacts:
+    - path: "packages/shared/src/services/exercises.ts"
+      issue: "createExercise() (lines 88-151) missing .ilike() duplicate check before INSERT"
+    - path: "packages/shared/src/services/exercises.ts"
+      issue: "exerciseExists() (lines 189-211) uses case-sensitive .eq() instead of .ilike()"
+  missing:
+    - "Add .ilike('name', trimmedName) check in createExercise() before INSERT, scoped to user_id and is_system=false"
+    - "Fix exerciseExists() to use .ilike() for case-insensitive matching"
+  debug_session: ".planning/debug/case-insensitive-dup-create.md"
 
 - truth: "Modal cannot be dismissed by tapping outside during active save"
   status: failed
   reason: "User reported: doesnt pass, if I tap outside the modal the modal closes"
   severity: major
   test: 7
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Create modal has 3 dismiss paths but only 1 is guarded. dismissCreate in MyExercisesList checks isCreating, but SettingsPanel's backdrop click and back button both bypass it. isCreating state is local to MyExercisesList and never exposed to parent."
+  artifacts:
+    - path: "apps/web/src/surfaces/dashboard/SettingsPanel.tsx"
+      issue: "handleBackdropClick (line 51-53) calls onClose() with no isCreating guard"
+    - path: "apps/web/src/surfaces/dashboard/SettingsPanel.tsx"
+      issue: "useEffect cleanup (line 33-41) unconditionally resets showCreateModal"
+    - path: "apps/web/src/surfaces/dashboard/SettingsPanel.tsx"
+      issue: "handleBack (line 43-49) can close panel or switch view, destroying modal"
+    - path: "apps/web/src/surfaces/dashboard/MyExercisesList.tsx"
+      issue: "isCreating state (line 70) is local, never exposed to parent"
+  missing:
+    - "Expose isCreating state from MyExercisesList to SettingsPanel (callback or lifted state)"
+    - "Guard handleBackdropClick to be no-op when isCreating is true"
+    - "Guard handleBack to be no-op when isCreating is true"
+    - "Guard useEffect cleanup to not reset showCreateModal when isCreating is true"
+  debug_session: ".planning/debug/modal-dismiss-during-save.md"

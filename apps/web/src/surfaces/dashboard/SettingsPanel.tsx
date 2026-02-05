@@ -21,7 +21,7 @@ interface SettingsPanelProps {
   onExerciseDeleted?: () => void;
 }
 
-type PanelView = 'menu' | 'exercises';
+type PanelView = 'menu' | 'exercises' | 'history';
 
 export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: SettingsPanelProps) {
   const [panelView, setPanelView] = useState<PanelView>('menu');
@@ -45,7 +45,7 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
 
   const handleBack = () => {
     if (isCreating) return;
-    if (panelView === 'exercises') {
+    if (panelView === 'exercises' || panelView === 'history') {
       setPanelView('menu');
     } else {
       onClose();
@@ -57,7 +57,10 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
     onClose();
   };
 
-  const headerTitle = panelView === 'menu' ? 'Settings' : 'My Exercises';
+  const headerTitle =
+    panelView === 'menu' ? 'Settings' :
+    panelView === 'exercises' ? 'My Exercises' :
+    'Workout History';
   const backLabel = panelView === 'menu' ? 'Back' : 'Settings';
 
   return (
@@ -90,6 +93,7 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
           {panelView === 'menu' && (
             <SettingsMenu
               onMyExercises={() => setPanelView('exercises')}
+              onWorkoutHistory={() => setPanelView('history')}
               onLogout={onLogout}
             />
           )}
@@ -102,6 +106,11 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
               isCreating={isCreating}
               onIsCreatingChange={setIsCreating}
             />
+          )}
+          {panelView === 'history' && (
+            <div class="history-placeholder" style={{ padding: '2rem', textAlign: 'center' }}>
+              <p style={{ color: 'var(--color-text-muted)' }}>History view coming soon</p>
+            </div>
           )}
         </div>
       </div>

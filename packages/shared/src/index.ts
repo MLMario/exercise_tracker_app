@@ -10,5 +10,8 @@ export * from './types';
 // Services
 export * from './services';
 
+// Hooks
+export * from './hooks';
+
 // Lib
 export { supabase } from './lib/supabase';

@@ -43,10 +43,13 @@ interface MyExercisesListProps {
   showCreateModal?: boolean;
   onOpenCreate?: () => void;
   onCloseCreate?: () => void;
-  onCreatingChange?: (creating: boolean) => void;
+  /** Controlled isCreating state from parent (single source of truth in SettingsPanel) */
+  isCreating?: boolean;
+  /** Direct callback to update parent's isCreating state (no effect sync) */
+  onIsCreatingChange?: (creating: boolean) => void;
 }
 
-export function MyExercisesList({ onExerciseDeleted, showCreateModal, onOpenCreate, onCloseCreate, onCreatingChange }: MyExercisesListProps) {
+export function MyExercisesList({ onExerciseDeleted, showCreateModal, onOpenCreate, onCloseCreate, isCreating = false, onIsCreatingChange }: MyExercisesListProps) {
   const [userExercises, setUserExercises] = useState<Exercise[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -68,14 +71,8 @@ export function MyExercisesList({ onExerciseDeleted, showCreateModal, onOpenCrea
   const [createName, setCreateName] = useState('');
   const [createCategory, setCreateCategory] = useState('');
   const [createError, setCreateError] = useState('');
-  const [isCreating, setIsCreating] = useState(false);
 
   const categories = exercises.getCategories();
-
-  // Notify parent of isCreating state changes for dismiss guards
-  useEffect(() => {
-    onCreatingChange?.(isCreating);
-  }, [isCreating, onCreatingChange]);
 
   useEffect(() => {
     const load = async () => {
@@ -198,10 +195,10 @@ export function MyExercisesList({ onExerciseDeleted, showCreateModal, onOpenCrea
   }, [isCreating, onCloseCreate]);
 
   const handleCreate = useCallback(async () => {
-    setIsCreating(true);
+    onIsCreatingChange?.(true);
     setCreateError('');
     const result = await exercises.createExercise(createName.trim(), createCategory as ExerciseCategory);
-    setIsCreating(false);
+    onIsCreatingChange?.(false);
     if (result.data) {
       setUserExercises(prev => [...prev, result.data!].sort((a, b) => a.name.localeCompare(b.name)));
       setCreateName('');
@@ -211,7 +208,7 @@ export function MyExercisesList({ onExerciseDeleted, showCreateModal, onOpenCrea
     } else if (result.error) {
       setCreateError(result.error.message);
     }
-  }, [createName, createCategory, onCloseCreate]);
+  }, [createName, createCategory, onCloseCreate, onIsCreatingChange]);
 
   if (isLoading) {
     return <div class="my-exercises-loading">Loading exercises...</div>;

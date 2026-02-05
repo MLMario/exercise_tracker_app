@@ -165,7 +165,7 @@ export function WorkoutExerciseCard({
 
             {exercise.sets.map((set, setIndex) => (
               <SetRow
-                key={setIndex}
+                key={`${exercise.exercise_id}-set-${set.set_number}`}
                 set={set}
                 exerciseIndex={exerciseIndex}
                 setIndex={setIndex}
@@ -175,7 +175,7 @@ export function WorkoutExerciseCard({
                 onToggleDone={handleToggleDone}
                 onDelete={onDeleteSet}
                 shouldResetSwipe={revealedSetKey !== `${exerciseIndex}-${setIndex}`}
-                onSwipeStateChange={(isRevealed) => onSetSwipeStateChange(setIndex, isRevealed)}
+                onSwipeStateChange={onSetSwipeStateChange}
               />
             ))}
           </div>

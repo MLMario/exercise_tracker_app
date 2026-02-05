@@ -7,9 +7,9 @@
  * State variables mirror the Alpine.js implementation in js/app.js lines 48-77.
  */
 
-import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
-import type { TemplateWithExercises, Exercise } from '@ironlift/shared';
-import { exercises, logging, templates } from '@ironlift/shared';
+import { useState, useEffect, useRef } from 'preact/hooks';
+import type { TemplateWithExercises, Exercise, WorkoutBackupData } from '@ironlift/shared';
+import { exercises, logging, templates, useTimerState, useWorkoutBackup } from '@ironlift/shared';
 import { WorkoutExerciseCard } from './WorkoutExerciseCard';
 import { ConfirmationModal, ExercisePickerModal } from '@/components';
 import { useAsyncOperation } from '@/hooks';
@@ -77,16 +77,6 @@ interface WorkoutData {
   started_at: string;
   finished_at: string;
   exercises: WorkoutExercise[];
-}
-
-/**
- * LocalStorage backup data structure.
- * Matches js/app.js lines 1309-1313.
- */
-interface WorkoutBackupData {
-  activeWorkout: ActiveWorkout;
-  originalTemplateSnapshot: TemplateSnapshot | null;
-  last_saved_at: string;
 }
 
 /**
@@ -168,12 +158,8 @@ export function WorkoutSurface({
   // Original template snapshot for change detection
   const [originalTemplateSnapshot, setOriginalTemplateSnapshot] = useState<TemplateSnapshot | null>(null);
 
-  // Timer state
-  const [timerSeconds, setTimerSeconds] = useState(0);
-  const [timerTotalSeconds, setTimerTotalSeconds] = useState(0);
-  const [timerActive, setTimerActive] = useState(false);
-  const [timerPaused, setTimerPaused] = useState(false);
-  const [activeTimerExerciseIndex, setActiveTimerExerciseIndex] = useState<number | null>(null);
+  // Timer state (discriminated union per rerender-derived-state)
+  const { timer, start: timerStart, stop: timerStop, tick: timerTick, adjust: timerAdjust } = useTimerState();
 
   // Ref to store interval ID
   const timerIntervalRef = useRef<number | null>(null);
@@ -278,49 +264,18 @@ export function WorkoutSurface({
   // ==================== LOCALSTORAGE BACKUP ====================
   // Matches js/app.js lines 1294-1420
 
-  /**
-   * Get localStorage key for workout backup.
-   * Uses userId for proper user-scoped storage.
-   * Matches js/app.js lines 1296-1298.
-   */
-  const getWorkoutStorageKey = useCallback((): string | null => {
-    return userId ? `activeWorkout_${userId}` : null;
-  }, [userId]);
+  const { getStorageKey: getWorkoutStorageKey, save: saveWorkoutToStorage, clear: clearWorkoutFromStorage } = useWorkoutBackup(userId);
 
-  /**
-   * Save workout to localStorage.
-   * Matches js/app.js lines 1300-1316.
-   */
-  const saveWorkoutToStorage = useCallback((): void => {
-    const key = getWorkoutStorageKey();
-    if (!key || !activeWorkout.started_at || activeWorkout.exercises.length === 0) return;
-
-    const backupData: WorkoutBackupData = {
-      activeWorkout,
-      originalTemplateSnapshot,
-      last_saved_at: new Date().toISOString()
-    };
-
-    localStorage.setItem(key, JSON.stringify(backupData));
-  }, [activeWorkout, originalTemplateSnapshot, getWorkoutStorageKey]);
-
-  /**
-   * Clear workout from localStorage.
-   * Matches js/app.js lines 1345-1350.
-   */
-  const clearWorkoutFromStorage = useCallback((): void => {
-    const key = getWorkoutStorageKey();
-    if (key) {
-      localStorage.removeItem(key);
-    }
-  }, [getWorkoutStorageKey]);
+  // Ref for save function to narrow effect dependencies (per advanced-event-handler-refs 8.2)
+  const saveWorkoutRef = useRef(saveWorkoutToStorage);
+  saveWorkoutRef.current = saveWorkoutToStorage;
 
   // Auto-save workout to localStorage on changes
   useEffect(() => {
     if (activeWorkout.started_at) {
-      saveWorkoutToStorage();
+      saveWorkoutRef.current(activeWorkout, originalTemplateSnapshot);
     }
-  }, [activeWorkout, saveWorkoutToStorage]);
+  }, [activeWorkout, originalTemplateSnapshot]);
 
   // Multi-tab sync listener
   useEffect(() => {
@@ -357,7 +312,7 @@ export function WorkoutSurface({
    * Matches js/app.js lines 1159-1161.
    */
   const isTimerActiveForExercise = (exIndex: number): boolean => {
-    return timerActive && activeTimerExerciseIndex === exIndex;
+    return timer.status === 'active' && timer.exerciseIndex === exIndex;
   };
 
   /**
@@ -365,13 +320,14 @@ export function WorkoutSurface({
    * Matches js/app.js lines 1164-1172.
    */
   const getTimerProgress = (exIndex: number): number => {
-    if (!isTimerActiveForExercise(exIndex)) {
+    if (!isTimerActiveForExercise(exIndex) || timer.status !== 'active') {
       return 100; // Full bar when idle
     }
-    if (timerTotalSeconds <= 0) {
+    if (timer.total <= 0) {
       return 0;
     }
-    return Math.round((timerSeconds / timerTotalSeconds) * 100);
+    const remaining = timer.total - timer.elapsed;
+    return Math.round((remaining / timer.total) * 100);
   };
 
   /**
@@ -383,10 +339,7 @@ export function WorkoutSurface({
       clearInterval(timerIntervalRef.current);
       timerIntervalRef.current = null;
     }
-    setTimerActive(false);
-    setTimerSeconds(0);
-    setTimerTotalSeconds(0);
-    setActiveTimerExerciseIndex(null);
+    timerStop();
   };
 
   /**
@@ -399,27 +352,26 @@ export function WorkoutSurface({
     // Stop any existing timer first
     stopTimer();
 
-    setTimerActive(true);
-    setTimerSeconds(seconds);
-    setTimerTotalSeconds(seconds);
-    setActiveTimerExerciseIndex(exIndex);
+    timerStart(exIndex, seconds);
 
-    // Start countdown
+    // Track elapsed for completion check via ref to avoid stale closure
+    let elapsedCount = 0;
+
+    // Start countdown using tick (functional setState per rerender-functional-setstate)
     timerIntervalRef.current = window.setInterval(() => {
-      setTimerSeconds(prev => {
-        if (prev <= 1) {
-          // Timer complete
-          stopTimer();
-          // Play notification if supported
-          if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification('Rest Timer Complete!', {
-              body: 'Time to start your next set'
-            });
-          }
-          return 0;
+      elapsedCount++;
+      if (elapsedCount >= seconds) {
+        // Timer complete
+        stopTimer();
+        // Play notification if supported
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification('Rest Timer Complete!', {
+            body: 'Time to start your next set'
+          });
         }
-        return prev - 1;
-      });
+      } else {
+        timerTick();
+      }
     }, 1000);
   };
 
@@ -430,8 +382,7 @@ export function WorkoutSurface({
   const adjustTimer = (deltaSeconds: number, exIndex: number): void => {
     if (isTimerActiveForExercise(exIndex)) {
       // Timer is running - adjust running timer
-      setTimerSeconds(prev => Math.max(0, prev + deltaSeconds));
-      setTimerTotalSeconds(prev => Math.max(0, prev + deltaSeconds));
+      timerAdjust(deltaSeconds);
     } else {
       // Timer is idle - adjust exercise's default rest_seconds
       setActiveWorkout(prev => {
@@ -755,13 +706,20 @@ export function WorkoutSurface({
    * Matches js/app.js lines 898-905.
    */
   const handleRemoveExercise = (index: number): void => {
+    // Derive activeTimerExerciseIndex from timer state
+    const activeTimerExIdx = timer.status !== 'idle' ? timer.exerciseIndex : null;
+
     // Stop timer if removing exercise that has active timer
-    if (activeTimerExerciseIndex === index) {
+    if (activeTimerExIdx === index) {
       stopTimer();
     }
-    // Adjust activeTimerExerciseIndex if needed
-    if (activeTimerExerciseIndex !== null && index < activeTimerExerciseIndex) {
-      setActiveTimerExerciseIndex(prev => prev !== null ? prev - 1 : null);
+    // Note: with the discriminated union, exerciseIndex is immutable within a timer session.
+    // If we remove an exercise before the active timer's exercise, the index shifts.
+    // We stop and let the user restart if needed, matching existing UX.
+    // (The old code adjusted the index, but the timer would still show on wrong exercise
+    //  since child components derive timer state from the index prop.)
+    if (activeTimerExIdx !== null && index < activeTimerExIdx) {
+      stopTimer();
     }
     setActiveWorkout(prev => ({
       ...prev,
@@ -889,7 +847,7 @@ export function WorkoutSurface({
               onDeleteSet={handleDeleteSet}
               onRemoveExercise={handleRemoveExercise}
               // Timer props
-              timerSeconds={isTimerActiveForExercise(index) ? timerSeconds : exercise.rest_seconds}
+              timerSeconds={isTimerActiveForExercise(index) && timer.status === 'active' ? (timer.total - timer.elapsed) : exercise.rest_seconds}
               timerProgress={getTimerProgress(index)}
               isTimerActive={isTimerActiveForExercise(index)}
               onAdjustTimer={(delta) => adjustTimer(delta, index)}

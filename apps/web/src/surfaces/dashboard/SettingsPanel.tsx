@@ -99,7 +99,8 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
               showCreateModal={showCreateModal}
               onOpenCreate={handleOpenCreate}
               onCloseCreate={() => setShowCreateModal(false)}
-              onCreatingChange={setIsCreating}
+              isCreating={isCreating}
+              onIsCreatingChange={setIsCreating}
             />
           )}
         </div>

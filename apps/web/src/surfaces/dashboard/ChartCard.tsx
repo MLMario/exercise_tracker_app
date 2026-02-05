@@ -110,34 +110,37 @@ export function ChartCard({
       return;
     }
 
+    let cancelled = false;
     const canvasId = `chart-${chart.id}`;
 
-    try {
-      const instance = charts.renderChart(
-        canvasId,
-        chartData,
-        {
-          metricType: chart.metric_type,
-          exerciseName: chart.exercises?.name || 'Exercise'
-        }
-      );
+    (async () => {
+      try {
+        const instance = await charts.renderChart(
+          canvasId,
+          chartData,
+          {
+            metricType: chart.metric_type,
+            exerciseName: chart.exercises?.name || 'Exercise'
+          }
+        );
 
-      if (instance) {
-        chartInstanceRef.current = instance;
-        setIsRendered(true);
-        if (onChartRendered) {
-          onChartRendered(chart.id, instance);
+        if (instance && !cancelled) {
+          chartInstanceRef.current = instance;
+          setIsRendered(true);
+          if (onChartRendered) {
+            onChartRendered(chart.id, instance);
+          }
         }
+      } catch {
+        // Chart render failed - leave in loading state
       }
-    } catch (err) {
-      // Chart render failed - leave in loading state
-    }
+    })();
 
     // Cleanup on unmount
     return () => {
+      cancelled = true;
       if (chartInstanceRef.current) {
         try {
-          // Pass the actual Chart instance, not the canvas ID string
           charts.destroyChart(chartInstanceRef.current);
         } catch {
           // Ignore cleanup errors

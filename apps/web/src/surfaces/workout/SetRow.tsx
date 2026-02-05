@@ -13,6 +13,9 @@ import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 import { useDrag } from '@use-gesture/react';
 import type { WorkoutSet } from './WorkoutSurface';
 
+// Hoisted static style to avoid re-creating object on every render (per rendering-hoist-jsx 6.3)
+const TOUCH_STYLE = { touchAction: 'pan-y' } as const;
+
 // ============================================================================
 // Interfaces
 // ============================================================================
@@ -40,7 +43,7 @@ export interface SetRowProps {
   /** Whether this row should reset its swipe state */
   shouldResetSwipe?: boolean;
   /** Callback when swipe state changes */
-  onSwipeStateChange?: (isRevealed: boolean) => void;
+  onSwipeStateChange?: (setIndex: number, isRevealed: boolean) => void;
 }
 
 /**
@@ -87,8 +90,8 @@ export function SetRow({
     if (setRowRef.current) {
       setRowRef.current.style.transform = '';
     }
-    onSwipeStateChange?.(false);
-  }, [onSwipeStateChange]);
+    onSwipeStateChange?.(setIndex, false);
+  }, [onSwipeStateChange, setIndex]);
 
   /**
    * useDrag hook from @use-gesture/react for swipe gesture handling.
@@ -151,7 +154,7 @@ export function SetRow({
           if (setRowRef.current) {
             setRowRef.current.style.transform = 'translateX(-70px)';
           }
-          onSwipeStateChange?.(true);
+          onSwipeStateChange?.(setIndex, true);
         } else {
           // Snap back
           resetSwipe();
@@ -217,7 +220,7 @@ export function SetRow({
     <div
       ref={wrapperRef}
       class={`set-row-wrapper ${isDragging ? 'swiping' : ''} ${isRevealed ? 'swipe-revealed' : ''}`}
-      style={{ touchAction: 'pan-y' }}
+      style={TOUCH_STYLE}
       {...bind()}
       onClick={(e) => e.stopPropagation()}
     >

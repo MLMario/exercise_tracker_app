@@ -736,10 +736,10 @@ export interface ChartsService {
    * @param canvasId - ID of the canvas element
    * @param chartData - Chart data with labels and values
    * @param options - Rendering options
-   * @returns Chart.js instance or null if error
+   * @returns Promise resolving to Chart.js instance or null if error
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  renderChart(canvasId: string, chartData: ChartData, options: RenderChartOptions): any;
+  renderChart(canvasId: string, chartData: ChartData, options: RenderChartOptions): Promise<any>;
 
   /**
    * Destroy a Chart.js instance.

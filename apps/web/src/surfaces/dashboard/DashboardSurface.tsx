@@ -10,7 +10,7 @@
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 import type { Chart } from 'chart.js';
 import type { Exercise, TemplateWithExercises } from '@ironlift/shared';
-import { exercises, templates, logging, charts } from '@ironlift/shared';
+import { exercises, templates, logging, charts, useConfirmationModal } from '@ironlift/shared';
 import { TemplateList } from './TemplateList';
 import { ChartSection } from './ChartSection';
 import { AddChartModal } from './AddChartModal';
@@ -86,13 +86,11 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
   // Modal state for add chart
   const [showAddChartModal, setShowAddChartModal] = useState(false);
 
-  // Modal state for delete chart confirmation
-  const [showDeleteChartModal, setShowDeleteChartModal] = useState(false);
-  const [pendingDeleteChartId, setPendingDeleteChartId] = useState<string | null>(null);
+  // Modal state for delete chart confirmation (discriminated union per rerender-derived-state)
+  const deleteChartModal = useConfirmationModal<string>();
 
-  // Modal state for delete template confirmation
-  const [showDeleteTemplateModal, setShowDeleteTemplateModal] = useState(false);
-  const [pendingDeleteTemplateId, setPendingDeleteTemplateId] = useState<string | null>(null);
+  // Modal state for delete template confirmation (discriminated union per rerender-derived-state)
+  const deleteTemplateModal = useConfirmationModal<string>();
 
   // Chart modal error (kept separate - modal-scoped)
   const [chartError, setChartError] = useState('');
@@ -253,25 +251,22 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 511-527.
    */
   const handleDeleteTemplate = (id: string): void => {
-    setPendingDeleteTemplateId(id);
-    setShowDeleteTemplateModal(true);
+    deleteTemplateModal.open(id);
   };
 
   /**
    * Dismiss the delete template confirmation modal.
    */
   const dismissDeleteTemplateModal = (): void => {
-    setShowDeleteTemplateModal(false);
-    setPendingDeleteTemplateId(null);
+    deleteTemplateModal.close();
   };
 
   /**
    * Confirm template deletion.
    */
   const confirmDeleteTemplate = async (): Promise<void> => {
-    const id = pendingDeleteTemplateId;
-    setShowDeleteTemplateModal(false);
-    setPendingDeleteTemplateId(null);
+    const id = deleteTemplateModal.data;
+    deleteTemplateModal.close();
 
     if (!id) return;
 
@@ -375,8 +370,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 1253-1256.
    */
   const handleDeleteChart = (id: string): void => {
-    setPendingDeleteChartId(id);
-    setShowDeleteChartModal(true);
+    deleteChartModal.open(id);
   };
 
   /**
@@ -384,8 +378,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 1258-1261.
    */
   const dismissDeleteChartModal = (): void => {
-    setShowDeleteChartModal(false);
-    setPendingDeleteChartId(null);
+    deleteChartModal.close();
   };
 
   /**
@@ -393,9 +386,8 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
    * Matches js/app.js lines 1263-1283.
    */
   const confirmDeleteChart = async (): Promise<void> => {
-    const id = pendingDeleteChartId;
-    setShowDeleteChartModal(false);
-    setPendingDeleteChartId(null);
+    const id = deleteChartModal.data;
+    deleteChartModal.close();
 
     if (!id) return;
 
@@ -423,13 +415,19 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
 
   // ==================== EXERCISE DELETE HANDLER ====================
 
+  // Refs for load functions to stabilize handleExerciseDeleted (per advanced-event-handler-refs 8.2)
+  const loadUserChartsRef = useRef(loadUserCharts);
+  loadUserChartsRef.current = loadUserCharts;
+  const loadTemplatesRef = useRef(loadTemplates);
+  loadTemplatesRef.current = loadTemplates;
+
   /**
    * Refresh charts and templates when an exercise is deleted from My Exercises.
    * Charts may reference the deleted exercise, and templates may contain it.
    * Threaded through SettingsPanel -> MyExercisesList.
    */
   const handleExerciseDeleted = useCallback(async () => {
-    await Promise.all([loadUserCharts(), loadTemplates()]);
+    await Promise.all([loadUserChartsRef.current(), loadTemplatesRef.current()]);
   }, []);
 
   // ==================== INITIALIZATION ====================
@@ -518,7 +516,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
       />
 
       {/* Delete Chart Confirmation Modal */}
-      {showDeleteChartModal && (
+      {deleteChartModal.isOpen && (
         <div class="modal-overlay" onClick={dismissDeleteChartModal}>
           <div class="modal-content delete-confirm-modal" onClick={(e) => e.stopPropagation()}>
             <div class="modal-header">
@@ -549,7 +547,7 @@ export function DashboardSurface({ onLogout, onEditTemplate, onCreateNewTemplate
 
       {/* Delete Template Confirmation Modal */}
       <ConfirmationModal
-        isOpen={showDeleteTemplateModal}
+        isOpen={deleteTemplateModal.isOpen}
         title="Delete Template"
         message="Are you sure you want to delete this template?"
         confirmLabel="Delete"

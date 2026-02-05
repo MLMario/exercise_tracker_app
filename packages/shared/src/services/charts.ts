@@ -15,30 +15,32 @@ import type {
   ChartData,
   ChartsService,
 } from '../types';
-import {
-  Chart,
-  CategoryScale,
-  LinearScale,
-  LineController,
-  LineElement,
-  PointElement,
-  Legend,
-  Tooltip,
-  Filler,
-} from 'chart.js';
-
-// Register Chart.js components (required in Chart.js v3+)
-Chart.register(
-  CategoryScale,
-  LinearScale,
-  LineController,
-  LineElement,
-  PointElement,
-  Legend,
-  Tooltip,
-  Filler
-);
+import type { Chart } from 'chart.js';
 import type { PostgrestSingleResponse } from '@supabase/supabase-js';
+
+// Lazy-loaded Chart.js module cache (per bundle-dynamic-imports 2.4)
+let chartModuleCache: typeof import('chart.js') | null = null;
+
+/**
+ * Lazily load and register Chart.js components.
+ * Only loads the ~200KB Chart.js bundle when charts are actually needed.
+ */
+async function getChartModule(): Promise<typeof import('chart.js')> {
+  if (chartModuleCache) return chartModuleCache;
+  const mod = await import('chart.js');
+  mod.Chart.register(
+    mod.CategoryScale,
+    mod.LinearScale,
+    mod.LineController,
+    mod.LineElement,
+    mod.PointElement,
+    mod.Legend,
+    mod.Tooltip,
+    mod.Filler
+  );
+  chartModuleCache = mod;
+  return mod;
+}
 
 // ============================================================================
 // Chart CRUD Operations
@@ -218,20 +220,23 @@ async function reorderCharts(chartIds: string[]): Promise<ServiceError> {
 
 /**
  * Render a Chart.js line chart.
+ * Lazily loads Chart.js on first call.
  */
-function renderChart(
+async function renderChart(
   canvasId: string,
   chartData: ChartData,
   options: RenderChartOptions
-): Chart | null {
+): Promise<Chart | null> {
   try {
     const canvas = document.getElementById(canvasId) as HTMLCanvasElement | null;
     if (!canvas) {
       return null;
     }
 
+    const { Chart: ChartJS } = await getChartModule();
+
     // Check if there's an existing chart on this canvas and destroy it
-    const existingChart = Chart.getChart(canvas);
+    const existingChart = ChartJS.getChart(canvas);
     if (existingChart) {
       existingChart.destroy();
     }
@@ -244,7 +249,7 @@ function renderChart(
     const { metricType, exerciseName } = options;
     const yAxisLabel = getMetricDisplayName(metricType);
 
-    const chartInstance = new Chart(ctx, {
+    const chartInstance = new ChartJS(ctx, {
       type: 'line',
       data: {
         labels: chartData.labels,

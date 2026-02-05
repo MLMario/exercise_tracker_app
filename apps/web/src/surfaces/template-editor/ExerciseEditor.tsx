@@ -160,7 +160,7 @@ export function ExerciseEditor({
         </div>
 
         {exercise.sets.map((set, setIndex) => (
-          <div class="set-row" key={setIndex}>
+          <div class="set-row" key={set.set_number}>
             <div class="set-number">{set.set_number}</div>
             <input
               type="number"

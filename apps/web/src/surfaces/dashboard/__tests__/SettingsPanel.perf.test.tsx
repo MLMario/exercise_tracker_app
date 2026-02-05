@@ -298,6 +298,270 @@ describe('SettingsPanel isCreating Sync - Baseline Performance', () => {
   })
 })
 
+// ============================================================================
+// Optimized Components: Lifted State Pattern (no effects)
+// ============================================================================
+
+interface OptimizedChildProps {
+  isCreating: boolean
+  onIsCreatingChange?: (creating: boolean) => void
+  spy: RenderSpy
+  effectSpy: EffectSpy
+}
+
+/**
+ * Optimized child component with lifted state.
+ * No local state, no effects - just receives state as prop.
+ */
+function OptimizedChild({ isCreating, onIsCreatingChange, spy, effectSpy }: OptimizedChildProps) {
+  spy.recordRender()
+
+  // No local state - isCreating comes from parent
+  // No effects - no sync needed
+
+  const startCreate = useCallback(() => {
+    onIsCreatingChange?.(true)
+  }, [onIsCreatingChange])
+
+  const endCreate = useCallback(() => {
+    onIsCreatingChange?.(false)
+  }, [onIsCreatingChange])
+
+  return (
+    <div>
+      <button data-testid="start-create-opt" onClick={startCreate}>Start Create</button>
+      <button data-testid="end-create-opt" onClick={endCreate}>End Create</button>
+      <span data-testid="child-creating-opt">{isCreating ? 'creating' : 'idle'}</span>
+    </div>
+  )
+}
+
+/**
+ * Optimized parent component that owns isCreating state.
+ * Passes state down to child as prop.
+ */
+function OptimizedParent({ parentSpy, childSpy, effectSpy }: ParentProps) {
+  parentSpy.recordRender()
+
+  // Parent owns isCreating state
+  const [isCreating, setIsCreating] = useState(false)
+
+  // Uses isCreating for dismiss guards
+  const canDismiss = !isCreating
+
+  return (
+    <div>
+      <span data-testid="parent-creating-opt">{isCreating ? 'creating' : 'idle'}</span>
+      <span data-testid="can-dismiss-opt">{canDismiss ? 'yes' : 'no'}</span>
+      <OptimizedChild
+        isCreating={isCreating}
+        onIsCreatingChange={setIsCreating}
+        spy={childSpy}
+        effectSpy={effectSpy}
+      />
+    </div>
+  )
+}
+
+// ============================================================================
+// Optimized Tests
+// ============================================================================
+
+describe('SettingsPanel isCreating - Optimized Performance (lifted state)', () => {
+  let parentSpy: RenderSpy
+  let childSpy: RenderSpy
+  let effectSpy: EffectSpy
+
+  beforeEach(() => {
+    parentSpy = createRenderSpy()
+    childSpy = createRenderSpy()
+    effectSpy = createEffectSpy()
+  })
+
+  afterEach(() => {
+    parentSpy.reset()
+    childSpy.reset()
+    effectSpy.reset()
+  })
+
+  it('optimized: initial render - no effect execution', () => {
+    render(<OptimizedParent parentSpy={parentSpy} childSpy={childSpy} effectSpy={effectSpy} />)
+
+    /**
+     * OPTIMIZED: Initial render with lifted state
+     * - Parent renders once
+     * - Child renders once
+     * - No effects needed (child receives state as prop)
+     *
+     * Improvement: Effects reduced from 1 to 0
+     */
+    const parentRenders = parentSpy.getRenderCount()
+    const childRenders = childSpy.getRenderCount()
+    const effectExecutions = effectSpy.getEffectCount()
+
+    console.log(`OPTIMIZED - Initial: Parent=${parentRenders}, Child=${childRenders}, Effects=${effectExecutions}`)
+
+    expect(parentRenders).toBe(1)
+    expect(childRenders).toBe(1)
+    expect(effectExecutions).toBe(0) // Down from 1 in baseline
+  })
+
+  it('optimized: create flow - no effect sync', async () => {
+    const { getByTestId } = render(
+      <OptimizedParent parentSpy={parentSpy} childSpy={childSpy} effectSpy={effectSpy} />
+    )
+
+    // Reset after initial render
+    parentSpy.reset()
+    childSpy.reset()
+    effectSpy.reset()
+
+    // Start create
+    await act(async () => {
+      fireEvent.click(getByTestId('start-create-opt'))
+    })
+
+    /**
+     * OPTIMIZED: Starting create
+     * - Child calls onIsCreatingChange(true) directly in handler
+     * - Parent state changes: isCreating = true
+     * - Parent re-renders
+     * - Child re-renders with new prop
+     *
+     * No effects needed - direct state update
+     */
+    let parentRenders = parentSpy.getRenderCount()
+    let childRenders = childSpy.getRenderCount()
+    let effectExecutions = effectSpy.getEffectCount()
+
+    console.log(`OPTIMIZED - Start Create: Parent=${parentRenders}, Child=${childRenders}, Effects=${effectExecutions}`)
+
+    expect(effectExecutions).toBe(0) // Down from 1 in baseline
+
+    // End create
+    parentSpy.reset()
+    childSpy.reset()
+    effectSpy.reset()
+
+    await act(async () => {
+      fireEvent.click(getByTestId('end-create-opt'))
+    })
+
+    /**
+     * OPTIMIZED: Ending create
+     * - Child calls onIsCreatingChange(false) directly in handler
+     * - Parent state changes: isCreating = false
+     * - Parent re-renders
+     * - Child re-renders with new prop
+     */
+    parentRenders = parentSpy.getRenderCount()
+    childRenders = childSpy.getRenderCount()
+    effectExecutions = effectSpy.getEffectCount()
+
+    console.log(`OPTIMIZED - End Create: Parent=${parentRenders}, Child=${childRenders}, Effects=${effectExecutions}`)
+
+    expect(effectExecutions).toBe(0) // Down from 1 in baseline
+  })
+
+  it('optimized: state consistency between parent and child', async () => {
+    const { getByTestId } = render(
+      <OptimizedParent parentSpy={parentSpy} childSpy={childSpy} effectSpy={effectSpy} />
+    )
+
+    // Initial state should match
+    expect(getByTestId('parent-creating-opt').textContent).toBe('idle')
+    expect(getByTestId('child-creating-opt').textContent).toBe('idle')
+    expect(getByTestId('can-dismiss-opt').textContent).toBe('yes')
+
+    // Start create
+    await act(async () => {
+      fireEvent.click(getByTestId('start-create-opt'))
+    })
+
+    /**
+     * OPTIMIZED: State consistency after create starts
+     * Both parent and child should show "creating"
+     * Dismiss should be blocked
+     * State is always consistent because there's only one source of truth
+     */
+    expect(getByTestId('parent-creating-opt').textContent).toBe('creating')
+    expect(getByTestId('child-creating-opt').textContent).toBe('creating')
+    expect(getByTestId('can-dismiss-opt').textContent).toBe('no')
+
+    // End create
+    await act(async () => {
+      fireEvent.click(getByTestId('end-create-opt'))
+    })
+
+    // State should be back to idle
+    expect(getByTestId('parent-creating-opt').textContent).toBe('idle')
+    expect(getByTestId('child-creating-opt').textContent).toBe('idle')
+    expect(getByTestId('can-dismiss-opt').textContent).toBe('yes')
+  })
+
+  it('optimized: multiple create cycles - zero effects', async () => {
+    const { getByTestId } = render(
+      <OptimizedParent parentSpy={parentSpy} childSpy={childSpy} effectSpy={effectSpy} />
+    )
+
+    // Reset after initial
+    effectSpy.reset()
+
+    // Do 3 create cycles
+    for (let i = 0; i < 3; i++) {
+      await act(async () => {
+        fireEvent.click(getByTestId('start-create-opt'))
+      })
+      await act(async () => {
+        fireEvent.click(getByTestId('end-create-opt'))
+      })
+    }
+
+    /**
+     * OPTIMIZED: 3 create cycles
+     * Each cycle has 0 effect executions (direct state updates)
+     * Expected: 0 effect executions
+     *
+     * Improvement: Down from 6 effects in baseline
+     */
+    const effectExecutions = effectSpy.getEffectCount()
+
+    console.log(`OPTIMIZED - 3 Create Cycles: Effects=${effectExecutions}`)
+
+    expect(effectExecutions).toBe(0) // Down from 6 in baseline
+  })
+
+  it('optimized: render cascade - no extra child renders', async () => {
+    const { getByTestId } = render(
+      <OptimizedParent parentSpy={parentSpy} childSpy={childSpy} effectSpy={effectSpy} />
+    )
+
+    // Reset after initial
+    parentSpy.reset()
+    childSpy.reset()
+
+    await act(async () => {
+      fireEvent.click(getByTestId('start-create-opt'))
+    })
+
+    /**
+     * OPTIMIZED: Render cascade with lifted state
+     * 1. Click -> onIsCreatingChange(true) -> Parent setState(true)
+     * 2. Parent re-renders -> Child receives new prop -> Child re-renders
+     * Total: 1 parent render, 1 child render, 0 effects
+     *
+     * Improvement: Child renders reduced from 2 to 1
+     */
+    const parentRenders = parentSpy.getRenderCount()
+    const childRenders = childSpy.getRenderCount()
+
+    console.log(`OPTIMIZED - Render Cascade: Parent=${parentRenders}, Child=${childRenders}`)
+
+    expect(parentRenders).toBe(1)
+    expect(childRenders).toBe(1) // Down from 2 in baseline
+  })
+})
+
 /**
  * BASELINE SUMMARY (captured 2026-02-04):
  *
@@ -313,10 +577,29 @@ describe('SettingsPanel isCreating Sync - Baseline Performance', () => {
  * - Each state change in child triggers effect, which triggers parent re-render
  * - Child renders twice per action (once for local state, once for parent re-render cascade)
  *
- * Target after optimization (lift state to SettingsPanel):
- * - Initial mount: 0 effects (no sync needed)
- * - State changes: 0 effects (direct prop passing)
- * - Parent owns isCreating, passes to child as prop
- * - Child calls onIsCreatingChange(value) directly in handlers (not via effect)
- * - Expected: 1 parent render, 1 child render per action (down from 2 child renders)
+ * OPTIMIZED SUMMARY (lifted state pattern):
+ *
+ * | Operation          | Parent Renders | Child Renders | Effects |
+ * |--------------------|----------------|---------------|---------|
+ * | Initial render     | 1              | 1             | 0       |
+ * | Start create       | 1              | 1             | 0       |
+ * | End create         | 1              | 1             | 0       |
+ * | 3 create cycles    | -              | -             | 0       |
+ *
+ * BASELINE vs OPTIMIZED COMPARISON:
+ *
+ * | Metric                      | Baseline | Optimized | Improvement |
+ * |-----------------------------|----------|-----------|-------------|
+ * | Effects on initial render   | 1        | 0         | -1 (100%)   |
+ * | Effects per state change    | 1        | 0         | -1 (100%)   |
+ * | Effects per 3 cycles        | 6        | 0         | -6 (100%)   |
+ * | Child renders per action    | 2        | 1         | -1 (50%)    |
+ *
+ * OPTIMIZED PATTERN BENEFITS:
+ * - Effects eliminated: 100% reduction (all effect-based sync removed)
+ * - Child renders reduced: 50% reduction (2 → 1 per action)
+ * - Single source of truth: Parent owns isCreating, child receives as prop
+ * - Direct state updates: Child calls onIsCreatingChange() in handlers (not via effect)
+ * - No state mismatch risk: Only one state variable, always consistent
+ * - Simpler mental model: Standard React/Preact unidirectional data flow
  */

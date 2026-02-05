@@ -8,6 +8,17 @@ An exercise tracking application with template-based workout management, real-ti
 
 Simple, effective workout tracking with clean visual feedback on progress.
 
+## Current Milestone: v4.0 Exercise History
+
+**Goal:** Add Exercise History section to Settings for viewing logged workout history in a timeline format with pagination and detail views.
+
+**Target features:**
+- "Exercise History" menu item in Settings panel
+- History List surface with summary bar (workouts/sets/lbs totals)
+- Vertical timeline with workout cards showing template name, badges, exercise preview
+- Workout Detail surface with full exercise/set breakdown
+- Pagination: initial 7 workouts with "Load More" option
+
 ## Current State
 
 **Last shipped:** v3.0 Settings & Exercise Management (2026-02-04)
@@ -67,7 +78,16 @@ Simple, effective workout tracking with clean visual feedback on progress.
 
 ### Active
 
-(None — planning next milestone)
+- [ ] "Exercise History" menu item in Settings panel
+- [ ] History List surface with summary bar (workouts/sets/lbs totals)
+- [ ] Vertical timeline with date markers and connected dots
+- [ ] Compact workout cards showing: template name, badges, exercise preview (no chevron)
+- [ ] Clicking card navigates to Workout Detail surface
+- [ ] Initial load: last 7 workouts with "Load More" pagination
+- [ ] Workout Detail surface with back navigation
+- [ ] Exercise blocks with exercise name headers
+- [ ] Set grid per exercise: Set #, Weight, Reps, Completed status
+- [ ] Visual distinction for completed vs skipped sets
 
 ### Out of Scope
 
@@ -137,4 +157,4 @@ Simple, effective workout tracking with clean visual feedback on progress.
 | Case-insensitive duplicate check via .ilike() | Prevents "Bench Press" and "bench press" duplicates | ✓ Good |
 
 ---
-*Last updated: 2026-02-04 after v3.0 milestone*
+*Last updated: 2026-02-05 after v4.0 milestone start*

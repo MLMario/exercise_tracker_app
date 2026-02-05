@@ -579,6 +579,49 @@ export interface RecentExerciseData {
 }
 
 /**
+ * Summary data for workout history list item.
+ * Extended from WorkoutLogSummary with additional computed fields.
+ */
+export interface WorkoutHistoryItem {
+  /** Workout log UUID */
+  id: string;
+  /** Source template UUID (null for ad-hoc workouts) */
+  template_id: string | null;
+  /** Template name (null if template was deleted or ad-hoc) */
+  template_name: string | null;
+  /** ISO timestamp when workout started */
+  started_at: string;
+  /** Number of exercises in this workout */
+  exercise_count: number;
+  /** Number of completed sets across all exercises */
+  completed_sets: number;
+  /** Total volume in lbs (SUM of weight * reps for completed sets) */
+  total_volume: number;
+}
+
+/**
+ * Paginated result wrapper for list endpoints.
+ */
+export interface PaginatedResult<T> {
+  /** Array of items for current page */
+  data: T[];
+  /** Whether more items exist beyond this page */
+  hasMore: boolean;
+}
+
+/**
+ * All-time workout summary statistics.
+ */
+export interface WorkoutSummaryStats {
+  /** Total number of logged workouts */
+  totalWorkouts: number;
+  /** Total completed sets across all workouts */
+  totalSets: number;
+  /** Total volume in lbs across all workouts */
+  totalVolume: number;
+}
+
+/**
  * Logging service interface.
  * Provides workout logging, exercise history, and metrics calculation.
  */
@@ -639,6 +682,25 @@ export interface LoggingService {
    * @returns Promise resolving to recent data or null if none exists
    */
   getRecentExerciseData(exerciseId: string): Promise<RecentExerciseData | null>;
+
+  /**
+   * Get paginated workout history for list view.
+   *
+   * @param offset - Number of items to skip
+   * @param limit - Number of items to return
+   * @returns Promise resolving to paginated history items or error
+   */
+  getWorkoutLogsPaginated(
+    offset: number,
+    limit: number
+  ): Promise<ServiceResult<PaginatedResult<WorkoutHistoryItem>>>;
+
+  /**
+   * Get all-time workout summary statistics.
+   *
+   * @returns Promise resolving to summary stats or error
+   */
+  getWorkoutSummaryStats(): Promise<ServiceResult<WorkoutSummaryStats>>;
 }
 
 // ============================================================================

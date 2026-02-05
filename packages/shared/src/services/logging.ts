@@ -19,6 +19,9 @@ import type {
   ExerciseMetricsOptions,
   ChartData,
   RecentExerciseData,
+  WorkoutHistoryItem,
+  PaginatedResult,
+  WorkoutSummaryStats,
 } from '../types/services';
 
 import type {
@@ -623,6 +626,187 @@ async function getRecentExerciseData(exerciseId: string): Promise<RecentExercise
 }
 
 /**
+ * Get paginated workout history for list view.
+ * Returns summary info per workout including template name, completed sets, and total volume.
+ *
+ * @param offset - Number of items to skip
+ * @param limit - Number of items to return (page size)
+ * @returns Promise resolving to paginated history items or error
+ */
+async function getWorkoutLogsPaginated(
+  offset: number,
+  limit: number
+): Promise<ServiceResult<PaginatedResult<WorkoutHistoryItem>>> {
+  try {
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return {
+        data: null,
+        error: authError || new Error('User not authenticated'),
+      };
+    }
+
+    // Fetch workout logs with template name and nested sets for aggregation
+    const { data, error, count } = await supabase
+      .from('workout_logs')
+      .select(`
+        id,
+        template_id,
+        started_at,
+        templates (name),
+        workout_log_exercises (
+          workout_log_sets (
+            weight,
+            reps,
+            is_done
+          )
+        )
+      `, { count: 'exact' })
+      .eq('user_id', user.id)
+      .order('started_at', { ascending: false })
+      .range(offset, offset + limit - 1);  // Supabase range is inclusive
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    // Transform to WorkoutHistoryItem with computed fields
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const items: WorkoutHistoryItem[] = (data || []).map((log: any) => {
+      let completedSets = 0;
+      let totalVolume = 0;
+      let exerciseCount = 0;
+
+      if (log.workout_log_exercises) {
+        exerciseCount = log.workout_log_exercises.length;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        log.workout_log_exercises.forEach((ex: any) => {
+          if (ex.workout_log_sets) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ex.workout_log_sets.forEach((set: any) => {
+              if (set.is_done) {
+                completedSets++;
+                totalVolume += (set.weight || 0) * (set.reps || 0);
+              }
+            });
+          }
+        });
+      }
+
+      return {
+        id: log.id,
+        template_id: log.template_id,
+        template_name: log.templates?.name || null,
+        started_at: log.started_at,
+        exercise_count: exerciseCount,
+        completed_sets: completedSets,
+        total_volume: totalVolume,
+      };
+    });
+
+    const hasMore = count !== null && count > offset + items.length;
+
+    return {
+      data: { data: items, hasMore },
+      error: null,
+    };
+  } catch (err) {
+    console.error('Get workout logs paginated error:', err);
+    return {
+      data: null,
+      error: err instanceof Error ? err : new Error(String(err)),
+    };
+  }
+}
+
+/**
+ * Get all-time workout summary statistics.
+ * Returns total workouts, total completed sets, and total volume.
+ *
+ * @returns Promise resolving to summary stats or error
+ */
+async function getWorkoutSummaryStats(): Promise<ServiceResult<WorkoutSummaryStats>> {
+  try {
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return {
+        data: null,
+        error: authError || new Error('User not authenticated'),
+      };
+    }
+
+    // Get total workout count
+    const { count: workoutCount, error: countError } = await supabase
+      .from('workout_logs')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id);
+
+    if (countError) {
+      return { data: null, error: countError };
+    }
+
+    // Get all sets for aggregation
+    const { data: exercisesData, error: exercisesError } = await supabase
+      .from('workout_log_exercises')
+      .select(`
+        workout_log_sets (
+          weight,
+          reps,
+          is_done
+        ),
+        workout_logs!inner (
+          user_id
+        )
+      `)
+      .eq('workout_logs.user_id', user.id);
+
+    if (exercisesError) {
+      return { data: null, error: exercisesError };
+    }
+
+    // Calculate totals from completed sets
+    let totalSets = 0;
+    let totalVolume = 0;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (exercisesData || []).forEach((ex: any) => {
+      if (ex.workout_log_sets) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ex.workout_log_sets.forEach((set: any) => {
+          if (set.is_done) {
+            totalSets++;
+            totalVolume += (set.weight || 0) * (set.reps || 0);
+          }
+        });
+      }
+    });
+
+    return {
+      data: {
+        totalWorkouts: workoutCount || 0,
+        totalSets,
+        totalVolume,
+      },
+      error: null,
+    };
+  } catch (err) {
+    console.error('Get workout summary stats error:', err);
+    return {
+      data: null,
+      error: err instanceof Error ? err : new Error(String(err)),
+    };
+  }
+}
+
+/**
  * Logging service object implementing the LoggingService interface.
  * Provides workout logging, exercise history, and metrics calculation.
  */
@@ -633,4 +817,6 @@ export const logging: LoggingService = {
   getExerciseHistory,
   getExerciseMetrics,
   getRecentExerciseData,
+  getWorkoutLogsPaginated,
+  getWorkoutSummaryStats,
 };

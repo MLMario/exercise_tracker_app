@@ -1,13 +1,21 @@
-# Stack Research: Settings & Exercise Management
+# Stack Research: Exercise History Feature
 
 **Project:** IronFactor (exercise tracker)
-**Researched:** 2026-02-03
-**Scope:** What's needed to add a Settings surface with exercise CRUD management
+**Researched:** 2026-02-05
+**Scope:** What's needed to add Exercise History (timeline view with pagination and detail surfaces)
 **Overall confidence:** HIGH -- this feature builds entirely on existing patterns
 
 ## Executive Summary
 
-The Settings surface and exercise management feature requires **zero new dependencies**. The existing stack (Preact 10.28, TypeScript 5.9, Supabase JS 2.90, Vite 7.3) already provides everything needed. The app has well-established patterns for surfaces, modals, overlays, service functions, and CSS animations that this feature directly extends. The only "new" code is a slide-in edit panel CSS pattern (not present in the codebase today, but trivially implemented with existing CSS custom properties) and one new Supabase service function (`updateExercise`).
+The Exercise History feature requires **zero new dependencies**. The existing stack (Preact 10.28, TypeScript 5.9, Supabase JS 2.90, @use-gesture/react 10.3) already provides everything needed:
+
+- **Data fetching:** `logging.getWorkoutLogs()` exists with limit parameter; `logging.getWorkoutLog(id)` exists for detail view
+- **Pagination:** Supabase `.limit()` and `.range()` are already used in the codebase
+- **UI navigation:** SettingsPanel already implements sub-view navigation pattern (`panelView` state)
+- **Styling:** CSS custom properties and existing card/list patterns cover all UI needs
+- **Gestures:** @use-gesture/react already installed for swipe-to-navigate patterns
+
+The only new code needed: extended service functions for paginated history queries, new UI components in SettingsPanel, and CSS for timeline layout.
 
 ---
 
@@ -15,278 +23,493 @@ The Settings surface and exercise management feature requires **zero new depende
 
 ### No New Dependencies Required
 
-This is the key finding. Every technology needed is already installed and proven in the codebase.
-
 | Technology | Current Version | Role for This Feature | Confidence |
 |---|---|---|---|
-| Preact | ^10.28.2 | Component rendering, hooks (useState, useEffect, useMemo, useCallback, useRef) | HIGH |
-| TypeScript | ^5.9.3 | Type safety for new surface, service types, component props | HIGH |
-| @supabase/supabase-js | ^2.90.1 | `updateExercise` service function, RLS-gated queries | HIGH |
-| Vite | ^7.3.1 | Dev server, HMR during development | HIGH |
-| @preact/preset-vite | ^2.10.2 | JSX transform for new .tsx components | HIGH |
-| CSS (vanilla) | N/A | Slide-in panel, settings layout, exercise list styles | HIGH |
+| Preact | ^10.28.2 | Component rendering, hooks (useState, useEffect, useCallback) | HIGH |
+| TypeScript | ^5.9.3 | Type safety for history types, pagination state | HIGH |
+| @supabase/supabase-js | ^2.90.1 | Paginated queries with `.range()`, existing workout log queries | HIGH |
+| @use-gesture/react | ^10.3.1 | Optional: swipe gesture for workout detail navigation | HIGH |
+| CSS (vanilla) | N/A | Timeline layout, workout cards, summary bar | HIGH |
 
 ### What the Feature Reuses Directly
 
-These existing codebase elements are used as-is or with minor extension:
-
 | Existing Element | Location | How It's Reused |
 |---|---|---|
-| Surface routing pattern | `apps/web/src/main.tsx` (line 83, `AppSurface` type) | Add `'settings'` to the union, add handler functions |
-| `useAsyncOperation` hook | `apps/web/src/hooks/useAsyncOperation.ts` | Loading/error/success state for exercise CRUD |
-| `useClickOutside` hook | `apps/web/src/hooks/useClickOutside.ts` | Close category dropdown in exercise list |
-| `ConfirmationModal` component | `apps/web/src/components/ConfirmationModal.tsx` | Delete exercise confirmation |
-| `ExercisePickerModal` patterns | `apps/web/src/components/ExercisePickerModal.tsx` | Search/filter/category dropdown patterns (code reference, not direct reuse) |
-| `exercises` service | `packages/shared/src/services/exercises.ts` | `getExercises`, `createExercise`, `deleteExercise`, `getCategories` |
-| `ExercisesService` interface | `packages/shared/src/types/services.ts` | Extend with `updateExercise` method |
-| `Exercise`, `ExerciseUpdate` types | `packages/shared/src/types/database.ts` | Already defined, used for update payloads |
-| Modal/overlay CSS | `apps/web/css/styles.css` (lines 794-883) | Modal overlay base for edit panel backdrop |
-| CSS custom properties | `apps/web/css/styles.css` (lines 9-61) | Colors, spacing, transitions, radius tokens |
-| `fadeIn` / `slideUp` keyframes | `apps/web/css/styles.css` (lines 1148-1166) | Animation patterns to model `slideInRight` after |
-| Category constants | `ExercisePickerModal.tsx` (lines 21-44) | Reuse CATEGORY_OPTIONS and FILTER_CATEGORIES patterns |
+| `logging.getWorkoutLogs(limit)` | `packages/shared/src/services/logging.ts` | Already supports limit parameter; extend with offset |
+| `logging.getWorkoutLog(id)` | `packages/shared/src/services/logging.ts` | Fetch full workout detail with exercises/sets |
+| `WorkoutLogSummary` type | `packages/shared/src/types/services.ts` | Already defined for list view (id, started_at, exercise_count) |
+| `WorkoutLogWithExercises` type | `packages/shared/src/types/database.ts` | Already defined for detail view |
+| SettingsPanel sub-navigation | `apps/web/src/surfaces/dashboard/SettingsPanel.tsx` | `panelView` state pattern for history/detail views |
+| `useAsyncOperation` hook | `apps/web/src/hooks/useAsyncOperation.ts` | Loading/error state for data fetching |
+| Workout card CSS | `apps/web/css/styles.css` | `.workout-template-card` patterns for history cards |
+| Design tokens | `apps/web/css/styles.css` | Colors, spacing, typography, shadows |
+| `.settings-panel` CSS | `apps/web/css/styles.css` | Slide-in panel already styled |
 
 ---
 
-## New Code Required (No Libraries)
+## Service Layer: What Exists vs What's Needed
 
-### 1. Service Layer: `updateExercise` Function
+### Already Implemented
 
-**Where:** `packages/shared/src/services/exercises.ts`
-**What:** New function using existing Supabase client pattern
+```typescript
+// packages/shared/src/services/logging.ts
 
-The `ExerciseUpdate` type (`Partial<ExerciseInsert>`) already exists in `database.ts` (line 219). The `ExercisesService` interface in `services.ts` needs a new method signature. The implementation follows the identical pattern of `createExercise` (lines 81-144 of exercises.ts):
+// Gets workout logs with limit (default 52)
+getWorkoutLogs(limit?: number): Promise<ServiceResult<WorkoutLogSummary[]>>
 
-- Get current user via `supabase.auth.getUser()`
-- Validate inputs
-- Call `supabase.from('exercises').update({...}).eq('id', id).select().single()`
-- Handle unique constraint violation (code 23505)
-- Return `ServiceResult<Exercise>`
+// Gets single workout with full exercise/set data
+getWorkoutLog(id: string): Promise<ServiceResult<WorkoutLogWithExercises>>
+```
 
-**Critical constraint:** Must verify the exercise belongs to the current user AND `is_system === false` before allowing update. RLS policies should enforce this at the database level, but the service should also guard against it.
+### Needs Extension for Pagination
 
-**Confidence:** HIGH -- follows exact same pattern as existing CRUD functions.
+The current `getWorkoutLogs()` uses `.limit()` but not `.range()`. For "Load More" pagination, add offset support:
 
-### 2. Service Layer: `getUserExercises` Function (Optional but Recommended)
+**Option A (recommended): New function**
+```typescript
+// New function with cursor/offset pagination
+getWorkoutLogsPaginated(options: {
+  limit?: number;      // default 7
+  offset?: number;     // default 0
+}): Promise<ServiceResult<WorkoutLogSummary[]>>
+```
 
-**Where:** `packages/shared/src/services/exercises.ts`
-**What:** Filtered query returning only user-created exercises (`is_system = false`, `user_id = current_user`)
+**Option B: Extend existing function**
+```typescript
+// Modify existing getWorkoutLogs signature
+getWorkoutLogs(options?: {
+  limit?: number;
+  offset?: number;
+}): Promise<ServiceResult<WorkoutLogSummary[]>>
+```
 
-Currently `getExercises()` returns ALL exercises (system + user). The Settings exercise list only shows user-created exercises. Two options:
+**Recommendation:** Option A is cleaner -- doesn't change existing API used by charts. The new function can use Supabase's `.range(from, to)` method:
 
-- **Option A (recommended):** Add `getUserExercises()` that filters server-side with `.eq('is_system', false).eq('user_id', user.id)`. More efficient -- avoids transferring 873 system exercises.
-- **Option B:** Filter client-side from existing `getExercises()` response. Simpler but wasteful.
+```typescript
+.from('workout_logs')
+.select('...')
+.eq('user_id', user.id)
+.order('started_at', { ascending: false })
+.range(offset, offset + limit - 1)
+```
 
-**Confidence:** HIGH -- straightforward Supabase query.
+**Confidence:** HIGH -- `.range()` is standard Supabase PostgREST API.
 
-### 3. Surface Component: `SettingsSurface`
+### Needs Addition: Aggregate Summary Stats
 
-**Where:** `apps/web/src/surfaces/settings/` (new directory)
-**What:** New surface following the exact pattern of existing surfaces
+For the summary bar showing total workouts/sets/lbs, add:
 
-The surface pattern is well-established:
-- Directory with `index.ts` barrel export
-- Main surface component (e.g., `SettingsSurface.tsx`)
-- Sub-components as needed
-- Surface registered in `apps/web/src/surfaces/index.ts`
-- Surface type added to `AppSurface` union in `main.tsx`
+```typescript
+// New function for history summary
+getWorkoutHistorySummary(): Promise<ServiceResult<{
+  totalWorkouts: number;
+  totalSets: number;
+  totalWeight: number;
+}>>
+```
 
-**Confidence:** HIGH -- direct pattern replication.
+This requires either:
+1. **Client-side calculation** (fetch all logs, sum in JS) -- simple but slow for users with many workouts
+2. **Server-side aggregation** via Supabase RPC function -- more efficient
 
-### 4. CSS: Slide-In Edit Panel
+**Recommendation:** Start with client-side calculation for MVP. If performance becomes an issue, add RPC function later. The existing `getWorkoutLogs(52)` pattern suggests the team is comfortable with reasonable limits.
 
-**Where:** `apps/web/css/styles.css`
-**What:** New CSS classes for right-sliding panel overlay
+**Confidence:** MEDIUM -- aggregate calculation is straightforward, but optimal approach depends on data volume.
 
-The mock (option-c-v4.html) defines this pattern with:
-- `.edit-panel-overlay` -- fixed position backdrop with fade transition
-- `.edit-panel` -- fixed right panel sliding from `right: -100%` to `right: 0`
-- `.edit-panel.active` toggle class
-- Uses existing CSS variables (`--color-bg-surface`, `--color-border`, `--transition-fast`)
+---
 
-No CSS library needed. The existing codebase uses vanilla CSS with custom properties throughout. A `@keyframes slideInRight` animation would complement the existing `slideUp` and `fadeIn` keyframes (lines 1148-1166).
+## Pagination Strategy
 
-**Confidence:** HIGH -- vanilla CSS, pattern defined in mocks.
+### "Load More" Button Pattern (Recommended)
 
-### 5. SVG Icons: Gear Icon for Settings Entry Point
+Target: Initial 7 workouts, then 7 more on each "Load More" click.
 
-**Where:** Inline SVG in `DashboardSurface.tsx` header
-**What:** Small gear/cog SVG icon
+**State management:**
+```typescript
+const [workouts, setWorkouts] = useState<WorkoutLogSummary[]>([]);
+const [offset, setOffset] = useState(0);
+const [hasMore, setHasMore] = useState(true);
+const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-The codebase already uses inline SVGs (see `ExercisePickerModal.tsx` dropdown chevron, lines 283-290). No icon library needed. A single `<svg>` element with a gear path.
+const loadMore = async () => {
+  const newOffset = offset + 7;
+  const { data } = await logging.getWorkoutLogsPaginated({ limit: 7, offset: newOffset });
+  if (data && data.length > 0) {
+    setWorkouts(prev => [...prev, ...data]);
+    setOffset(newOffset);
+    setHasMore(data.length === 7); // fewer than 7 = no more
+  } else {
+    setHasMore(false);
+  }
+};
+```
 
-**Confidence:** HIGH -- follows existing inline SVG pattern.
+**Why not infinite scroll:** The Settings panel is a contained overlay. Infinite scroll adds complexity (scroll container detection, intersection observer) with minimal UX benefit for a history list. "Load More" is simpler and explicit.
+
+**Confidence:** HIGH -- standard pagination pattern.
+
+### Alternative: Cursor-based Pagination
+
+Using `started_at` as cursor instead of offset:
+
+```typescript
+getWorkoutLogsPaginated(options: {
+  limit?: number;
+  cursor?: string; // ISO date string of last item's started_at
+})
+```
+
+Query:
+```typescript
+.lt('started_at', cursor)
+.order('started_at', { ascending: false })
+.limit(7)
+```
+
+**Tradeoff:** Cursor is more efficient for large datasets (no offset scanning), but offset is simpler and the expected data volume (hundreds, not millions of workouts) doesn't warrant the complexity.
+
+**Recommendation:** Use offset-based pagination for simplicity.
+
+---
+
+## UI Architecture
+
+### Component Hierarchy
+
+```
+SettingsPanel (existing)
+  |-- SettingsMenu (existing, add "Exercise History" item)
+  |-- MyExercisesList (existing)
+  |-- HistoryListView (NEW)
+  |     |-- SummaryBar
+  |     |-- WorkoutTimeline
+  |     |     |-- WorkoutCard (repeating)
+  |     |-- LoadMoreButton
+  |-- WorkoutDetailView (NEW)
+        |-- DetailHeader
+        |-- ExerciseBreakdown (repeating)
+              |-- SetRow (repeating)
+```
+
+### Navigation Pattern
+
+Extend `SettingsPanel.tsx`'s existing `PanelView` union:
+
+```typescript
+// Current
+type PanelView = 'menu' | 'exercises';
+
+// Extended
+type PanelView = 'menu' | 'exercises' | 'history' | 'workoutDetail';
+```
+
+Store selected workout ID in state for detail view:
+
+```typescript
+const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
+```
+
+Navigation flow:
+1. Menu -> "Exercise History" click -> `panelView = 'history'`
+2. History list -> Workout card click -> `selectedWorkoutId = id`, `panelView = 'workoutDetail'`
+3. Detail view -> Back button -> `panelView = 'history'`, `selectedWorkoutId = null`
+
+**Confidence:** HIGH -- exact pattern already used for `'exercises'` view.
+
+---
+
+## Supabase Query Patterns
+
+### Existing Query (logging.ts lines 184-197)
+
+```typescript
+const { data, error } = await supabase
+  .from('workout_logs')
+  .select(`
+    id,
+    template_id,
+    started_at,
+    created_at,
+    workout_log_exercises (count)
+  `)
+  .eq('user_id', user.id)
+  .order('started_at', { ascending: false })
+  .limit(limit);
+```
+
+### Extended Query for History List
+
+Add more data for richer workout cards:
+
+```typescript
+const { data, error } = await supabase
+  .from('workout_logs')
+  .select(`
+    id,
+    template_id,
+    started_at,
+    created_at,
+    templates (name),
+    workout_log_exercises (
+      count,
+      workout_log_sets (
+        weight,
+        reps,
+        is_done
+      )
+    )
+  `)
+  .eq('user_id', user.id)
+  .order('started_at', { ascending: false })
+  .range(offset, offset + limit - 1);
+```
+
+This joins template name and nested sets for calculating per-workout totals (sets, weight).
+
+**Note:** Supabase nested count aggregations can be tricky. May need to compute totals client-side from the returned set data.
+
+**Confidence:** HIGH -- standard Supabase relational query.
+
+### Detail Query (Already Exists)
+
+```typescript
+// logging.ts getWorkoutLog(id) - lines 229-286
+const { data, error } = await supabase
+  .from('workout_logs')
+  .select(`
+    id,
+    template_id,
+    started_at,
+    created_at,
+    workout_log_exercises (
+      id,
+      exercise_id,
+      rest_seconds,
+      order,
+      exercises (id, name, category),
+      workout_log_sets (id, set_number, weight, reps, is_done)
+    )
+  `)
+  .eq('id', id)
+  .single();
+```
+
+This already returns everything needed for the detail view. No changes required.
+
+---
+
+## CSS Approach
+
+### New CSS Classes Needed
+
+| Class | Purpose |
+|---|---|
+| `.history-summary-bar` | Fixed header with total stats |
+| `.workout-timeline` | Vertical timeline container |
+| `.timeline-marker` | Date/time indicator on timeline |
+| `.history-workout-card` | Compact workout card (variation of existing) |
+| `.workout-detail-header` | Detail view header with date/duration |
+| `.exercise-breakdown` | Exercise section in detail view |
+| `.detail-set-row` | Set row in detail view |
+| `.load-more-btn` | Load more button styling |
+
+### Leverage Existing Patterns
+
+The existing CSS has:
+- `.workout-template-card` (lines 1590-1650) -- base card styling
+- `.exercise-list-container` -- scrollable list pattern
+- `.settings-panel-header` -- header with back button
+- `.btn-secondary` -- for Load More button
+
+New styles will extend these patterns using existing CSS custom properties.
+
+**Confidence:** HIGH -- direct extension of existing CSS system.
 
 ---
 
 ## What NOT to Use
 
-### Do NOT Add a Router Library
+### Do NOT Add a Data Fetching Library
 
-**Examples to avoid:** preact-router, wouter, preact-iso
+**Examples to avoid:** react-query, swr, tanstack-query
 
-**Why not:** The app uses `useState`-based surface switching in `main.tsx` (line 83: `type AppSurface = 'auth' | 'dashboard' | 'templateEditor' | 'workout'`). Adding a router for one new surface would require refactoring ALL existing surface navigation, handlers, and state management. The current pattern works well for this app's complexity level (5-6 surfaces total). A router adds URL management, history API integration, and route parameter parsing -- none of which is needed here.
+**Why not:** The app uses direct Supabase calls with `useAsyncOperation` for state management. This pattern works well for the app's complexity. Adding a caching/fetching library for one feature creates inconsistency.
 
-**What to do instead:** Add `'settings'` to the `AppSurface` union type. Add handler functions in `App()` following the existing `handleEditTemplate`, `handleCreateNewTemplate` pattern.
+**What to do instead:** Use existing `useAsyncOperation` hook pattern with manual state for pagination (workouts array, offset, hasMore).
 
-### Do NOT Add a State Management Library
+### Do NOT Add a Virtual List Library
 
-**Examples to avoid:** @preact/signals, zustand, jotai, redux
+**Examples to avoid:** react-window, react-virtualized, tanstack-virtual
 
-**Why not:** Each surface manages its own state via `useState` hooks. The Settings surface is self-contained -- it loads exercises, manages search/filter state, and handles CRUD. There's no cross-surface state sharing needed beyond what `main.tsx` already provides (user, current surface). The `useAsyncOperation` hook already handles async state patterns elegantly.
+**Why not:** Expected history size is hundreds of workouts, not thousands. With "Load More" showing 7 at a time, the visible DOM is always small. The existing exercise picker renders 873 exercises without virtualization.
 
-**What to do instead:** Use `useState` for local component state, `useAsyncOperation` for async CRUD operations, `useMemo` for filtered exercise lists. This matches every other surface in the app.
+**What to do instead:** Native scrolling with `overflow-y: auto`.
 
-### Do NOT Add a Form Library
+### Do NOT Add a Date Formatting Library
 
-**Examples to avoid:** preact-forms, formik, react-hook-form
+**Examples to avoid:** date-fns, dayjs, moment
 
-**Why not:** The edit panel has exactly two fields: name (text input) and category (select dropdown). The existing codebase handles forms with direct `useState` + `onInput`/`onChange` handlers (see `ExercisePickerModal.tsx` lines 363-416 for the exact same pattern: name input + category select). A form library adds bundle size for zero benefit on a 2-field form.
+**Why not:** The app has no date library currently. The history feature needs basic formatting (e.g., "Jan 15, 2026" or "2 days ago"). This can be done with native `Intl.DateTimeFormat` or simple helper functions.
 
-**What to do instead:** `useState` for `editName` and `editCategory`. Direct event handlers. Same pattern as `ExercisePickerModal`.
-
-### Do NOT Add a CSS-in-JS or Component Library
-
-**Examples to avoid:** styled-components, emotion, tailwind, material-ui, chakra
-
-**Why not:** The entire app uses a single `styles.css` file with CSS custom properties. All 2943 lines of CSS follow this convention. Introducing a different styling approach for one surface would create inconsistency and increase bundle size. The existing design system (colors, spacing, typography, shadows, transitions) is comprehensive and well-organized.
-
-**What to do instead:** Add new CSS classes to `apps/web/css/styles.css` following the existing section-based organization. Use existing CSS custom properties for all values.
-
-### Do NOT Add a Virtual Scrolling Library
-
-**Examples to avoid:** react-virtualized, react-window, tanstack-virtual
-
-**Why not:** The exercise management view shows only **user-created exercises**, not all 873 system exercises. Users typically have 5-50 custom exercises. Even at 100 exercises, native scrolling with `overflow-y: auto` performs fine. The `ExercisePickerModal` already renders 873+ exercises in a scrollable list without virtualization (lines 323-351 of ExercisePickerModal.tsx).
-
-**What to do instead:** Native scrollable container with the existing `.exercise-list-container` CSS pattern.
-
-### Do NOT Add a Toast/Notification Library
-
-**Examples to avoid:** react-toastify, notistack, sonner
-
-**Why not:** The app uses inline error/success message divs within each surface (see `DashboardSurface.tsx` lines 455-466). This pattern is consistent across all surfaces. Adding a toast library would create two notification systems.
-
-**What to do instead:** Use the `useAsyncOperation` hook's built-in `error` and `successMessage` state, rendered as inline message divs following the existing pattern.
+**What to do instead:**
+```typescript
+// Simple helper for history
+function formatWorkoutDate(isoDate: string): string {
+  return new Date(isoDate).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+}
+```
 
 ### Do NOT Add an Animation Library
 
-**Examples to avoid:** framer-motion, preact-transitioning, react-spring
+**Examples to avoid:** framer-motion, react-spring
 
-**Why not:** The slide-in panel animation is a simple CSS transition (`right: -100%` to `right: 0` with `transition: right 200ms ease-in-out`). The mock already proves this works with pure CSS. The codebase has no animation library -- all animations use CSS `@keyframes` and `transition` properties.
+**Why not:** The slide-in panel already uses CSS transitions. Workout card animations (if any) can use CSS keyframes. The detail view transition uses existing panel patterns.
 
-**What to do instead:** CSS transitions for the panel slide, CSS `@keyframes` for the overlay fade. Toggle via `.active` class.
+**What to do instead:** CSS transitions for view changes, CSS keyframes for any card animations.
+
+### Do NOT Change the Navigation Pattern to URL Routing
+
+**Examples to avoid:** preact-router, wouter
+
+**Why not:** The settings panel is an overlay on the dashboard, not a standalone route. History lives inside the settings panel. Adding URL routing would complicate the overlay pattern and require refactoring all existing navigation.
+
+**What to do instead:** Extend existing `panelView` state-based navigation.
 
 ---
 
-## Supabase-Specific Considerations
+## Type Definitions
 
-### RLS Policy for Exercise Updates
+### New Types Needed
 
-The `exercises` table has RLS enabled (Supabase default). The current policies allow:
-- **SELECT:** System exercises (where `is_system = true`) visible to all authenticated users; user exercises visible only to owner
-- **INSERT:** Users can insert with their own `user_id`
-- **DELETE:** Users can delete exercises where `user_id = auth.uid()`
+```typescript
+// packages/shared/src/types/services.ts
 
-An **UPDATE** policy is needed:
+/**
+ * Options for paginated workout log queries.
+ */
+export interface WorkoutLogPaginationOptions {
+  /** Number of logs to fetch (default 7) */
+  limit?: number;
+  /** Offset for pagination (default 0) */
+  offset?: number;
+}
 
-```sql
-CREATE POLICY "Users can update their own exercises"
-ON public.exercises
-FOR UPDATE
-USING (user_id = auth.uid() AND is_system = false)
-WITH CHECK (user_id = auth.uid() AND is_system = false);
+/**
+ * Summary statistics for workout history.
+ */
+export interface WorkoutHistorySummary {
+  /** Total number of workouts */
+  totalWorkouts: number;
+  /** Total sets completed across all workouts */
+  totalSets: number;
+  /** Total weight lifted (sum of weight * reps for all sets) */
+  totalWeight: number;
+}
+
+/**
+ * Extended workout log summary with computed totals.
+ * Used for history list cards.
+ */
+export interface WorkoutLogHistoryItem extends WorkoutLogSummary {
+  /** Template name if workout was from template */
+  templateName: string | null;
+  /** Total sets in this workout */
+  totalSets: number;
+  /** Total weight lifted in this workout */
+  totalWeight: number;
+}
 ```
 
-**Critical:** The `is_system = false` check prevents users from modifying system exercises even if they somehow construct the request. The `user_id = auth.uid()` check prevents cross-user updates.
+### Existing Types (No Changes Needed)
 
-**Confidence:** HIGH -- follows exact pattern of existing RLS policies.
+- `WorkoutLogSummary` -- already has id, template_id, started_at, exercise_count
+- `WorkoutLogWithExercises` -- already has full detail structure
+- `WorkoutLogExerciseWithSets` -- already has exercises with sets
 
-### Exercise Deletion: Foreign Key Constraints
-
-The `exercises` table has foreign key references from:
-- `template_exercises.exercise_id` (templates using this exercise)
-- `workout_log_exercises.exercise_id` (workout history referencing this exercise)
-- `user_charts.exercise_id` (charts tracking this exercise)
-
-Deleting an exercise with existing references will fail with a FK violation. The UI must handle this:
-
-**Option A (recommended):** Check for references before attempting delete. Show a clear error message like "This exercise is used in X templates and Y workout logs. Remove it from templates first."
-
-**Option B:** Use `ON DELETE CASCADE` on FKs -- but this is destructive and would delete workout history. Not recommended.
-
-**Option C:** Soft delete with an `is_archived` flag. Overly complex for the current scope.
-
-The existing `deleteExercise` service function (exercises.ts line 152-174) does not check for references. The Supabase error response will contain the FK violation, which the UI should interpret as a user-friendly message.
-
-**Confidence:** HIGH -- this is a known database pattern.
+**Confidence:** HIGH -- extends existing type patterns.
 
 ---
 
-## Version Compatibility Notes
+## Implementation Checklist
 
-All current dependency versions are stable and compatible:
+### Service Layer
 
-| Package | Version | Status |
+| Task | File | Effort |
 |---|---|---|
-| preact | ^10.28.2 | Stable, hooks API fully supported |
-| @supabase/supabase-js | ^2.90.1 | Stable v2 line, `.update().eq().select().single()` fully supported |
-| typescript | ^5.9.3 | Stable, all features used (type unions, generics, Omit/Partial) |
-| vite | ^7.3.1 | Stable, path aliases working |
-| @preact/preset-vite | ^2.10.2 | Stable, JSX transform working |
+| Add `getWorkoutLogsPaginated()` | `packages/shared/src/services/logging.ts` | Low |
+| Add `WorkoutLogPaginationOptions` type | `packages/shared/src/types/services.ts` | Low |
+| Add `WorkoutLogHistoryItem` type | `packages/shared/src/types/services.ts` | Low |
+| Update `LoggingService` interface | `packages/shared/src/types/services.ts` | Low |
+| Add client-side summary calculation helper | `packages/shared/src/services/logging.ts` | Low |
 
-No version bumps needed. No compatibility concerns.
+### UI Components
 
----
-
-## Shared Constants to Extract
-
-The category list is currently duplicated between `ExercisePickerModal.tsx` (lines 21-44) and `exercises.ts` service (`getCategories()` on line 211). The Settings surface will need the same list. Rather than triplicating, consider extracting to the shared package:
-
-**Current locations:**
-1. `ExercisePickerModal.tsx` -- `CATEGORY_OPTIONS` array (includes 'Cardio')
-2. `ExercisePickerModal.tsx` -- `FILTER_CATEGORIES` array (includes 'All Categories' sentinel)
-3. `exercises.ts` -- `getCategories()` function (excludes 'Cardio')
-
-**Note:** There is a discrepancy -- `CATEGORY_OPTIONS` in the modal includes 'Cardio' but the `ExerciseCategory` type in `database.ts` does NOT include 'Cardio'. The `getCategories()` function also omits it. This should be reconciled during implementation, but it is a UI concern not a stack concern.
-
----
-
-## Summary: Implementation Requires Only New Code
-
-| What | Type | Where |
+| Task | File | Effort |
 |---|---|---|
-| `updateExercise` function | New service function | `packages/shared/src/services/exercises.ts` |
-| `getUserExercises` function | New service function (recommended) | `packages/shared/src/services/exercises.ts` |
-| `ExercisesService` interface update | Type modification | `packages/shared/src/types/services.ts` |
-| `SettingsSurface` + sub-components | New surface | `apps/web/src/surfaces/settings/` |
-| Surface registration | Barrel export update | `apps/web/src/surfaces/index.ts` |
-| `AppSurface` union expansion | Type modification | `apps/web/src/main.tsx` |
-| Settings navigation handlers | New functions in App() | `apps/web/src/main.tsx` |
-| Gear icon in dashboard header | JSX modification | `apps/web/src/surfaces/dashboard/DashboardSurface.tsx` |
-| Logout relocation | Move from dashboard to settings | `DashboardSurface.tsx` -> `SettingsSurface.tsx` |
-| Slide-in panel CSS | New CSS classes | `apps/web/css/styles.css` |
-| Exercise list CSS | New CSS classes | `apps/web/css/styles.css` |
-| Settings layout CSS | New CSS classes | `apps/web/css/styles.css` |
-| RLS UPDATE policy | SQL migration | Supabase dashboard or migration file |
+| Add "Exercise History" menu item | `apps/web/src/surfaces/dashboard/SettingsMenu.tsx` | Low |
+| Extend `PanelView` type | `apps/web/src/surfaces/dashboard/SettingsPanel.tsx` | Low |
+| Create `HistoryListView` component | `apps/web/src/surfaces/dashboard/HistoryListView.tsx` | Medium |
+| Create `WorkoutDetailView` component | `apps/web/src/surfaces/dashboard/WorkoutDetailView.tsx` | Medium |
+| Add view switching logic | `apps/web/src/surfaces/dashboard/SettingsPanel.tsx` | Low |
 
-**New packages to install:** None.
-**New dev dependencies:** None.
-**New build configuration:** None.
+### CSS
+
+| Task | File | Effort |
+|---|---|---|
+| Summary bar styles | `apps/web/css/styles.css` | Low |
+| Timeline/workout card styles | `apps/web/css/styles.css` | Medium |
+| Detail view styles | `apps/web/css/styles.css` | Medium |
+| Load more button styles | `apps/web/css/styles.css` | Low |
+
+---
+
+## Risks and Mitigations
+
+### Risk: Query Performance with Large History
+
+**Scenario:** User has 500+ workouts, nested joins slow down.
+
+**Mitigation:**
+- Use pagination (7 at a time) to limit query size
+- Add database index on `workout_logs.user_id, workout_logs.started_at DESC` if not exists
+- Consider caching first page in component state
+
+**Confidence:** MEDIUM -- depends on actual data volume.
+
+### Risk: Summary Calculation Performance
+
+**Scenario:** Calculating totals across all workouts is slow.
+
+**Mitigation:**
+- For MVP, fetch with reasonable limit (e.g., 100 workouts) and show "Last 100 workouts" disclaimer
+- Future: Add Supabase RPC function for server-side aggregation
+
+**Confidence:** MEDIUM -- acceptable for MVP.
+
+### Risk: Template Deletion Impact
+
+**Scenario:** Template was deleted but workout_log still references it.
+
+**Mitigation:**
+- Template name query uses LEFT JOIN behavior (Supabase default)
+- If template is null, show "Custom Workout" or exercise list as title
+- Already handled: `workout_logs.template_id` is nullable
+
+**Confidence:** HIGH -- schema already supports this.
 
 ---
 
 ## Sources
 
 - **PRIMARY (codebase analysis):** Direct file reads of all relevant source files
-- `apps/web/package.json` -- current dependency versions
-- `packages/shared/src/services/exercises.ts` -- existing CRUD patterns
-- `packages/shared/src/types/database.ts` -- Exercise type, ExerciseUpdate type
-- `packages/shared/src/types/services.ts` -- ExercisesService interface
-- `apps/web/src/main.tsx` -- surface routing pattern
-- `apps/web/src/components/ExercisePickerModal.tsx` -- search/filter/form patterns
-- `apps/web/src/components/ConfirmationModal.tsx` -- delete confirmation pattern
-- `apps/web/src/hooks/useAsyncOperation.ts` -- async state management
-- `apps/web/css/styles.css` -- CSS design system, modal patterns, animation keyframes
-- `mocks/option-c-v4.html` -- slide-in edit panel CSS definition
-- `sql/current_schema.sql` -- database schema and FK constraints
-- `.planning/exercise-management-suggestions.md` -- design options analysis
+- `packages/shared/src/services/logging.ts` -- existing workout log functions
+- `packages/shared/src/types/services.ts` -- existing type definitions
+- `packages/shared/src/types/database.ts` -- workout log types
+- `apps/web/src/surfaces/dashboard/SettingsPanel.tsx` -- sub-navigation pattern
+- `apps/web/css/styles.css` -- existing CSS patterns
+- `sql/current_schema.sql` -- database schema
+- Supabase PostgREST documentation (`.range()` method) -- verified via training data

@@ -1,94 +1,104 @@
-# Architecture Research: Settings & Exercise Management
+# Architecture Research: Exercise History
 
 **Project:** IronFactor Exercise Tracker
-**Researched:** 2026-02-03
-**Scope:** How a SettingsSurface and My Exercises view integrate with the existing surface-based Preact app
-**Confidence:** HIGH (based entirely on codebase analysis -- no external assumptions needed)
+**Researched:** 2026-02-05
+**Scope:** How Exercise History views integrate with the existing Settings panel overlay architecture
+**Confidence:** HIGH (based entirely on codebase analysis and existing patterns)
+
+---
+
+## Executive Summary
+
+Exercise History integrates with the existing Settings panel overlay pattern established in v3.0. The architecture extends the `SettingsPanel` component's sub-view routing to include a `'history'` view alongside the existing `'menu'` and `'exercises'` views. History List displays within the panel; Workout Detail navigation introduces a new pattern with deeper sub-view nesting.
+
+**Key architectural decisions:**
+
+1. **Settings panel extension** -- Add "Exercise History" menu item to existing `SettingsMenu`, reusing the panel overlay pattern
+2. **Sub-view routing** -- Extend `PanelView` type to include `'history'` view
+3. **Detail navigation** -- History cards navigate to Workout Detail as a nested sub-view within the panel
+4. **Service layer** -- Leverage existing `logging.getWorkoutLogs()` and `logging.getWorkoutLog()` services
+5. **No new surfaces** -- History fits within the Settings panel overlay, not as a new top-level surface
 
 ---
 
 ## Existing Architecture Summary
 
-The app uses a simple, effective pattern: **state-driven surface routing in `main.tsx`** with no URL router.
+The Settings panel is an overlay that slides in from the right side of the Dashboard. It manages internal sub-view routing.
 
 ```
-main.tsx (App component)
-  useState<AppSurface>('auth' | 'dashboard' | 'templateEditor' | 'workout')
+DashboardSurface
   |
-  |-- AuthSurface          (sub-surfaces: login, register, reset, updatePassword)
-  |-- DashboardSurface     (sections: TemplateList, ChartSection)
-  |-- TemplateEditorSurface (full-screen, back-navigates to dashboard)
-  |-- WorkoutSurface        (full-screen, back-navigates to dashboard)
+  |-- SettingsPanel (overlay)
+  |     |-- [panelView: 'menu']
+  |     |     SettingsMenu
+  |     |       |-- "My Exercises" --> panelView: 'exercises'
+  |     |       |-- "Log Out"
+  |     |
+  |     |-- [panelView: 'exercises']
+  |           MyExercisesList
 ```
 
 **Key patterns observed:**
 
-1. **Surface = top-level view.** Each surface owns its own header, data loading, and state management.
-2. **Navigation via callbacks.** Surfaces receive `onX` props (e.g., `onLogout`, `onSave`, `onCancel`) -- parent controls transitions.
-3. **Sub-surface routing.** AuthSurface manages its own sub-views via internal `useState<AuthSubSurface>`. This is the precedent for SettingsSurface with internal menu/sub-view routing.
-4. **Shared services are stateless.** `@ironlift/shared` exports service objects (`exercises`, `templates`, etc.) that return `{ data, error }` patterns. No client-side caching or state management library.
-5. **Shared UI components in `@/components`.** ConfirmationModal, ExercisePickerModal, InfoModal are shared across surfaces.
-6. **Hooks in `@/hooks`.** `useAsyncOperation` for loading/error/success state; `useClickOutside` for dropdown dismissal.
+1. **Panel is always mounted, visibility via CSS.** `SettingsPanel` renders with `class="settings-panel ${isOpen ? 'open' : ''}"`. No conditional mounting.
+2. **Sub-view routing via useState.** `PanelView = 'menu' | 'exercises'` controls which content displays.
+3. **Back navigation via state.** Header back button returns to previous sub-view or closes panel.
+4. **Data loading in sub-views.** Each sub-view loads its own data on mount (e.g., `MyExercisesList` calls `exercises.getUserExercises()`).
+5. **Reset on panel close.** Sub-view resets to `'menu'` after close animation completes.
 
 ---
 
-## Component Structure
+## Component Hierarchy
 
-### New Surface: `SettingsSurface`
-
-SettingsSurface follows the AuthSurface precedent: a container surface with internal sub-view routing.
+### Extended Structure
 
 ```
-surfaces/settings/
-  SettingsSurface.tsx        -- Container with menu/sub-view routing
-  SettingsMenu.tsx           -- Menu list (My Exercises, Profile, Preferences, Log Out)
-  MyExercisesView.tsx        -- Exercise list with search + category filter
-  ExerciseRow.tsx            -- Single exercise row (expandable for custom, locked for system)
-  ExerciseEditForm.tsx       -- Inline edit form (name + category fields)
-  DeleteExerciseConfirm.tsx  -- Inline delete confirmation (replaces edit form)
-  index.ts                   -- Barrel exports
-```
-
-### Component Hierarchy
-
-```
-SettingsSurface
-  |-- Header (back arrow + "Settings" title)
+DashboardSurface
   |
-  |-- [sub-view: 'menu']
-  |     SettingsMenu
-  |       |-- Menu item: "My Exercises" --> switches sub-view to 'exercises'
-  |       |-- Menu item: "Profile" (disabled, "Coming Soon")
-  |       |-- Menu item: "Preferences" (disabled, "Coming Soon")
-  |       |-- Menu item: "Log Out" --> calls onLogout prop
-  |
-  |-- [sub-view: 'exercises']
-  |     MyExercisesView
-  |       |-- Sub-header ("My Exercises" + back to menu)
-  |       |-- Search input
-  |       |-- Category filter dropdown
-  |       |-- Exercise list
-  |       |     ExerciseRow (per exercise)
-  |       |       |-- Collapsed: name + category tag + badge (Custom/System)
-  |       |       |-- Expanded (custom only):
-  |       |             ExerciseEditForm (name input, category select, Save/Cancel/Delete)
-  |       |             DeleteExerciseConfirm (warning + confirm/cancel buttons)
-  |       |-- "+ Add Exercise" button at bottom
-  |
-  |-- ConfirmationModal (shared, for delete confirmation -- already exists)
+  |-- SettingsPanel (overlay)
+  |     |-- [panelView: 'menu']
+  |     |     SettingsMenu
+  |     |       |-- "My Exercises" --> panelView: 'exercises'
+  |     |       |-- "Exercise History" --> panelView: 'history'  [NEW]
+  |     |       |-- "Log Out"
+  |     |
+  |     |-- [panelView: 'exercises']
+  |     |     MyExercisesList
+  |     |
+  |     |-- [panelView: 'history']  [NEW]
+  |     |     HistoryListView
+  |     |       |-- Summary bar (workouts, sets, total weight)
+  |     |       |-- Timeline list
+  |     |       |     WorkoutCard (per workout)
+  |     |       |-- Pagination (infinite scroll or Load More)
+  |     |
+  |     |-- [panelView: 'detail']  [NEW]
+  |           WorkoutDetailView
+  |             |-- Header (back to history list)
+  |             |-- Workout summary
+  |             |-- Exercise blocks with sets grid
 ```
 
-### How New Components Fit Existing Patterns
+### New Components
 
-| Pattern | Existing Example | New Component |
-|---------|-----------------|---------------|
-| Surface with sub-views | AuthSurface + AuthSubSurface type | SettingsSurface + SettingsSubView type |
-| Props-based navigation | DashboardSurface.onLogout | SettingsSurface.onBack, .onLogout |
-| Service data loading | DashboardSurface.loadExercises() | MyExercisesView.loadExercises() |
-| Search + filter | ExercisePickerModal (search + category dropdown) | MyExercisesView (same pattern, reused logic) |
-| Async operations | useAsyncOperation in all surfaces | useAsyncOperation in MyExercisesView |
-| Confirmation flow | ConfirmationModal for template/chart delete | ConfirmationModal for exercise delete |
-| Click-outside dismiss | useClickOutside in ExercisePickerModal | useClickOutside in category dropdown |
+```
+surfaces/dashboard/
+  HistoryListView.tsx       -- Timeline list with summary bar
+  WorkoutCard.tsx           -- Single workout card (collapsed + expandable)
+  WorkoutDetailView.tsx     -- Full workout breakdown
+  HistorySummary.tsx        -- Summary statistics bar
+```
+
+### Component Responsibilities
+
+| Component | Responsibilities |
+|-----------|------------------|
+| `SettingsPanel` | Owns `panelView` state, routes to sub-views, handles back navigation |
+| `SettingsMenu` | Renders menu items, triggers sub-view navigation |
+| `HistoryListView` | Loads workout summaries, manages timeline display, triggers detail navigation |
+| `WorkoutCard` | Displays single workout, handles expand/collapse, click-to-detail |
+| `WorkoutDetailView` | Loads full workout data, displays exercise breakdown |
+| `HistorySummary` | Computes and displays aggregate statistics |
 
 ---
 
@@ -97,150 +107,184 @@ SettingsSurface
 ### Navigation Flow
 
 ```
-DashboardSurface                         main.tsx                    SettingsSurface
-     |                                      |                            |
-     |-- [gear icon click] ------>          |                            |
-     |   props.onNavigateSettings()         |                            |
-     |                                      |-- setCurrentSurface        |
-     |                                      |   ('settings')             |
-     |                                      |-- renders SettingsSurface  |
-     |                                      |                            |
-     |                                      |             [back arrow] --|
-     |                                      |<-- props.onBack()          |
-     |                                      |-- setCurrentSurface        |
-     |                                      |   ('dashboard')            |
-     |                                      |                            |
-     |                                      |             [Log Out] ----|
-     |                                      |<-- props.onLogout()        |
-     |                                      |-- handleLogout()           |
+DashboardSurface                SettingsPanel                   Internal State
+     |                              |                               |
+     |-- [gear icon click] -------->|                               |
+     |   setSettingsOpen(true)      |                               |
+     |                              |-- isOpen: true                |
+     |                              |-- panelView: 'menu'           |
+     |                              |                               |
+     |                              |  [My Exercises click] ------->|
+     |                              |<-- setPanelView('exercises')  |
+     |                              |-- renders MyExercisesList     |
+     |                              |                               |
+     |                              |  [Exercise History click] --->|
+     |                              |<-- setPanelView('history')    |
+     |                              |-- renders HistoryListView     |
+     |                              |                               |
+     |                              |  [Workout card click] ------->|
+     |                              |<-- setPanelView('detail')     |
+     |                              |<-- setSelectedWorkoutId(id)   |
+     |                              |-- renders WorkoutDetailView   |
+     |                              |                               |
+     |                              |  [Back in detail] ----------->|
+     |                              |<-- setPanelView('history')    |
+     |                              |-- renders HistoryListView     |
 ```
 
-### Exercise CRUD Data Flow
+### Data Loading Flow
 
 ```
-MyExercisesView                     @ironlift/shared              Supabase
-     |                                   |                          |
-     |-- exercises.getExercises() ------>|                          |
-     |                                   |-- supabase.from()  ---->|
-     |                                   |<-- { data, error }  ----|
-     |<-- { data: Exercise[] } ---------|                          |
-     |                                   |                          |
-     |-- exercises.updateExercise() ---->|  (NEW: needs creation)  |
-     |                                   |-- supabase.update() --->|
-     |                                   |<-- { data, error }  ----|
-     |<-- { data: Exercise } -----------|                          |
-     |                                   |                          |
-     |-- exercises.deleteExercise() ---->|  (EXISTS already)       |
-     |                                   |-- supabase.delete() --->|
-     |                                   |<-- { error }  ----------|
-     |<-- { error } --------------------|                          |
-     |                                   |                          |
-     |-- exercises.createExercise() ---->|  (EXISTS already)       |
-     |                                   |-- supabase.insert() --->|
-     |                                   |<-- { data, error }  ----|
-     |<-- { data: Exercise } -----------|                          |
+HistoryListView                 @ironlift/shared              Supabase
+     |                               |                          |
+     |-- logging.getWorkoutLogs() -->|                          |
+     |                               |-- supabase.from()  ---->|
+     |                               |<-- { data, error }  ----|
+     |<-- { data: WorkoutLogSummary[] }                        |
+     |                               |                          |
+
+WorkoutDetailView               @ironlift/shared              Supabase
+     |                               |                          |
+     |-- logging.getWorkoutLog(id) ->|                          |
+     |                               |-- supabase.from()  ---->|
+     |                               |<-- { data, error }  ----|
+     |<-- { data: WorkoutLogWithExercises }                    |
 ```
 
-### State Management Within SettingsSurface
+### State Management
 
 ```
-SettingsSurface (owns):
-  - currentSubView: 'menu' | 'exercises'
+SettingsPanel (extends existing state):
+  - isOpen: boolean                   -- Panel visibility
+  - panelView: PanelView              -- EXTENDED: 'menu' | 'exercises' | 'history' | 'detail'
+  - selectedWorkoutId: string | null  -- NEW: ID for detail view
 
-MyExercisesView (owns):
-  - exercisesList: Exercise[]           -- loaded on mount
-  - searchQuery: string                 -- search input value
-  - selectedCategory: ExerciseCategory | 'All Categories'
-  - expandedExerciseId: string | null   -- which exercise row is expanded
-  - deleteConfirmId: string | null      -- which exercise shows delete confirmation
-  - isLoading / error / successMessage  -- via useAsyncOperation
-  - filteredExercises: Exercise[]       -- computed via useMemo (search + category filter)
+HistoryListView (owns):
+  - workoutLogs: WorkoutLogSummary[]  -- Loaded from logging.getWorkoutLogs()
+  - isLoading: boolean                -- Loading state
+  - error: string                     -- Error message
+  - page: number                      -- For pagination (optional)
+
+WorkoutDetailView (owns):
+  - workout: WorkoutLogWithExercises | null  -- Full workout data
+  - isLoading: boolean
+  - error: string
 ```
-
-No new global state needed. No state sharing between SettingsSurface and DashboardSurface. If exercises are modified in Settings, DashboardSurface will reload its own exercise data when the user navigates back (same as how TemplateEditorSurface works -- dashboard reloads on mount).
 
 ---
 
-## Integration Points with main.tsx
+## Type Extensions
 
-### Changes to `main.tsx`
+### PanelView Type (in SettingsPanel.tsx)
 
-1. **Extend `AppSurface` union type:**
-   ```typescript
-   type AppSurface = 'auth' | 'dashboard' | 'templateEditor' | 'workout' | 'settings';
-   ```
+```typescript
+// Current
+type PanelView = 'menu' | 'exercises';
 
-2. **Add navigation handler:**
-   ```typescript
-   const handleNavigateSettings = () => {
-     setCurrentSurface('settings');
-   };
+// Extended
+type PanelView = 'menu' | 'exercises' | 'history' | 'detail';
+```
 
-   const handleSettingsBack = () => {
-     setCurrentSurface('dashboard');
-   };
-   ```
+### SettingsPanel State (extended)
 
-3. **Add render branch (before dashboard fallback):**
-   ```typescript
-   if (currentSurface === 'settings') {
-     return (
-       <SettingsSurface
-         onBack={handleSettingsBack}
-         onLogout={handleLogout}
-       />
-     );
-   }
-   ```
+```typescript
+// Add to SettingsPanel component
+const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
+```
 
-4. **Pass settings navigation to DashboardSurface:**
-   ```typescript
-   <DashboardSurface
-     onLogout={handleLogout}                    // REMOVE (moves to Settings)
-     onNavigateSettings={handleNavigateSettings} // ADD
-     onEditTemplate={handleEditTemplate}
-     onCreateNewTemplate={handleCreateNewTemplate}
-     onStartWorkout={handleStartWorkout}
-   />
-   ```
+### Props Threading
 
-### Changes to DashboardSurface
+```typescript
+// HistoryListView props
+interface HistoryListViewProps {
+  onSelectWorkout: (workoutId: string) => void;  // Navigate to detail
+}
 
-1. **Replace `onLogout` prop with `onNavigateSettings` prop** in the interface.
-2. **Replace Logout button with gear icon** in the header (far right).
-3. The `onLogout` callback moves to SettingsSurface, which delegates to `main.tsx`.
+// WorkoutDetailView props
+interface WorkoutDetailViewProps {
+  workoutId: string;
+  onBack: () => void;  // Return to history list
+}
+```
 
 ---
 
-## Shared Service Addition: `updateExercise`
+## Integration Points with SettingsPanel
 
-### Required Addition to `packages/shared/src/services/exercises.ts`
+### Required Changes
 
+**1. Extend PanelView type:**
 ```typescript
-async function updateExercise(
-  id: string,
-  fields: { name?: string; category?: ExerciseCategory }
-): Promise<ServiceResult<Exercise>>
+type PanelView = 'menu' | 'exercises' | 'history' | 'detail';
 ```
 
-### Required Addition to `ExercisesService` Interface
-
-Add to `packages/shared/src/types/services.ts`:
-
+**2. Add selectedWorkoutId state:**
 ```typescript
-updateExercise(
-  id: string,
-  fields: { name?: string; category?: ExerciseCategory }
-): Promise<ServiceResult<Exercise>>;
+const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
 ```
 
-### Why Only `name` and `category`
+**3. Handle history navigation in handleBack:**
+```typescript
+const handleBack = () => {
+  if (isCreating) return;
+  if (panelView === 'detail') {
+    setPanelView('history');
+    setSelectedWorkoutId(null);
+  } else if (panelView === 'exercises' || panelView === 'history') {
+    setPanelView('menu');
+  } else {
+    onClose();
+  }
+};
+```
 
-The Exercise type has many fields (`equipment`, `instructions`, `level`, `force`, `mechanic`), but:
-- `equipment`, `instructions`, `level`, `force`, `mechanic` are only set for system exercises
-- User-created exercises only set `name` and `category` via createExercise
-- The edit form in the mocks only shows name and category fields
-- Keep the update surface minimal -- same fields as create
+**4. Update header title logic:**
+```typescript
+const headerTitle = {
+  'menu': 'Settings',
+  'exercises': 'My Exercises',
+  'history': 'Exercise History',
+  'detail': 'Workout Details'
+}[panelView];
+
+const backLabel = {
+  'menu': 'Back',
+  'exercises': 'Settings',
+  'history': 'Settings',
+  'detail': 'History'
+}[panelView];
+```
+
+**5. Add render branches for history views:**
+```typescript
+{panelView === 'history' && (
+  <HistoryListView
+    onSelectWorkout={(id) => {
+      setSelectedWorkoutId(id);
+      setPanelView('detail');
+    }}
+  />
+)}
+{panelView === 'detail' && selectedWorkoutId && (
+  <WorkoutDetailView
+    workoutId={selectedWorkoutId}
+    onBack={() => {
+      setPanelView('history');
+      setSelectedWorkoutId(null);
+    }}
+  />
+)}
+```
+
+**6. Add menu item to SettingsMenu:**
+```typescript
+// In SettingsMenu.tsx
+<div class="settings-menu-item" onClick={onExerciseHistory}>
+  {/* History icon */}
+  <span class="settings-menu-item-label">Exercise History</span>
+  <ChevronIcon />
+</div>
+```
 
 ---
 
@@ -249,212 +293,239 @@ The Exercise type has many fields (`equipment`, `instructions`, `level`, `force`
 ### What Talks to What
 
 ```
-main.tsx
-  |-- [owns] AppSurface state, User state
-  |-- [renders] SettingsSurface
-  |     |-- [owns] sub-view routing ('menu' | 'exercises')
-  |     |-- [renders] SettingsMenu
-  |     |     |-- [calls] onLogout (delegated from main.tsx)
-  |     |     |-- [calls] onNavigate('exercises') (internal)
-  |     |-- [renders] MyExercisesView
-  |           |-- [calls] exercises.getExercises() from @ironlift/shared
-  |           |-- [calls] exercises.updateExercise() from @ironlift/shared
-  |           |-- [calls] exercises.deleteExercise() from @ironlift/shared
-  |           |-- [calls] exercises.createExercise() from @ironlift/shared
-  |           |-- [renders] ExerciseRow (per exercise)
-  |           |-- [renders] ConfirmationModal (from @/components, for delete)
-  |-- [renders] DashboardSurface
-        |-- [receives] onNavigateSettings prop (new)
-        |-- [removes] onLogout prop (moved to Settings)
-        |-- [renders] gear icon in header (new)
+SettingsPanel
+  |-- [owns] panelView state, selectedWorkoutId state
+  |-- [renders] SettingsMenu
+  |     |-- [calls] onExerciseHistory (new prop)
+  |-- [renders] HistoryListView (when panelView === 'history')
+  |     |-- [calls] logging.getWorkoutLogs() from @ironlift/shared
+  |     |-- [calls] onSelectWorkout prop (passed from SettingsPanel)
+  |     |-- [renders] WorkoutCard (per workout)
+  |     |-- [renders] HistorySummary
+  |-- [renders] WorkoutDetailView (when panelView === 'detail')
+        |-- [calls] logging.getWorkoutLog(workoutId) from @ironlift/shared
+        |-- [renders] exercise blocks with sets grid
 ```
 
 ### Boundary Rules
 
-1. **SettingsSurface does NOT access DashboardSurface state.** Each surface loads its own data independently.
-2. **MyExercisesView does NOT share exercise state with DashboardSurface.** Dashboard reloads exercises when remounted.
-3. **SettingsMenu does NOT handle logout itself.** It delegates via `onLogout` prop to `main.tsx`, which calls `auth.logout()`.
-4. **ExerciseRow is a pure presentation component.** It receives an exercise and callbacks; it does not call services directly.
-5. **The ConfirmationModal is reused from `@/components`** -- no new modal component needed for delete.
+1. **HistoryListView does NOT manage selectedWorkoutId.** It reports selection via `onSelectWorkout` callback; SettingsPanel owns the navigation state.
+2. **WorkoutDetailView receives workoutId as prop.** It does NOT access SettingsPanel state directly.
+3. **HistorySummary is a pure presentational component.** It receives computed data as props, does not call services.
+4. **WorkoutCard handles its own expand/collapse state** but delegates detail navigation to parent.
+5. **No new modals needed.** All views render inline within the panel content area.
 
 ---
 
 ## Build Order
 
-The implementation has clear dependency layers. Each phase produces something testable.
+Implementation follows dependency layers. Each phase produces something testable.
 
-### Phase 1: Service Layer (no UI changes)
+### Phase 1: Menu Extension (minimal change)
 
-**Add `updateExercise` to the shared package.**
+**Add "Exercise History" menu item with placeholder view.**
 
-Dependencies: None (leaf node).
+Dependencies: None (isolated change).
 
-- Add `updateExercise` function to `packages/shared/src/services/exercises.ts`
-- Add `updateExercise` method to `ExercisesService` interface in `packages/shared/src/types/services.ts`
-- Verify RLS policies allow exercise updates (user can only update their own exercises)
+- Add `onExerciseHistory` prop to `SettingsMenu`
+- Add menu item with history icon
+- Extend `PanelView` type to include `'history'`
+- Add handler in `SettingsPanel` to switch to history view
+- Add placeholder `HistoryListView` component (loading state only)
+- Verify navigation: Menu -> History -> Back to Menu
 
-**Why first:** Every UI component downstream depends on this service existing. Building UI before the service means writing untestable code.
+**Why first:** Establishes navigation skeleton. Validates the panel routing extension works before building complex views.
 
-### Phase 2: Surface Shell + Navigation Wiring
+### Phase 2: History List (read-only timeline)
 
-**Create SettingsSurface with menu, wire navigation from Dashboard.**
+**Build HistoryListView with data loading and timeline display.**
 
-Dependencies: Phase 1 (service exists for later phases, but not strictly needed yet).
+Dependencies: Phase 1 (menu navigation exists).
 
-- Create `surfaces/settings/` directory structure
-- Create `SettingsSurface.tsx` with sub-view routing (`'menu' | 'exercises'`)
-- Create `SettingsMenu.tsx` with menu items (My Exercises active, Profile/Preferences disabled, Log Out)
-- Create `index.ts` barrel export
-- Update `surfaces/index.ts` to export SettingsSurface
-- Extend `AppSurface` type in `main.tsx` to include `'settings'`
-- Add navigation handlers in `main.tsx` (handleNavigateSettings, handleSettingsBack)
-- Add render branch for settings surface in `main.tsx`
-- Modify `DashboardSurface` props: replace `onLogout` with `onNavigateSettings`
-- Replace Logout button with gear icon in DashboardSurface header
-- Wire Log Out menu item to `onLogout` prop (delegated through to main.tsx's handleLogout)
+- Implement data loading via `logging.getWorkoutLogs()`
+- Create `HistorySummary` component with aggregate stats
+- Create `WorkoutCard` component (collapsed view only)
+- Display timeline with workout cards
+- Handle loading and error states
+- Style per mockup (timeline dots, date markers, badges)
 
-**Why second:** Establishes the navigation skeleton. After this phase, you can navigate Dashboard -> Settings -> Menu -> Back, and Log Out works from the new location. This is testable end-to-end without exercise management.
+**Why second:** The list is foundational. Detail view depends on having a list to navigate from.
 
-### Phase 3: Exercise List View (Read Only)
+### Phase 3: Workout Detail View
 
-**Build MyExercisesView with search, filter, and exercise display.**
+**Build WorkoutDetailView with full workout breakdown.**
 
-Dependencies: Phase 2 (surface shell exists to host the view).
+Dependencies: Phase 2 (history list exists to navigate from).
 
-- Create `MyExercisesView.tsx` with exercise loading, search input, category filter dropdown
-- Create `ExerciseRow.tsx` as a presentational component (collapsed state only)
-- Wire "My Exercises" menu item to switch sub-view to `'exercises'`
-- Add back navigation from exercise view to settings menu
-- Display all exercises (system + custom) with appropriate badges
-- System exercises show lock icon, are not expandable
-- Custom exercises are visually distinct but not yet expandable
+- Add `selectedWorkoutId` state to SettingsPanel
+- Add `'detail'` to PanelView type
+- Create `WorkoutDetailView` component
+- Implement data loading via `logging.getWorkoutLog(id)`
+- Display exercise blocks with sets grid
+- Wire card click -> detail navigation
+- Wire back button -> history list
 
-**Why third:** Establishes the data loading and display patterns. The list is the foundation that edit/delete/create build upon. This is independently testable.
+**Why third:** Completes the history reading flow. After this phase, users can browse history and view workout details.
 
-### Phase 4: Exercise Edit (Update)
+### Phase 4: Expandable Cards (optional enhancement)
 
-**Add expandable row with inline edit form for custom exercises.**
+**Add expand/collapse behavior to WorkoutCard in timeline view.**
 
-Dependencies: Phase 1 (updateExercise service), Phase 3 (exercise list exists).
+Dependencies: Phase 2 (cards exist).
 
-- Create `ExerciseEditForm.tsx` with name input, category select, Save/Cancel/Delete buttons
-- Add expand/collapse behavior to ExerciseRow (click to expand custom exercises)
-- Add accordion behavior (only one expanded at a time)
-- Wire Save button to `exercises.updateExercise()`
-- Handle optimistic UI update on save (update local state, then confirm with server)
-- Handle validation (name required, name uniqueness)
-- Handle error display within the edit form
+- Add expand state to `WorkoutCard`
+- Show exercise preview on expand (without full navigation to detail)
+- One-card-at-a-time accordion behavior
+- Chevron rotation animation
 
-**Why fourth:** Edit is more complex than read but simpler than delete (no dependency warnings). Building edit first means the expand/collapse UX is proven before adding delete confirmation complexity.
+**Why fourth:** Enhancement to the timeline UX. The mockup shows expandable cards with inline previews. This phase can be deferred if timeline-only reading meets MVP requirements.
 
-### Phase 5: Exercise Delete
+### Phase 5: Pagination (if needed)
 
-**Add delete confirmation flow within expanded row.**
+**Add Load More or infinite scroll for large history.**
 
-Dependencies: Phase 4 (expandable row and edit form exist).
+Dependencies: Phase 2 (list exists).
 
-- Create `DeleteExerciseConfirm.tsx` inline component (replaces edit form when active)
-- Wire Delete button in edit form to show confirmation state
-- Wire confirmation Cancel to return to edit form
-- Wire confirmation Delete to `exercises.deleteExercise()`
-- Remove exercise from local list on successful delete
-- Handle dependency warnings (exercise used in templates or workout logs)
-- Animate row removal on delete
+- Track page/offset in HistoryListView state
+- Add Load More button or scroll-based loading
+- Append new workouts to existing list
+- Update summary stats on new loads
 
-**Why fifth:** Delete builds on top of the expand/collapse mechanics from Phase 4. The delete confirmation replaces the edit form within the same expanded area.
-
-### Phase 6: Exercise Create
-
-**Add "Create Exercise" flow at bottom of exercise list.**
-
-Dependencies: Phase 3 (exercise list exists).
-
-- Wire "+ Add Exercise" button at bottom of exercise list
-- On click: append a new blank ExerciseRow in expanded/edit state
-- Reuse `ExerciseEditForm.tsx` for creation (same fields, different submit handler)
-- Wire Save to `exercises.createExercise()`
-- On successful create: add to local list, collapse row
-- On Cancel for new unsaved exercise: remove the row entirely
-- Handle validation (name required, category required, name uniqueness)
-
-**Why sixth:** Create reuses the same ExerciseEditForm from Phase 4, so it has minimal new component work. But it has unique UX (adding a temporary row that can be cancelled without a delete confirmation). Separating it from Phase 4 keeps each phase focused.
+**Why fifth:** Optimization phase. Initial load of 52 workouts (1 year weekly) may be sufficient for MVP.
 
 ### Dependency Graph
 
 ```
-Phase 1: updateExercise service
+Phase 1: Menu Extension + Navigation Skeleton
     |
     v
-Phase 2: Surface shell + navigation
-    |
-    v
-Phase 3: Exercise list (read)
+Phase 2: History List (read-only timeline)
     |         \
     v          v
-Phase 4: Edit   Phase 6: Create
+Phase 3: Detail View    Phase 4: Expandable Cards
+                              (optional)
     |
     v
-Phase 5: Delete
+Phase 5: Pagination (if needed)
 ```
 
-Phases 4, 5, and 6 can be reordered relative to each other if needed, but the recommended order (Edit -> Delete -> Create) follows increasing UX complexity and ensures each phase builds on proven mechanics.
+---
+
+## Patterns from Existing Code
+
+### Reusable Patterns
+
+| Pattern | Source | Application |
+|---------|--------|-------------|
+| Panel sub-view routing | `SettingsPanel.tsx` | Extend PanelView type |
+| Back navigation logic | `SettingsPanel.handleBack()` | Add history/detail cases |
+| Header title switching | `SettingsPanel.headerTitle` | Add history/detail titles |
+| Service data loading | `MyExercisesList.useEffect` | Same pattern in HistoryListView |
+| Loading/error states | `useAsyncOperation` hook | Use in HistoryListView, WorkoutDetailView |
+| List item styling | `MyExercisesList` CSS | Similar row/card styling |
+| Accordion expand | `my-exercises-edit-form` CSS | Similar max-height transition |
+
+### CSS Patterns from Mockup
+
+The mockup (`mockup5-timeline-with-summary.html`) uses existing design tokens:
+
+- Colors: `--color-bg-surface`, `--color-border`, `--color-accent`, `--color-success`
+- Spacing: `--spacing-md`, `--spacing-lg`
+- Typography: `.template-name` (15px bold), `.badge` (11px mono), `.exercise-preview` (12px muted)
+- Border radius: `--radius-lg` (12px for cards)
+- Timeline: Custom CSS (2px line, 14px dots with accent border)
 
 ---
 
 ## Anti-Patterns to Avoid
 
-### 1. Do NOT Lift Exercise State to main.tsx
+### 1. Do NOT Create a New Top-Level Surface
 
-**Temptation:** Share exercise data between DashboardSurface and SettingsSurface to avoid double-loading.
+**Temptation:** Add `HistorySurface` to `AppSurface` union in main.tsx.
 
-**Why bad:** Breaks the surface independence pattern. Every other surface loads its own data on mount. Adding shared state creates coupling, re-render cascades, and stale data bugs.
+**Why bad:** History is accessed from Settings, not from Dashboard directly. Creating a new surface breaks the information hierarchy and adds unnecessary complexity to main.tsx navigation.
 
-**Instead:** Each surface loads exercises independently. DashboardSurface reloads when it mounts (which happens on navigation back from settings). This is the same pattern used when returning from TemplateEditorSurface.
+**Instead:** History views live inside SettingsPanel as sub-views, following the MyExercises precedent.
 
-### 2. Do NOT Create a New Modal for Exercise Editing
+### 2. Do NOT Fetch Full Workout Data for List
 
-**Temptation:** Build an ExerciseEditModal like the ExercisePickerModal.
+**Temptation:** Call `logging.getWorkoutLog()` for every workout in the list to get exercise details.
 
-**Why bad:** The mocks clearly show inline editing within expandable rows, not a separate modal. A modal would be inconsistent with the approved design and adds unnecessary overlay management.
+**Why bad:** N+1 query problem. Loading 52 workouts would trigger 52 additional queries.
 
-**Instead:** Edit form is inline within the expanded ExerciseRow component. The row expands to reveal the form and collapses to dismiss it.
+**Instead:** Use `logging.getWorkoutLogs()` which returns `WorkoutLogSummary` with `exercise_count`. Only fetch full workout data when navigating to detail view.
 
-### 3. Do NOT Add URL Routing for This Feature
+### 3. Do NOT Store History Data at SettingsPanel Level
 
-**Temptation:** Add a client-side router (e.g., preact-router) to handle Settings navigation.
+**Temptation:** Lift `workoutLogs` state to SettingsPanel to preserve list when returning from detail.
 
-**Why bad:** The entire app uses `useState` for surface switching. Introducing a router for one surface creates inconsistency and increases bundle size for no benefit.
+**Why bad:** Increases coupling and memory usage. The pattern in this codebase is for sub-views to own their data.
 
-**Instead:** Follow the existing pattern: `useState` in main.tsx for top-level surfaces, `useState` within SettingsSurface for sub-views.
+**Instead:** Let HistoryListView reload on mount. The list is fast to load and ensures freshness.
 
-### 4. Do NOT Make ExerciseRow Call Services Directly
+### 4. Do NOT Use Modal for Workout Detail
 
-**Temptation:** Have ExerciseRow import and call `exercises.updateExercise()` directly.
+**Temptation:** Show WorkoutDetailView in a modal overlay.
 
-**Why bad:** Breaks the established pattern where the parent surface/view component orchestrates service calls. ExerciseRow should be a presentational component that receives data and callbacks.
+**Why bad:** The panel is already an overlay. Modal-in-overlay creates awkward UX and z-index complexity.
 
-**Instead:** MyExercisesView handles all service calls and passes callbacks to ExerciseRow (e.g., `onSave`, `onDelete`).
+**Instead:** WorkoutDetailView replaces HistoryListView within the panel content area.
 
-### 5. Do NOT Skip the Disabled Menu Items
+### 5. Do NOT Hardcode Workout Data for Mockup
 
-**Temptation:** Only render "My Exercises" and "Log Out" since Profile and Preferences are not implemented.
+**Temptation:** Start with static data matching the mockup before wiring to services.
 
-**Why bad:** The menu should communicate the full vision. Disabled items with "Coming Soon" tooltips set user expectations and validate the information architecture.
+**Why bad:** Services already exist (`logging.getWorkoutLogs()`, `logging.getWorkoutLog()`). Hardcoding data means doing the integration work twice.
 
-**Instead:** Render all four menu items. My Exercises and Log Out are active. Profile and Preferences are disabled with visual indication.
+**Instead:** Wire to real services from the start. The mockup shows the UI design; implementation uses real data.
 
 ---
 
 ## Scalability Considerations
 
-| Concern | Current (v3.0) | Future Growth |
+| Concern | Current (v4.0) | Future Growth |
 |---------|----------------|---------------|
-| Number of exercises | ~50-200 (system + custom) | Virtual scrolling if >500 |
-| Settings menu items | 4 items | Add more items trivially (same list pattern) |
-| Sub-views within settings | 1 active (exercises) | Add Profile, Preferences as separate view components |
-| Exercise fields | name + category | Extend ExerciseEditForm; updateExercise fields parameter already supports Partial |
+| Number of workouts | 52 (1 year weekly) | Pagination if >100 |
+| Panel sub-views | 4 (menu, exercises, history, detail) | Union type scales trivially |
+| History aggregates | Computed client-side | Database aggregate if expensive |
+| Timeline rendering | All visible | Virtual scrolling if >100 items |
 
-The SettingsSurface sub-view pattern (like AuthSurface sub-surface pattern) scales well because each sub-view is an independent component. Adding Profile settings later means creating a `ProfileView.tsx` and adding `'profile'` to the `SettingsSubView` union type -- no architectural changes needed.
+The sub-view pattern within SettingsPanel scales well. Adding future views (e.g., exercise-specific history, date range filter) means adding to `PanelView` union and creating new view components.
+
+---
+
+## Service Layer Verification
+
+### Existing Services (no changes needed)
+
+**`logging.getWorkoutLogs(limit?: number)`**
+- Returns: `Promise<ServiceResult<WorkoutLogSummary[]>>`
+- Default limit: 52
+- Data: id, template_id, started_at, created_at, exercise_count
+
+**`logging.getWorkoutLog(id: string)`**
+- Returns: `Promise<ServiceResult<WorkoutLogWithExercises>>`
+- Data: Full workout with exercises and sets (sorted by order/set_number)
+
+### Data Types Already Exist
+
+```typescript
+// packages/shared/src/types/services.ts
+interface WorkoutLogSummary {
+  id: string;
+  template_id: string | null;
+  started_at: string;
+  created_at: string;
+  exercise_count: number;
+}
+
+// packages/shared/src/types/database.ts
+interface WorkoutLogWithExercises extends Omit<WorkoutLog, 'user_id'> {
+  workout_log_exercises: WorkoutLogExerciseWithSets[];
+}
+```
+
+**No service layer changes required.** All needed data access is implemented.
 
 ---
 
@@ -462,16 +533,13 @@ The SettingsSurface sub-view pattern (like AuthSurface sub-surface pattern) scal
 
 All findings derived from direct codebase analysis:
 
-- `apps/web/src/main.tsx` -- surface routing pattern, navigation handlers
-- `apps/web/src/surfaces/dashboard/DashboardSurface.tsx` -- data loading, header layout, prop patterns
-- `apps/web/src/surfaces/auth/AuthSurface.tsx` -- sub-surface routing precedent
-- `apps/web/src/surfaces/template-editor/TemplateEditorSurface.tsx` -- surface prop patterns
-- `apps/web/src/components/ExercisePickerModal.tsx` -- search/filter/category dropdown patterns
-- `apps/web/src/components/ConfirmationModal.tsx` -- reusable delete confirmation
-- `apps/web/src/hooks/useAsyncOperation.ts` -- async state management pattern
-- `apps/web/src/hooks/useClickOutside.ts` -- dropdown dismiss pattern
-- `packages/shared/src/services/exercises.ts` -- existing CRUD operations
-- `packages/shared/src/types/services.ts` -- service interface patterns
-- `packages/shared/src/types/database.ts` -- Exercise type, ExerciseCategory, ExerciseUpdate type
-- `.planning/exercise-management-suggestions.md` -- design options analysis
-- `mocks/option-c-v5.html` -- approved design direction (expandable rows, inline editing)
+- `apps/web/src/surfaces/dashboard/DashboardSurface.tsx` -- Panel integration point
+- `apps/web/src/surfaces/dashboard/SettingsPanel.tsx` -- Sub-view routing pattern
+- `apps/web/src/surfaces/dashboard/SettingsMenu.tsx` -- Menu item pattern
+- `apps/web/src/surfaces/dashboard/MyExercisesList.tsx` -- Data loading, list rendering
+- `packages/shared/src/services/logging.ts` -- Workout history services
+- `packages/shared/src/types/services.ts` -- WorkoutLogSummary, LoggingService
+- `packages/shared/src/types/database.ts` -- WorkoutLogWithExercises
+- `.planning/codebase/ARCHITECTURE.md` -- System architecture reference
+- `.planning/design-rules.md` -- Design tokens and patterns
+- `.planning/mockups/mockup5-timeline-with-summary.html` -- Approved design direction

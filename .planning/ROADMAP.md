@@ -23,8 +23,7 @@ None
 
 **v4.0 Exercise History** - Browse past workouts from Settings panel with timeline view and workout details.
 
-- [ ] Phase 22: History Navigation + Service (1 plan)
-  - [ ] 22-01-PLAN.md -- Navigation + service layer
+- [x] Phase 22: History Navigation + Service (1/1 plans) -- completed 2026-02-05
 - [ ] Phase 23: History List Surface (timeline, cards, pagination)
 - [ ] Phase 24: Workout Detail Surface (exercise blocks, set grid)
 
@@ -118,6 +117,6 @@ None
 | 19. Exercise Edit | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 20. Exercise Delete | v3.0 | 3/3 | Complete | 2026-02-04 |
 | 21. Exercise Create | v3.0 | 2/2 | Complete | 2026-02-04 |
-| 22. History Navigation + Service | v4.0 | 0/1 | Pending | - |
+| 22. History Navigation + Service | v4.0 | 1/1 | Complete | 2026-02-05 |
 | 23. History List Surface | v4.0 | 0/0 | Pending | - |
 | 24. Workout Detail Surface | v4.0 | 0/0 | Pending | - |

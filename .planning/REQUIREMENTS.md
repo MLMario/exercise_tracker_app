@@ -9,7 +9,7 @@ Requirements for Exercise History milestone. Each maps to roadmap phases.
 
 ### Navigation
 
-- [ ] **NAV-01**: User can access "Exercise History" from Settings menu
+- [x] **NAV-01**: User can access "Exercise History" from Settings menu
 - [ ] **NAV-02**: User can navigate back from workout detail to history list
 - [ ] **NAV-03**: User can navigate back from history list to settings menu
 
@@ -69,7 +69,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NAV-01 | Phase 22 | Pending |
+| NAV-01 | Phase 22 | Complete |
 | NAV-02 | Phase 24 | Pending |
 | NAV-03 | Phase 23 | Pending |
 | HIST-01 | Phase 23 | Pending |

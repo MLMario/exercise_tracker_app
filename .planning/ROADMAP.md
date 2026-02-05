@@ -17,10 +17,15 @@ None
 - [v2.7 Pre-Created Exercise Library](milestones/v2.7-ROADMAP.md) (Phases 8-13) -- SHIPPED 2026-02-02
 - [v2.8 Enhanced Filtering Capabilities](milestones/v2.8-ROADMAP.md) (Phases 14-15) -- SHIPPED 2026-02-02
 - [v3.0 Settings & Exercise Management](milestones/v3.0-ROADMAP.md) (Phases 16-21) -- SHIPPED 2026-02-04
+- [v4.0 Exercise History](milestones/v4.0-ROADMAP.md) (Phases 22-24) -- IN PROGRESS
 
-## Next Milestone
+## Current Milestone
 
-Planning next milestone. Use `/gsd:new-milestone` to start.
+**v4.0 Exercise History** - Browse past workouts from Settings panel with timeline view and workout details.
+
+- [ ] Phase 22: History Navigation + Service (menu access, service layer)
+- [ ] Phase 23: History List Surface (timeline, cards, pagination)
+- [ ] Phase 24: Workout Detail Surface (exercise blocks, set grid)
 
 ## Completed Milestones
 
@@ -112,3 +117,6 @@ Planning next milestone. Use `/gsd:new-milestone` to start.
 | 19. Exercise Edit | v3.0 | 1/1 | Complete | 2026-02-03 |
 | 20. Exercise Delete | v3.0 | 3/3 | Complete | 2026-02-04 |
 | 21. Exercise Create | v3.0 | 2/2 | Complete | 2026-02-04 |
+| 22. History Navigation + Service | v4.0 | 0/0 | Pending | - |
+| 23. History List Surface | v4.0 | 0/0 | Pending | - |
+| 24. Workout Detail Surface | v4.0 | 0/0 | Pending | - |

@@ -5,16 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-02-04)
 
 **Core value:** Simple, effective workout tracking with clean visual feedback
-**Current focus:** Planning next milestone
+**Current focus:** v4.0 Exercise History milestone
 
 ## Current Position
 
-Phase: 21 of 21 complete
-Plan: All plans complete
-Status: v3.0 milestone shipped and archived
-Last activity: 2026-02-04 -- Milestone v3.0 archived
+Phase: 22 of 24 (v4.0)
+Plan: None (phase not yet planned)
+Status: Roadmap created, ready for phase planning
+Last activity: 2026-02-05 -- v4.0 roadmap created
 
-Progress: [========================] 100% (21/21 phases, 24/24 plans)
+Progress: [=====================.....] 88% (21/24 phases complete)
+
+## v4.0 Milestone Overview
+
+| Phase | Goal | Requirements | Status |
+|-------|------|--------------|--------|
+| 22 | History Navigation + Service | NAV-01 | Pending |
+| 23 | History List Surface | HIST-01-07, NAV-03 | Pending |
+| 24 | Workout Detail Surface | DETAIL-01-04, NAV-02 | Pending |
 
 ## Performance Metrics
 
@@ -64,6 +72,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Milestone v2.7 completed: Pre-Created Exercise Library (Phases 8-13) - SHIPPED 2026-02-02
 - Milestone v2.8 completed: Enhanced Filtering Capabilities (Phases 14-15) - SHIPPED 2026-02-02
 - Milestone v3.0 completed: Settings & Exercise Management (Phases 16-21) - SHIPPED 2026-02-04
+- Milestone v4.0 started: Exercise History (Phases 22-24) - 2026-02-05
 
 ### Pending Todos
 
@@ -79,7 +88,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-02-04
-Stopped at: v3.0 milestone archived
+Last session: 2026-02-05
+Stopped at: v4.0 roadmap created
 Resume file: None
-Next step: Use `/gsd:new-milestone` to start next milestone
+Next step: `/gsd:plan-phase 22` to plan History Navigation + Service phase

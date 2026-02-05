@@ -69,26 +69,26 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NAV-01 | TBD | Pending |
-| NAV-02 | TBD | Pending |
-| NAV-03 | TBD | Pending |
-| HIST-01 | TBD | Pending |
-| HIST-02 | TBD | Pending |
-| HIST-03 | TBD | Pending |
-| HIST-04 | TBD | Pending |
-| HIST-05 | TBD | Pending |
-| HIST-06 | TBD | Pending |
-| HIST-07 | TBD | Pending |
-| DETAIL-01 | TBD | Pending |
-| DETAIL-02 | TBD | Pending |
-| DETAIL-03 | TBD | Pending |
-| DETAIL-04 | TBD | Pending |
+| NAV-01 | Phase 22 | Pending |
+| NAV-02 | Phase 24 | Pending |
+| NAV-03 | Phase 23 | Pending |
+| HIST-01 | Phase 23 | Pending |
+| HIST-02 | Phase 23 | Pending |
+| HIST-03 | Phase 23 | Pending |
+| HIST-04 | Phase 23 | Pending |
+| HIST-05 | Phase 23 | Pending |
+| HIST-06 | Phase 23 | Pending |
+| HIST-07 | Phase 23 | Pending |
+| DETAIL-01 | Phase 24 | Pending |
+| DETAIL-02 | Phase 24 | Pending |
+| DETAIL-03 | Phase 24 | Pending |
+| DETAIL-04 | Phase 24 | Pending |
 
 **Coverage:**
 - v4.0 requirements: 14 total
-- Mapped to phases: 0
-- Unmapped: 14 (will be mapped during roadmap creation)
+- Mapped to phases: 14
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-05*
-*Last updated: 2026-02-05 after initial definition*
+*Last updated: 2026-02-05 after roadmap creation*

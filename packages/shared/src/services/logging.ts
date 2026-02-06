@@ -240,6 +240,7 @@ async function getWorkoutLog(id: string): Promise<ServiceResult<WorkoutLogWithEx
         template_id,
         started_at,
         created_at,
+        templates (name),
         workout_log_exercises (
           id,
           exercise_id,
@@ -269,6 +270,9 @@ async function getWorkoutLog(id: string): Promise<ServiceResult<WorkoutLogWithEx
 
     // Cast and sort exercises by order and sets by set_number
     const result = data as unknown as WorkoutLogWithExercises;
+    // Add template_name from joined data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    result.template_name = (data as any).templates?.name || null;
     if (result.workout_log_exercises) {
       result.workout_log_exercises.sort((a, b) => a.order - b.order);
       result.workout_log_exercises.forEach((ex) => {

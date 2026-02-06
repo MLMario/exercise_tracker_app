@@ -10,6 +10,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { SettingsMenu } from './SettingsMenu';
 import { MyExercisesList } from './MyExercisesList';
 import { WorkoutHistoryList } from './WorkoutHistoryList';
+import { WorkoutDetail } from './WorkoutDetail';
 
 interface SettingsPanelProps {
   /** Whether the panel is currently open */
@@ -22,20 +23,27 @@ interface SettingsPanelProps {
   onExerciseDeleted?: () => void;
 }
 
-type PanelView = 'menu' | 'exercises' | 'history';
+type PanelView = 'menu' | 'exercises' | 'history' | 'workout-detail';
 
 export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: SettingsPanelProps) {
   const [panelView, setPanelView] = useState<PanelView>('menu');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
 
   const handleOpenCreate = () => setShowCreateModal(true);
+
+  const handleSelectWorkout = (workoutId: string) => {
+    setSelectedWorkoutId(workoutId);
+    setPanelView('workout-detail');
+  };
 
   // Reset to menu view after close animation finishes
   useEffect(() => {
     if (!isOpen) {
       const timer = setTimeout(() => {
         setPanelView('menu');
+        setSelectedWorkoutId(null);
         if (!isCreating) {
           setShowCreateModal(false);
         }
@@ -46,7 +54,10 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
 
   const handleBack = () => {
     if (isCreating) return;
-    if (panelView === 'exercises' || panelView === 'history') {
+    if (panelView === 'workout-detail') {
+      setPanelView('history');
+      setSelectedWorkoutId(null);
+    } else if (panelView === 'exercises' || panelView === 'history') {
       setPanelView('menu');
     } else {
       onClose();
@@ -61,8 +72,12 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
   const headerTitle =
     panelView === 'menu' ? 'Settings' :
     panelView === 'exercises' ? 'My Exercises' :
+    panelView === 'workout-detail' ? 'Workout Details' :
     'Workout History';
-  const backLabel = panelView === 'menu' ? 'Back' : 'Settings';
+  const backLabel =
+    panelView === 'menu' ? 'Back' :
+    panelView === 'workout-detail' ? 'History' :
+    'Settings';
 
   return (
     <>
@@ -109,7 +124,16 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
             />
           )}
           {panelView === 'history' && (
-            <WorkoutHistoryList />
+            <WorkoutHistoryList onSelectWorkout={handleSelectWorkout} />
+          )}
+          {panelView === 'workout-detail' && selectedWorkoutId && (
+            <WorkoutDetail
+              workoutId={selectedWorkoutId}
+              onBack={() => {
+                setPanelView('history');
+                setSelectedWorkoutId(null);
+              }}
+            />
           )}
         </div>
       </div>

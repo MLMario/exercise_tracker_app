@@ -11,17 +11,17 @@ Requirements for Exercise History milestone. Each maps to roadmap phases.
 
 - [x] **NAV-01**: User can access "Exercise History" from Settings menu
 - [ ] **NAV-02**: User can navigate back from workout detail to history list
-- [ ] **NAV-03**: User can navigate back from history list to settings menu
+- [x] **NAV-03**: User can navigate back from history list to settings menu
 
 ### History List
 
-- [ ] **HIST-01**: User sees summary bar with total workouts count, total sets, and total volume (lbs)
-- [ ] **HIST-02**: User sees vertical timeline with date markers and connected dots
-- [ ] **HIST-03**: User sees compact workout cards showing template name, date, and exercise preview
-- [ ] **HIST-04**: User sees badges on cards showing exercise count, completed sets, and total lbs
-- [ ] **HIST-05**: User sees last 7 workouts on initial load
-- [ ] **HIST-06**: User can click "Load More" to fetch additional workouts
-- [ ] **HIST-07**: User sees empty state message when no workout history exists
+- [x] **HIST-01**: User sees summary bar with total workouts count, total sets, and total volume (lbs)
+- [x] **HIST-02**: User sees vertical timeline with date markers and connected dots
+- [x] **HIST-03**: User sees compact workout cards showing template name, date, and exercise preview
+- [x] **HIST-04**: User sees badges on cards showing exercise count, completed sets, and total lbs
+- [x] **HIST-05**: User sees last 7 workouts on initial load
+- [x] **HIST-06**: User can click "Load More" to fetch additional workouts
+- [x] **HIST-07**: User sees empty state message when no workout history exists
 
 ### Workout Detail
 
@@ -71,14 +71,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | NAV-01 | Phase 22 | Complete |
 | NAV-02 | Phase 24 | Pending |
-| NAV-03 | Phase 23 | Pending |
-| HIST-01 | Phase 23 | Pending |
-| HIST-02 | Phase 23 | Pending |
-| HIST-03 | Phase 23 | Pending |
-| HIST-04 | Phase 23 | Pending |
-| HIST-05 | Phase 23 | Pending |
-| HIST-06 | Phase 23 | Pending |
-| HIST-07 | Phase 23 | Pending |
+| NAV-03 | Phase 23 | Complete |
+| HIST-01 | Phase 23 | Complete |
+| HIST-02 | Phase 23 | Complete |
+| HIST-03 | Phase 23 | Complete |
+| HIST-04 | Phase 23 | Complete |
+| HIST-05 | Phase 23 | Complete |
+| HIST-06 | Phase 23 | Complete |
+| HIST-07 | Phase 23 | Complete |
 | DETAIL-01 | Phase 24 | Pending |
 | DETAIL-02 | Phase 24 | Pending |
 | DETAIL-03 | Phase 24 | Pending |

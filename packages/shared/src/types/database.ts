@@ -328,5 +328,6 @@ export interface WorkoutLogExerciseWithSets {
  * Result type for getWorkoutLog() query.
  */
 export interface WorkoutLogWithExercises extends Omit<WorkoutLog, 'user_id'> {
+  template_name?: string | null;
   workout_log_exercises: WorkoutLogExerciseWithSets[];
 }

@@ -78,7 +78,7 @@ export function WorkoutDetail({ workoutId }: WorkoutDetailProps) {
     <>
       {/* Workout header */}
       <div class="workout-detail-header">
-        <h2 class="workout-detail-title">Untitled Workout</h2>
+        <h2 class="workout-detail-title">{workout.template_name || 'Untitled Workout'}</h2>
         <span class="workout-detail-date">{formatDetailDate(workout.started_at)}</span>
       </div>
 

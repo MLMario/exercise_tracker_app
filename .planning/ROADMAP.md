@@ -25,8 +25,9 @@ None
 
 - [x] Phase 22: History Navigation + Service (1/1 plans) -- completed 2026-02-05
 - [x] Phase 23: History List Surface (1/1 plans) -- completed 2026-02-05
-- [x] Phase 24: Workout Detail Surface (1/1 plans) -- completed 2026-02-05
+- [x] Phase 24: Workout Detail Surface (2/2 plans) -- completed 2026-02-05
   - [x] 24-01-PLAN.md — WorkoutDetail component, CSS styles, navigation wiring
+  - [x] 24-02-PLAN.md — Fix workout title display (gap closure)
 
 ## Completed Milestones
 
@@ -120,4 +121,4 @@ None
 | 21. Exercise Create | v3.0 | 2/2 | Complete | 2026-02-04 |
 | 22. History Navigation + Service | v4.0 | 1/1 | Complete | 2026-02-05 |
 | 23. History List Surface | v4.0 | 1/1 | Complete | 2026-02-05 |
-| 24. Workout Detail Surface | v4.0 | 1/1 | Complete | 2026-02-05 |
+| 24. Workout Detail Surface | v4.0 | 2/2 | Complete | 2026-02-05 |

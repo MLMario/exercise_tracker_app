@@ -9,6 +9,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { SettingsMenu } from './SettingsMenu';
 import { MyExercisesList } from './MyExercisesList';
+import { WorkoutHistoryList } from './WorkoutHistoryList';
 
 interface SettingsPanelProps {
   /** Whether the panel is currently open */
@@ -108,9 +109,7 @@ export function SettingsPanel({ isOpen, onClose, onLogout, onExerciseDeleted }: 
             />
           )}
           {panelView === 'history' && (
-            <div class="history-placeholder" style={{ padding: '2rem', textAlign: 'center' }}>
-              <p style={{ color: 'var(--color-text-muted)' }}>History view coming soon</p>
-            </div>
+            <WorkoutHistoryList />
           )}
         </div>
       </div>

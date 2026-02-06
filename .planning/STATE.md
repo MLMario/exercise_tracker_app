@@ -94,4 +94,4 @@ None.
 Last session: 2026-02-06
 Stopped at: Completed 24-01-PLAN.md (v4.0 Milestone Complete)
 Resume file: None
-Next step: Project complete through v4.0 milestone
+Next step: `/gsd:audit-milestone` to verify milestone completion before shipping

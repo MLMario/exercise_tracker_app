@@ -10,7 +10,7 @@ Requirements for Exercise History milestone. Each maps to roadmap phases.
 ### Navigation
 
 - [x] **NAV-01**: User can access "Exercise History" from Settings menu
-- [ ] **NAV-02**: User can navigate back from workout detail to history list
+- [x] **NAV-02**: User can navigate back from workout detail to history list
 - [x] **NAV-03**: User can navigate back from history list to settings menu
 
 ### History List
@@ -25,10 +25,10 @@ Requirements for Exercise History milestone. Each maps to roadmap phases.
 
 ### Workout Detail
 
-- [ ] **DETAIL-01**: User sees workout header with template name and date
-- [ ] **DETAIL-02**: User sees exercise blocks with exercise name headers
-- [ ] **DETAIL-03**: User sees set grid per exercise showing: Set #, Weight (lbs), Reps, Completion status
-- [ ] **DETAIL-04**: User sees visual distinction between completed and skipped sets (checkmark vs X)
+- [x] **DETAIL-01**: User sees workout header with template name and date
+- [x] **DETAIL-02**: User sees exercise blocks with exercise name headers
+- [x] **DETAIL-03**: User sees set grid per exercise showing: Set #, Weight (lbs), Reps, Completion status
+- [x] **DETAIL-04**: User sees visual distinction between completed and skipped sets (checkmark vs X)
 
 ## v4.1+ Requirements
 
@@ -70,7 +70,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | NAV-01 | Phase 22 | Complete |
-| NAV-02 | Phase 24 | Pending |
+| NAV-02 | Phase 24 | Complete |
 | NAV-03 | Phase 23 | Complete |
 | HIST-01 | Phase 23 | Complete |
 | HIST-02 | Phase 23 | Complete |
@@ -79,10 +79,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HIST-05 | Phase 23 | Complete |
 | HIST-06 | Phase 23 | Complete |
 | HIST-07 | Phase 23 | Complete |
-| DETAIL-01 | Phase 24 | Pending |
-| DETAIL-02 | Phase 24 | Pending |
-| DETAIL-03 | Phase 24 | Pending |
-| DETAIL-04 | Phase 24 | Pending |
+| DETAIL-01 | Phase 24 | Complete |
+| DETAIL-02 | Phase 24 | Complete |
+| DETAIL-03 | Phase 24 | Complete |
+| DETAIL-04 | Phase 24 | Complete |
 
 **Coverage:**
 - v4.0 requirements: 14 total
@@ -91,4 +91,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-05*
-*Last updated: 2026-02-05 after roadmap creation*
+*Last updated: 2026-02-05 after Phase 24 completion*

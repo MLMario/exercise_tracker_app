@@ -17,19 +17,22 @@ None
 - [v2.7 Pre-Created Exercise Library](milestones/v2.7-ROADMAP.md) (Phases 8-13) -- SHIPPED 2026-02-02
 - [v2.8 Enhanced Filtering Capabilities](milestones/v2.8-ROADMAP.md) (Phases 14-15) -- SHIPPED 2026-02-02
 - [v3.0 Settings & Exercise Management](milestones/v3.0-ROADMAP.md) (Phases 16-21) -- SHIPPED 2026-02-04
-- [v4.0 Exercise History](milestones/v4.0-ROADMAP.md) (Phases 22-24) -- COMPLETE
+- [v4.0 Exercise History](milestones/v4.0-ROADMAP.md) (Phases 22-24) -- SHIPPED 2026-02-05
 
 ## Current Milestone
 
-**v4.0 Exercise History** - Browse past workouts from Settings panel with timeline view and workout details.
+No active milestone. Run `/gsd:new-milestone` to start next version.
+
+## Completed Milestones
+
+<details>
+<summary>v4.0 Exercise History (Phases 22-24) -- SHIPPED 2026-02-05</summary>
 
 - [x] Phase 22: History Navigation + Service (1/1 plans) -- completed 2026-02-05
 - [x] Phase 23: History List Surface (1/1 plans) -- completed 2026-02-05
 - [x] Phase 24: Workout Detail Surface (2/2 plans) -- completed 2026-02-05
-  - [x] 24-01-PLAN.md — WorkoutDetail component, CSS styles, navigation wiring
-  - [x] 24-02-PLAN.md — Fix workout title display (gap closure)
 
-## Completed Milestones
+</details>
 
 <details>
 <summary>v2.3 Template Editor UI Cleanup (Phases 1-2) -- SHIPPED 2026-01-17</summary>

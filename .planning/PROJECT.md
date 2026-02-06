@@ -8,29 +8,17 @@ An exercise tracking application with template-based workout management, real-ti
 
 Simple, effective workout tracking with clean visual feedback on progress.
 
-## Current Milestone: v4.0 Exercise History
-
-**Goal:** Add Exercise History section to Settings for viewing logged workout history in a timeline format with pagination and detail views.
-
-**Target features:**
-- "Exercise History" menu item in Settings panel
-- History List surface with summary bar (workouts/sets/lbs totals)
-- Vertical timeline with workout cards showing template name, badges, exercise preview
-- Workout Detail surface with full exercise/set breakdown
-- Pagination: initial 7 workouts with "Load More" option
-
 ## Current State
 
-**Last shipped:** v3.0 Settings & Exercise Management (2026-02-04)
+**Last shipped:** v4.0 Exercise History (2026-02-05)
 
-**What shipped in v3.0:**
-- Settings surface accessible via gear icon in dashboard header
-- Settings menu with "My Exercises" and Log Out button
-- My Exercises view for managing user-created exercises
-- Inline accordion editing for name and category
-- Delete with confirmation modal and dependency warnings
-- Create exercise modal from header button and empty state
-- Backend service layer with typed validation errors
+**What shipped in v4.0:**
+- "Workout History" menu item accessible from Settings panel
+- History list surface with summary bar (workouts, sets, volume totals)
+- Vertical timeline with date markers and compact workout cards
+- Workout detail view with exercise blocks and set grids
+- Paginated history with "Load More" button
+- Template name display in workout detail header
 
 ## Requirements
 
@@ -75,19 +63,21 @@ Simple, effective workout tracking with clean visual feedback on progress.
 - ✓ Edit exercise via inline accordion form (name + category) — v3.0
 - ✓ Delete exercise with confirmation modal and dependency warning — v3.0
 - ✓ updateExercise, getUserExercises, getExerciseDependencies service functions — v3.0
+- ✓ "Exercise History" menu item in Settings panel — v4.0
+- ✓ History List surface with summary bar (workouts/sets/lbs totals) — v4.0
+- ✓ Vertical timeline with date markers and connected dots — v4.0
+- ✓ Compact workout cards with template name, badges, exercise preview — v4.0
+- ✓ Card click navigates to Workout Detail surface — v4.0
+- ✓ Initial load: 7 workouts with "Load More" pagination — v4.0
+- ✓ Workout Detail surface with back navigation — v4.0
+- ✓ Exercise blocks with exercise name headers — v4.0
+- ✓ Set grid per exercise: Set #, Weight, Reps, Completed status — v4.0
+- ✓ Visual distinction for completed vs skipped sets — v4.0
+- ✓ Template name display in workout detail header — v4.0
 
 ### Active
 
-- [ ] "Exercise History" menu item in Settings panel
-- [ ] History List surface with summary bar (workouts/sets/lbs totals)
-- [ ] Vertical timeline with date markers and connected dots
-- [ ] Compact workout cards showing: template name, badges, exercise preview (no chevron)
-- [ ] Clicking card navigates to Workout Detail surface
-- [ ] Initial load: last 7 workouts with "Load More" pagination
-- [ ] Workout Detail surface with back navigation
-- [ ] Exercise blocks with exercise name headers
-- [ ] Set grid per exercise: Set #, Weight, Reps, Completed status
-- [ ] Visual distinction for completed vs skipped sets
+(No active requirements — ready for next milestone)
 
 ### Out of Scope
 
@@ -155,6 +145,10 @@ Simple, effective workout tracking with clean visual feedback on progress.
 | Inline accordion edit (not slide-in panel) | Simpler pattern, keeps user in list context during edits | ✓ Good |
 | Lifted modal state to SettingsPanel | Coordinates header "+ Create" button with empty state CTA | ✓ Good |
 | Case-insensitive duplicate check via .ilike() | Prevents "Bench Press" and "bench press" duplicates | ✓ Good |
+| PaginatedResult<T> generic wrapper | Reusable pagination pattern for future endpoints | ✓ Good |
+| Reuse existing getWorkoutLog for detail view | No new service function needed, existing one has all data | ✓ Good |
+| Join templates table for workout title | Display actual template name instead of "Untitled Workout" | ✓ Good |
+| Category colors via CSS data attributes | 7 exercise categories with color-coded badges | ✓ Good |
 
 ---
-*Last updated: 2026-02-05 after v4.0 milestone start*
+*Last updated: 2026-02-05 after v4.0 milestone completion*

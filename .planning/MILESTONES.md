@@ -1,5 +1,33 @@
 # Project Milestones: Exercise Tracker App
 
+## v4.0 Exercise History (Shipped: 2026-02-05)
+
+**Delivered:** Added Exercise History section to Settings panel for browsing past workouts in a timeline format with summary statistics, compact workout cards, and detailed workout views.
+
+**Phases completed:** 22-24 (4 plans total)
+
+**Key accomplishments:**
+
+- "Workout History" menu item accessible from Settings panel with Calendar icon
+- Paginated history service functions with generic PaginatedResult<T> types
+- History list surface with summary bar showing total workouts, sets, and volume
+- Vertical timeline with date markers and compact workout cards with badges
+- Workout detail view with exercise blocks, set grids, and completion status icons
+- Template name display in workout detail header (UAT gap closure)
+
+**Stats:**
+
+- 8 code files modified
+- ~998 lines added
+- 3 phases, 4 plans
+- 1 day from start to ship (2026-02-05)
+
+**Git range:** `f191059` → `ba0ca50`
+
+**What's next:** Exercise History complete. Ready for next milestone.
+
+---
+
 ## v3.0 Settings & Exercise Management (Shipped: 2026-02-04)
 
 **Delivered:** Added Settings surface with gear icon access, containing My Exercises management view for creating, editing, and deleting custom exercises outside the template editor workflow.

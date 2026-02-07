@@ -70,7 +70,7 @@ None.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 001 | Fix template update modal trigger conditions | 2026-02-06 | e60aa51 | [001-fix-template-update-modal-trigger-conditions](./quick/001-fix-template-update-modal-trigger-conditions/) |
-| 002 | Block template modal outside dismiss | 2026-02-06 | 3a014e9 | [002-block-template-modal-outside-dismiss](./quick/002-block-template-modal-outside-dismiss/) |
+| 002 | Block template update modal outside dismiss | 2026-02-06 | d199d5d | [002-block-template-modal-outside-dismiss](./quick/002-block-template-modal-outside-dismiss/) |
 
 ## Session Continuity
 

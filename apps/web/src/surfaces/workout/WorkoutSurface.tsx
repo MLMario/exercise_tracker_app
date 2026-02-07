@@ -900,6 +900,7 @@ export function WorkoutSurface({
         confirmLabel="Yes, Update"
         cancelLabel="No, Keep Original"
         confirmVariant="primary"
+        dismissOnOverlayClick={false}
         onConfirm={confirmTemplateUpdate}
         onCancel={declineTemplateUpdate}
       />

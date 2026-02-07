@@ -28,6 +28,8 @@ export interface ConfirmationModalProps {
   cancelLabel: string;
   /** Variant for confirm button styling */
   confirmVariant?: 'primary' | 'danger';
+  /** Whether clicking the overlay dismisses the modal. Defaults to true. */
+  dismissOnOverlayClick?: boolean;
   /** Handler called when confirm button is clicked */
   onConfirm: () => void;
   /** Handler called when cancel button is clicked or overlay is clicked */
@@ -42,6 +44,7 @@ export interface ConfirmationModalProps {
  * - Message body (with optional secondary message)
  * - Cancel and confirm buttons
  *
+ * Clicking the overlay calls onCancel unless dismissOnOverlayClick is false.
  * Matches index.html modal structure (lines 843-873).
  */
 export function ConfirmationModal({
@@ -52,6 +55,7 @@ export function ConfirmationModal({
   confirmLabel,
   cancelLabel,
   confirmVariant = 'primary',
+  dismissOnOverlayClick = true,
   onConfirm,
   onCancel
 }: ConfirmationModalProps): JSX.Element | null {
@@ -65,7 +69,7 @@ export function ConfirmationModal({
    */
   const handleOverlayClick = (e: JSX.TargetedMouseEvent<HTMLDivElement>): void => {
     // Only close if clicking the overlay itself, not the modal content
-    if (e.target === e.currentTarget) {
+    if (e.target === e.currentTarget && dismissOnOverlayClick) {
       onCancel();
     }
   };

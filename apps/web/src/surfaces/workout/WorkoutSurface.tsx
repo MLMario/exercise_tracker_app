@@ -437,21 +437,11 @@ export function WorkoutSurface({
     // Check exercise count
     if (original.length !== current.length) return true;
 
-    // Check each exercise
+    // Check each exercise for structural changes only
     for (const currEx of current) {
       const origEx = original.find(e => e.exercise_id === currEx.exercise_id);
       if (!origEx) return true; // New exercise added
       if (origEx.sets.length !== currEx.sets.length) return true; // Set count changed
-
-      // Check set values
-      for (let j = 0; j < currEx.sets.length; j++) {
-        const origSet = origEx.sets[j];
-        const currSet = currEx.sets[j];
-        if (!origSet) return true;
-        if (origSet.weight !== currSet.weight || origSet.reps !== currSet.reps) {
-          return true;
-        }
-      }
     }
 
     // Check if any original exercises removed
@@ -906,7 +896,7 @@ export function WorkoutSurface({
         isOpen={showTemplateUpdateModal}
         title="Update Template?"
         message="You made changes during this workout. Update the template with these changes?"
-        secondaryMessage="This will update exercises, sets, weights, and reps."
+        secondaryMessage="This will update the exercise list and number of sets in your template."
         confirmLabel="Yes, Update"
         cancelLabel="No, Keep Original"
         confirmVariant="primary"
